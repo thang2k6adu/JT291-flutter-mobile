@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boilerplate/features/auth/widgets/login_header.dart';
-import 'package:flutter_boilerplate/features/auth/widgets/auth_button_section.dart';
-import 'package:flutter_boilerplate/features/auth/widgets/terms_text.dart';
+import 'package:flutter_boilerplate/features/auth/widgets/auth_actions.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -23,8 +22,7 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             children: [
               Expanded(child: LoginHeader()),
-              AuthButtonsSection(),
-              TermsText(),
+              AuthActions(),
             ],
           ),
         ),
