@@ -5,7 +5,7 @@ void main() {
 }
 
 class DoflieApp extends StatelessWidget {
-  const DoflieApp({Key? key}) : super(key: key);
+  const DoflieApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class DoflieApp extends StatelessWidget {
 }
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +30,11 @@ class LoginScreen extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(
-              'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&q=80',
+            image: AssetImage(
+              'assets/bg-image.png',
             ),
             fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.7),
-              BlendMode.darken,
-            ),
+            alignment: Alignment(-0.6, 0.9),
           ),
         ),
         child: SafeArea(
@@ -55,22 +52,13 @@ class LoginScreen extends StatelessWidget {
                     Container(
                       width: 120,
                       height: 120,
+                      clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF8B5CF6), Color(0xFFEC4899)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '6',
-                          style: TextStyle(
-                            fontSize: 80,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                        // borderRadius: BorderRadius.circular(30),
+                        color: Colors.transparent,
+                        image: DecorationImage(
+                          image: AssetImage('assets/dofile_1.png'),
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
