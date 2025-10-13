@@ -1,4 +1,4 @@
-package com.example.flutter_boilerplate
+package jt291.dev.dolfie.tech
 
 import io.flutter.embedding.android.FlutterActivity
 

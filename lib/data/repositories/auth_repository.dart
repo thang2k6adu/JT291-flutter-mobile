@@ -37,7 +37,7 @@ class AuthRepository {
   /// Đăng nhập bằng Google
   Future<UserModel?> signInWithGoogle() async {
     final user = await _service.signInWithGoogle();
-    return _handleAuthResult(user);
+    return null;
   }
 
   /// Đăng nhập bằng Facebook

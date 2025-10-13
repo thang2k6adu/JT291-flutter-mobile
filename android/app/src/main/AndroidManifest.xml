@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="jt291.dev.dolfie.tech">
     <application
         android:label="flutter_boilerplate"
         android:name="${applicationName}"
