@@ -46,12 +46,13 @@ class FirebaseAuthService {
         }
         final googleAuth = await googleUser.authentication;
         final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
+          // accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
         final result = await _auth.signInWithCredential(credential);
+        print('result.user ${result.user}');
 
-        final idToken = await result.user?.getIdToken();
+        final idToken = await result.user?.getIdToken(true);
         print('idToken $idToken');
         return idToken;
 
