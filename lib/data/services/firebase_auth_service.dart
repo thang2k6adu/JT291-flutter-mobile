@@ -87,4 +87,20 @@ class FirebaseAuthService {
       },
     );
   }
+
+  /// Return current authenticated user or null
+  User? currentUser() => _auth.currentUser;
+
+  /// Get ID token for current user. Use `forceRefresh` to force a refresh.
+  Future<String?> getIdToken({bool forceRefresh = false}) {
+    return handleService(
+      action: () async {
+        final user = _auth.currentUser;
+        if (user == null) {
+          throw AuthException(code: 'NO_USER', message: 'No authenticated user');
+        }
+        return await user.getIdToken(forceRefresh);
+      },
+    );
+  }
 }
