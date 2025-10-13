@@ -50,32 +50,13 @@ class FirebaseAuthService {
           idToken: googleAuth.idToken,
         );
         final result = await _auth.signInWithCredential(credential);
-        print('result.user ${result.user}');
 
         final idToken = await result.user?.getIdToken(true);
-        print('idToken $idToken');
+        if(idToken == null){
+          throw Exception('Google sign in failed, null result.');
+        }
+      
         return idToken;
-
-        // final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-        // if (googleUser == null) {
-        //   throw AuthException(
-        //     code: 'CANCELLED',
-        //     message: 'User cancelled Google sign-in',
-        //   );
-        // }
-
-        // final GoogleSignInAuthentication googleAuth =
-        //     await googleUser.authentication;
-        // final credential = GoogleAuthProvider.credential(
-        //   accessToken: googleAuth.accessToken,
-        //   idToken: googleAuth.idToken,
-        // );
-
-        // final userCredential = await _auth.signInWithCredential(credential);
-
-        // print('userCredential.user ${userCredential.user}');
-        // print('userCredential.user ');
-        // return userCredential.user;
       },
     );
   }
