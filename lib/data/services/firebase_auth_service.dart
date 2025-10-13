@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'dart:io';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -46,15 +47,29 @@ class FirebaseAuthService {
 
   // 🔹 Facebook Login
   Future<User?> signInWithFacebook() async {
-    final LoginResult result = await FacebookAuth.instance.login();
+    // 🔥 QUAN TRỌNG: Check platform trước khi dùng Facebook Auth
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      print('🚫 Facebook Auth only supports Android and iOS');
+      return null;
+    }
 
-    if (result.status != LoginStatus.success) return null;
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
 
-    final OAuthCredential credential = FacebookAuthProvider.credential(
-      result.accessToken!.token,
-    );
+      if (result.status != LoginStatus.success) {
+        print('❌ Facebook login failed: ${result.status}');
+        return null;
+      }
 
-    final userCredential = await _auth.signInWithCredential(credential);
-    return userCredential.user;
+      final OAuthCredential credential = FacebookAuthProvider.credential(
+        result.accessToken!.token,
+      );
+
+      final userCredential = await _auth.signInWithCredential(credential);
+      return userCredential.user;
+    } catch (e) {
+      print('❌ Facebook Sign-In error: $e');
+      return null;
+    }
   }
 }
