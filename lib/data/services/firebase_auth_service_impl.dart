@@ -11,6 +11,8 @@ class FirebaseAuthService implements AuthService {
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
   final FacebookAuth _facebookAuth;
+  static const Duration _minRetryDelay = Duration(seconds: 2);
+  DateTime? _lastAuthAttempt;
 
   FirebaseAuthService({
     FirebaseAuth? auth,
@@ -21,6 +23,19 @@ class FirebaseAuthService implements AuthService {
            googleSignIn ?? GoogleSignIn.standard(), // Dùng standard()
        _facebookAuth = facebookAuth ?? FacebookAuth.instance;
 
+  Future<void> _checkRateLimit() async {
+    if (_lastAuthAttempt != null) {
+      final timeSinceLastAttempt = DateTime.now().difference(_lastAuthAttempt!);
+      if (timeSinceLastAttempt < _minRetryDelay) {
+        throw AuthException(
+          code: 'RATE_LIMITED',
+          message: 'Please wait before attempting again',
+        );
+      }
+    }
+    _lastAuthAttempt = DateTime.now();
+  }
+
   @override
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
@@ -28,6 +43,8 @@ class FirebaseAuthService implements AuthService {
   Future<String?> signInWithEmail(String email, String password) {
     return handleService(
       action: () async {
+        await _checkRateLimit();
+
         AuthValidator.validateEmail(email);
         AuthValidator.validatePassword(password);
 
