@@ -11,10 +11,13 @@ import 'package:flutter_boilerplate/core/errors/api_exception.dart';
 Future<T> handleService<T>({
   required Future<T> Function() action,
   Map<Type, AppException Function(Object error)>? exceptionMapping,
+  String? serviceName,
 }) async {
   try {
     return await action();
-  } catch (e) {
+  } catch (e, stackTrace) {
+    print('Service Error in $serviceName: $e\n$stackTrace');
+
     // Nếu có mapping custom theo type, dùng nó
     if (exceptionMapping != null) {
       for (var entry in exceptionMapping.entries) {
