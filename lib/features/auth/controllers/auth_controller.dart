@@ -25,12 +25,12 @@ class AuthController extends StateNotifier<AsyncValue<UserModel?>> {
     _repo.authStateChanges.listen(
       (user) {
         // Không đổi state khi đang loading đăng nhập / đăng ký
-        if (mounted && !state.isLoading) {
+        if (mounted) {
           state = AsyncValue.data(user);
         }
       },
       onError: (e, st) {
-        if (mounted && !state.isLoading) {
+        if (mounted) {
           state = AsyncValue.error(e, st);
         }
       },
