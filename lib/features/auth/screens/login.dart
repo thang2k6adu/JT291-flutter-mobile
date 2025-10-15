@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_boilerplate/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_boilerplate/features/auth/widgets/login_header.dart';
 import 'package:flutter_boilerplate/features/auth/widgets/auth_actions.dart';
+import '../../../data/models/user_model.dart';
+import 'package:go_router/go_router.dart';
+
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
@@ -11,11 +14,28 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authControllerProvider);
 
+    ref.listen<AsyncValue<UserModel?>>(authControllerProvider, (
+      previous,
+      next,
+    ) {
+      // When phải thực hiện cả 3, còn whenOrNull chỉ check vài cái cần thiết
+      next.whenOrNull(
+        data: (user) {
+          if (user != null) {
+            context.go('/user-profile');
+          }
+        },
+        error: (error, _) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Lỗi đăng nhập: $error')));
+        },
+      );
+    });
+
     // Trạng thái loading
     if (authState.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     // Nếu có lỗi
@@ -54,9 +74,9 @@ class LoginScreen extends ConsumerWidget {
               const SnackBar(content: Text('Đăng nhập Google thành công!')),
             );
           } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Lỗi Google login: $e')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('Lỗi Google login: $e')));
           }
         },
       },
@@ -73,9 +93,9 @@ class LoginScreen extends ConsumerWidget {
               const SnackBar(content: Text('Đăng nhập Facebook thành công!')),
             );
           } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Lỗi Facebook login: $e')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('Lỗi Facebook login: $e')));
           }
         },
       },
