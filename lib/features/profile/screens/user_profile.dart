@@ -51,7 +51,13 @@ class ProfileScreen extends StatelessWidget {
                         // Handle settings tap
                       },
                     ),
-                    ProfileStats(),
+                    ProfileStats(
+                      profileImageUrl: 'https://i.pravatar.cc/300',
+                      followingCount: 360,
+                      followersCount: 160000,
+                      viewsCount: 0,
+                      newViewsCount: 12,
+                    ),
                     WalletCard(),
                     FeaturesGrid(),
                     MenuList(),
