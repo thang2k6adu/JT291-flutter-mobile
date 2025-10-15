@@ -103,7 +103,7 @@ class FirebaseAuthService implements AuthService {
     return handleService(
       action: () async {
         await _googleSignIn.signOut(); // Đăng xuất Google
-        await _facebookAuth.logOut(); // Đăng xuất Facebook
+        // await _facebookAuth.logOut(); // Đăng xuất Facebook
         await _auth.signOut(); // Đăng xuất Firebase
       },
       serviceName: 'FirebaseAuthService.signOut',
