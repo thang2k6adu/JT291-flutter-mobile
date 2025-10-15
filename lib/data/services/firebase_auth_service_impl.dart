@@ -7,6 +7,24 @@ import 'package:flutter_boilerplate/core/errors/auth_exception.dart';
 import 'auth_service.dart';
 import 'auth_validator.dart';
 
+
+// 🚨 CRITICAL: Fix bug signInWithGoogle() return null
+
+// 🚨 CRITICAL: Thêm error handling và propagation
+
+// 📋 HIGH: Implement token management và auto-refresh
+
+// 📋 HIGH: Thêm session management và restore
+
+// 🔧 MEDIUM: Thêm state management với StreamController
+
+// 🔧 MEDIUM: Implement retry logic cho network operations
+
+// 🔧 LOW: Thêm analytics và monitoring
+
+// 🔧 LOW: Chuẩn hóa dependency injection
+
+// 🔧 LOW: Chuẩn bị cho unit testing
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
