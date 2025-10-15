@@ -64,7 +64,14 @@ class ProfileScreen extends StatelessWidget {
                         // Handle wallet card tap
                       },
                     ),
-                    FeaturesGrid(),
+                    FeaturesGrid(
+                      items: const [
+                        FeatureItem(emoji: '💎', label: 'Vip'),
+                        FeatureItem(emoji: '🛒', label: 'Store'),
+                        FeatureItem(emoji: '🎯', label: 'Task Center'),
+                        FeatureItem(emoji: '💗', label: 'Love Space'),
+                      ],
+                    ),
                     MenuList(),
                     SizedBox(height: 80),
                   ],
