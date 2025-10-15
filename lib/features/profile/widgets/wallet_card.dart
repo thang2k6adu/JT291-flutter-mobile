@@ -1,19 +1,35 @@
 import 'package:flutter/material.dart';
 
 class WalletCard extends StatelessWidget {
-  const WalletCard({super.key});
+  const WalletCard({
+    super.key,
+    required this.balance,
+    this.onTap,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
+  });
+
+  final double balance;
+  final VoidCallback? onTap;
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
-      child: _WalletCardContent(),
+    return Padding(
+      padding: padding,
+      child: GestureDetector(
+        onTap: onTap,
+        child: _WalletCardContent(balance: balance),
+      ),
     );
   }
 }
 
 class _WalletCardContent extends StatelessWidget {
-  const _WalletCardContent();
+  const _WalletCardContent({
+    required this.balance,
+  });
+
+  final double balance;
 
   @override
   Widget build(BuildContext context) {
@@ -35,38 +51,62 @@ class _WalletCardContent extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'My Wallet',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Row(
-            children: [
-              const Text(
-                '💎',
-                style: TextStyle(fontSize: 24),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                '54,292.79',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Icon(
-                Icons.chevron_right,
-                color: Colors.white,
-              ),
-            ],
-          ),
+          _buildTitle(),
+          _buildBalanceSection(),
         ],
       ),
     );
+  }
+
+  Widget _buildTitle() {
+    return const Text(
+      'My Wallet',
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
+  Widget _buildBalanceSection() {
+    return Row(
+      children: [
+        _buildIcon(),
+        const SizedBox(width: 8),
+        _buildBalanceText(),
+        const SizedBox(width: 8),
+        _buildChevronIcon(),
+      ],
+    );
+  }
+
+  Widget _buildIcon() {
+    return const Text(
+      '💎',
+      style: TextStyle(fontSize: 24),
+    );
+  }
+
+  Widget _buildBalanceText() {
+    return Text(
+      _formatBalance(balance),
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Widget _buildChevronIcon() {
+    return const Icon(
+      Icons.chevron_right,
+      color: Colors.white,
+    );
+  }
+
+  String _formatBalance(double balance) {
+    return balance.toStringAsFixed(2);
   }
 }

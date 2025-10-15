@@ -58,7 +58,12 @@ class ProfileScreen extends StatelessWidget {
                       viewsCount: 0,
                       newViewsCount: 12,
                     ),
-                    WalletCard(),
+                    WalletCard(
+                      balance: 1250.75,
+                      onTap: () {
+                        // Handle wallet card tap
+                      },
+                    ),
                     FeaturesGrid(),
                     MenuList(),
                     SizedBox(height: 80),
