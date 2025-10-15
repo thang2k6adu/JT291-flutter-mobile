@@ -2,15 +2,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../providers/auth_provider.dart';
+import 'dart:async';
 
 final authControllerProvider =
     StateNotifierProvider<AuthController, AsyncValue<UserModel?>>((ref) {
-  final repo = ref.watch(authRepositoryProvider);
-  return AuthController(repo);
-});
+      final repo = ref.watch(authRepositoryProvider);
+      return AuthController(repo);
+    });
 
 class AuthController extends StateNotifier<AsyncValue<UserModel?>> {
   final AuthRepository _repo;
+  StreamSubscription<UserModel?>? _authSubscription;
 
   AuthController(this._repo) : super(const AsyncValue.loading()) {
     _initAuthState();
@@ -23,10 +25,14 @@ class AuthController extends StateNotifier<AsyncValue<UserModel?>> {
     _repo.authStateChanges.listen(
       (user) {
         // Không đổi state khi đang loading đăng nhập / đăng ký
-        if (mounted) state = AsyncValue.data(user);
+        if (mounted && !state.isLoading) {
+          state = AsyncValue.data(user);
+        }
       },
       onError: (e, st) {
-        if (mounted) state = AsyncValue.error(e, st);
+        if (mounted && !state.isLoading) {
+          state = AsyncValue.error(e, st);
+        }
       },
     );
   }
@@ -73,5 +79,11 @@ class AuthController extends StateNotifier<AsyncValue<UserModel?>> {
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
   }
 }

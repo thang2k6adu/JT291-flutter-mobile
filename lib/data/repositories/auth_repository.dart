@@ -1,7 +1,6 @@
 import '../models/user_model.dart';
 import '../services/firebase_auth_service_impl.dart';
 import '../services/secure_storage_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 // 🚨 CRITICAL: Fix bug signInWithGoogle() return null: oke
 // 🚨 CRITICAL: Thêm error handling và propagation
@@ -52,6 +51,7 @@ class AuthRepository {
   /// Đăng nhập bằng Google
   Future<UserModel?> signInWithGoogle() async {
     final token = await _service.signInWithGoogle();
+    print('token: $token');
     return _handleAuthResult(token);
   }
 

@@ -7,6 +7,6 @@ final firebaseAuthServiceProvider = Provider<FirebaseAuthService>((ref) {
 });
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  final service = ref.watch(firebaseAuthServiceProvider);
+  final service = ref.read(firebaseAuthServiceProvider);
   return AuthRepository(service);
 });
