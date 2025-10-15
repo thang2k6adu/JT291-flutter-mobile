@@ -19,13 +19,20 @@ class AuthController extends StateNotifier<AsyncValue<UserModel?>> {
   }
 
   /// Khởi tạo: lắng nghe trạng thái đăng nhập Firebase
-  void _initAuthState() {
+  void _initAuthState() async {
+    await signOut();
+    final user = await getCurrentUser();
+    if (user != null) {
+      await refreshToken(); // force refresh
+    }
+
     // Method listen sẽ chạy callback bên trong khi FirebaseAuth có sự thay đổi
     // authStateChanges là stream UserModel? đại diện cho firebaseauth
-    _repo.authStateChanges.listen(
+    _authSubscription = _repo.authStateChanges.listen(
       (user) {
         // Không đổi state khi đang loading đăng nhập / đăng ký
         if (mounted) {
+          print('Auth state changed: $user');
           state = AsyncValue.data(user);
         }
       },
