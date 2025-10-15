@@ -41,8 +41,16 @@ class ProfileScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    ProfileHeader(),
+                  children: [
+                    ProfileHeader(
+                      userName: 'John Doe',
+                      onCreditCardPressed: () {
+                        // Handle credit card tap
+                      },
+                      onSettingsPressed: () {
+                        // Handle settings tap
+                      },
+                    ),
                     ProfileStats(),
                     WalletCard(),
                     FeaturesGrid(),
@@ -53,11 +61,10 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
 
-            const CustomBottomNav()
+            const CustomBottomNav(),
           ],
         ),
       ),
     );
   }
-
- }
+}
