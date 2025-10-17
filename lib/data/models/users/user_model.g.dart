@@ -7,28 +7,36 @@ part of 'user_model.dart';
 // **************************************************************************
 
 _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
-  id: json['id'] as String,
-  isDeleted: json['is_deleted'] as bool,
-  unionId: json['union_id'] as String?,
-  isBlocked: json['is_blocked'] as bool,
-  status: json['status'] as String,
-  language: json['language'] == null
+  isDeleted: json['is_deleted'] as bool? ?? false,
+  unionId: json['union_id'] as String,
+  isBlocked: json['is_blocked'] as bool? ?? false,
+  nickname: json['nickname'],
+  gender: json['gender'] as String?,
+  bio: json['bio'] as String?,
+  dateOfBirth: json['date_of_birth'] == null
       ? null
-      : LanguageModel.fromJson(json['language'] as Map<String, dynamic>),
-  role: json['role'] as String,
-  partner: json['partner'] == null
+      : DateTime.parse(json['date_of_birth'] as String),
+  profileUrls:
+      (json['profile_urls'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  avatarUrl: json['avatar_url'] as String?,
+  level: json['level'] == null
       ? null
-      : PartnerModel.fromJson(json['partner'] as Map<String, dynamic>),
+      : UserLevelModel.fromJson(json['level'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'is_deleted': instance.isDeleted,
       'union_id': instance.unionId,
       'is_blocked': instance.isBlocked,
-      'status': instance.status,
-      'language': instance.language,
-      'role': instance.role,
-      'partner': instance.partner,
+      'nickname': instance.nickname,
+      'gender': instance.gender,
+      'bio': instance.bio,
+      'date_of_birth': instance.dateOfBirth?.toIso8601String(),
+      'profile_urls': instance.profileUrls,
+      'avatar_url': instance.avatarUrl,
+      'level': instance.level,
     };

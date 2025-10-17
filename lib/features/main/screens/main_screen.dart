@@ -70,13 +70,11 @@ class MainScreenState extends ConsumerState<MainScreen> {
                 label: "Reels",
               ),
               BottomNavigationBarItem(
-                icon: currentUer?.partner?.thumbnail != null
+                icon: currentUer?.avatarUrl != null
                     ? SizedBox(
                         width: 24,
                         height: 24,
-                        child: Image.network(
-                          currentUer?.partner?.thumbnail ?? "",
-                        ),
+                        child: Image.network(currentUer?.avatarUrl ?? ""),
                       )
                     : Icon(
                         Icons.home,

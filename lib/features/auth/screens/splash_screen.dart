@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/assets/assets.dart';
-import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
-import 'package:jt291_flutter_mobile/core/core.dart';
-import 'package:jt291_flutter_mobile/data/providers/auth/auth_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   final String? title;
@@ -21,7 +18,6 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userAuthProvider).asData?.value;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -57,21 +53,6 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
                                 ),
-                              ),
-                              Text(
-                                '${user?.partner?.name} Welcome to back',
-                                // style: TextStyle(
-                                //   // fontFamily: 'Poppins',
-                                //   // fontSize: 16,
-                                //   fontWeight: FontWeight.w400,
-                                //   color: Colors.grey,
-                                // ),
-                              ),
-
-                              ElevatedButton(
-                                onPressed: () =>
-                                    goScreen(context, RouteConstants.login),
-                                child: Text("Logout"),
                               ),
                             ],
                           ),
