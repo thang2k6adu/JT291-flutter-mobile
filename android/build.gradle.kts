@@ -2,8 +2,8 @@
 
 plugins {
     
-    id("com.android.application") version "8.5.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.23" apply false
+    id("com.android.application") version "8.9.1" apply false
+    id("org.jetbrains.kotlin.android") version "2.1.0" apply false
     // Khai báo plugin phiên bản mới của Android & Google Services
     id("com.google.gms.google-services") version "4.4.2" apply false
 }

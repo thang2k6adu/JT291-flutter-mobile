@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "839130523883-0k6i7f2foruu31j6n8m4lbvd9pbu2koi.apps.googleusercontent.com",
+          "client_id": "839130523883-f83cbsd5fahcj1bmo80kjusnv6bnb571.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "jt291.dev.dolfie.tech",
-            "certificate_hash": "3b91292e79ea7d6d6e5f28b6d825e8697faedcc1"
+            "certificate_hash": "31a118a0fdb51656b1d5c60e28c808ecab64a8a6"
           }
         },
         {
