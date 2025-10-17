@@ -1,96 +1,99 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../data/models/user_model.dart';
-import '../../../data/repositories/auth_repository.dart';
-import '../providers/auth_provider.dart';
 import 'dart:async';
 
-final authControllerProvider =
-    StateNotifierProvider<AuthController, AsyncValue<UserModel?>>((ref) {
-      final repo = ref.watch(authRepositoryProvider);
-      return AuthController(repo);
-    });
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/core/constants/constants.dart';
+import 'package:jt291_flutter_mobile/components/components.dart';
+import 'package:jt291_flutter_mobile/data/providers/auth/auth_provider.dart';
+import 'package:jt291_flutter_mobile/data/services/firebase_auth_service.dart';
 
-class AuthController extends StateNotifier<AsyncValue<UserModel?>> {
-  final AuthRepository _repo;
-  StreamSubscription<UserModel?>? _authSubscription;
+enum ProviderLogin { google, facebook, apple, password }
 
-  AuthController(this._repo) : super(const AsyncValue.loading()) {
-    _initAuthState();
-  }
-
-  /// Khởi tạo: lắng nghe trạng thái đăng nhập Firebase
-  void _initAuthState() async {
-    await signOut();
-    final user = await getCurrentUser();
-    if (user != null) {
-      await refreshToken(); // force refresh
-    }
-
-    // Method listen sẽ chạy callback bên trong khi FirebaseAuth có sự thay đổi
-    // authStateChanges là stream UserModel? đại diện cho firebaseauth
-    _authSubscription = _repo.authStateChanges.listen(
-      (user) {
-        // Không đổi state khi đang loading đăng nhập / đăng ký
-        if (mounted) {
-          print('Auth state changed: $user');
-          state = AsyncValue.data(user);
-        }
-      },
-      onError: (e, st) {
-        if (mounted) {
-          state = AsyncValue.error(e, st);
-        }
-      },
-    );
-  }
-
-  /// Đăng nhập bằng email & password
-  Future<void> signIn(String email, String password) =>
-      _handleAuthAction(() => _repo.signInWithEmail(email, password));
-
-  /// Đăng ký tài khoản mới
-  Future<void> register(String email, String password) =>
-      _handleAuthAction(() => _repo.registerWithEmail(email, password));
-
-  /// Đăng nhập bằng Google
-  Future<void> signInWithGoogle() =>
-      _handleAuthAction(() => _repo.signInWithGoogle());
-
-  /// Đăng nhập bằng Facebook
-  Future<void> signInWithFacebook() =>
-      _handleAuthAction(() => _repo.signInWithFacebook());
-
-  /// Đăng xuất
-  Future<void> signOut() async {
-    state = const AsyncValue.loading();
-    try {
-      await _repo.signOut();
-      state = const AsyncValue.data(null);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    }
-  }
-
-  /// Làm mới ID token thủ công (nếu có backend riêng)
-  Future<String?> refreshToken() => _repo.refreshIdToken();
-
-  /// Lấy user hiện tại (không phụ thuộc vào stream)
-  Future<UserModel?> getCurrentUser() => _repo.getCurrentUser();
-
-  /// Helper: quản lý state loading / error / data cho các action
-  Future<void> _handleAuthAction(Future<UserModel?> Function() action) async {
-    state = const AsyncValue.loading();
-    try {
-      final user = await action();
-      state = AsyncValue.data(user);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    }
-  }
+class AuthController extends AutoDisposeNotifier<void> {
+  late final FirebaseAuthService authFirebase;
 
   @override
-  void dispose() {
-    _authSubscription?.cancel();
-    super.dispose();
+  void build() {
+    authFirebase = FirebaseAuthService();
+  }
+
+  Future<void> loginWithPassword(
+    BuildContext context,
+    String username,
+    String password,
+  ) async {
+    final overlay = UOverlay(context);
+    String messageLogin = '';
+    try {
+      final idToken = (await authFirebase.signInWithEmailAndPassword(
+        username: username,
+        password: password,
+      ));
+
+      messageLogin = "Đang đăng nhập ...";
+
+      overlay.show(message: messageLogin, loading: true);
+
+      final authNotifier = ref.read(userAuthProvider.notifier);
+      final user = await authNotifier.login(idToken);
+      if (user != null) {
+        overlay.showWithTimeout(message: "Đăng nhập thành công");
+        await Future.delayed(Duration(microseconds: 500));
+        if (context.mounted) {
+          goScreen(context, RouteConstants.main);
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        overlay.showWithTimeout(message: "Đăng nhập thất bại");
+      }
+    } finally {
+      overlay.hide();
+    }
+  }
+
+  Future<void> loginWithProvide(
+    BuildContext context,
+    ProviderLogin provider,
+  ) async {
+    final overlay = UOverlay(context);
+    String messageLogin = '';
+    try {
+      String idToken = '';
+      switch (provider) {
+        case ProviderLogin.google:
+          idToken = (await authFirebase.signInWithGoogle()) ?? '';
+
+          messageLogin = "Đang đăng nhập với google...";
+          break;
+        default:
+          return;
+      }
+
+      messageLogin = "Đang đăng nhập ...";
+
+      overlay.show(message: messageLogin, loading: true);
+
+      final authNotifier = ref.read(userAuthProvider.notifier);
+      final user = await authNotifier.login(idToken);
+
+      if (user != null) {
+        overlay.showWithTimeout(message: "Đăng nhập thành công");
+        await Future.delayed(Duration(microseconds: 500));
+        if (context.mounted) {
+          goScreen(context, RouteConstants.main);
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        overlay.showWithTimeout(message: "Đăng nhập thất bại");
+      }
+    } finally {
+      overlay.hide();
+    }
   }
 }
+
+final authControllerProvider =
+    AutoDisposeNotifierProvider<AuthController, void>(AuthController.new);

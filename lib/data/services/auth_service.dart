@@ -1,17 +1,138 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
 
-abstract class AuthService {
-  Stream<User?> get authStateChanges;
-  Future<String?> signInWithEmail(String email, String password);
-  Future<String?> registerWithEmail(String email, String password);
-  Future<void> signOut();
-  Future<String?> signInWithGoogle();
-  Future<String?> signInWithFacebook();
-  User? currentUser();
-  Future<String?> getIdToken({bool forceRefresh = false});
-  Future<void> sendPasswordResetEmail(String email);
-  Future<void> sendEmailVerification();
-  Future<void> updatePassword(String newPassword);
-  // Future<void> updateEmail(String newEmail);
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jt291_flutter_mobile/core/constants/constants.dart';
+import 'package:jt291_flutter_mobile/data/models/auth/token_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
+import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 
+class AuthService {
+  final ApiService _apiService = ApiService();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+
+  AuthService();
+
+  FutureOr<TokenModel?> getToken() async {
+    try {
+      final accessToken = await _storage.read(
+        key: StorageConstants.accessTokenKey,
+      );
+      final refreshToken = await _storage.read(
+        key: StorageConstants.refreshTokenKey,
+      );
+      final expiredAt = await _storage.read(
+        key: StorageConstants.tokenExpiredKey,
+      );
+
+      if (expiredAt == null || refreshToken == null || accessToken == null) {
+        return null;
+      }
+      print('Token expired at $expiredAt');
+      if (DateTime.tryParse(expiredAt)!.isBefore(DateTime.now())) {
+        return _apiService.refreshToken();
+      }
+
+      return TokenModel(
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        expiredAt: DateTime.tryParse(expiredAt),
+      );
+    } catch (e) {
+      print("Error Call API Login: ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  Future<UserModel?> getCurrentUser() async {
+    try {
+      final response = await _apiService.get('/v1/users/me');
+      return UserModel.fromJson(response['data']);
+    } catch (e) {
+      print("getCurrentUser fail: $e");
+      return null;
+    }
+  }
+
+  Future<TokenModel?> loginWithToken(String idToken) async {
+    try {
+      final response = await _apiService.post(
+        '/v1/auth/login',
+        data: {'idToken': idToken},
+      );
+      final authToken = TokenModel.fromJson(response['data']);
+      await _saveTokens(authToken);
+
+      return authToken;
+    } catch (e) {
+      print("Error Call API Login: ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  Future<void> _saveTokens(TokenModel token) async {
+    await _storage.write(
+      key: StorageConstants.accessTokenKey,
+      value: token.accessToken,
+    );
+    await _storage.write(
+      key: StorageConstants.refreshTokenKey,
+      value: token.refreshToken,
+    );
+    await _storage.write(
+      key: StorageConstants.tokenExpiredKey,
+      value: token.expiredAt?.toIso8601String(),
+    );
+  }
+
+  Future<TokenModel?> restoreSession() async {
+    final tokens = await _getStoredTokens();
+
+    if (tokens != null && tokens.expiredAt != null) {
+      if (tokens.expiredAt!.isAfter(DateTime.now())) {
+        try {
+          await _apiService.get('/v1/users/me');
+          return tokens;
+        } catch (e) {
+          return _apiService.refreshToken();
+        }
+      }
+    }
+
+    return null;
+  }
+
+  Future<TokenModel?> _getStoredTokens() async {
+    final accessToken = await _storage.read(
+      key: StorageConstants.accessTokenKey,
+    );
+    final refreshToken = await _storage.read(
+      key: StorageConstants.refreshTokenKey,
+    );
+    final expiredStr = await _storage.read(
+      key: StorageConstants.tokenExpiredKey,
+    );
+
+    if (accessToken != null && refreshToken != null && expiredStr != null) {
+      return TokenModel(
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        expiredAt: DateTime.parse(expiredStr),
+      );
+    }
+
+    return null;
+  }
+
+  Future<void> logout() async {
+    await _apiService.clearTokens();
+  }
+
+  Future<void> clearTokens() async {
+    await _apiService.clearTokens();
+  }
 }
+
+final authServiceProvider = Provider<AuthService>((ref) {
+  return AuthService();
+});

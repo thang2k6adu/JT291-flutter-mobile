@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "839130523883-0k6i7f2foruu31j6n8m4lbvd9pbu2koi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "jt291.dev.dolfie.tech",
+            "certificate_hash": "3b91292e79ea7d6d6e5f28b6d825e8697faedcc1"
+          }
+        },
+        {
+          "client_id": "839130523883-jlfo5bdm269jsdq3ih6quobobkrujos8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "jt291.dev.dolfie.tech",
+            "certificate_hash": "630e1bdf3017afa0bf0c884cec0acffe8bf79fa1"
+          }
+        },
+        {
           "client_id": "839130523883-vh9g5s9re4jlvb5h5bt59iqsemgg6qft.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +45,13 @@
             {
               "client_id": "839130523883-vh9g5s9re4jlvb5h5bt59iqsemgg6qft.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "839130523883-20l9ejh0q1omrdt74u14qnr5mqgt1f0h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "jt291.dev.dolfie.tech"
+              }
             }
           ]
         }
