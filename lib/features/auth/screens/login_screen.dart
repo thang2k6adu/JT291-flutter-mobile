@@ -129,16 +129,22 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
         children: [
           // Username
           ElevatedButton(
-            onPressed: () => _onSignIn(ProviderLogin.google),
+            onPressed: () async {
+              await _onSignIn(ProviderLogin.google);
+            },
             child: Text("Login with Google"),
           ),
           if (AppConstants.osType == 'iOS')
             ElevatedButton(
-              onPressed: () => _onSignIn(ProviderLogin.apple),
+              onPressed: () async {
+                await _onSignIn(ProviderLogin.apple);
+              },
               child: Text("Login with Apple"),
             ),
           ElevatedButton(
-            onPressed: () => _onSignIn(ProviderLogin.facebook),
+            onPressed: () => () async {
+              await _onSignIn(ProviderLogin.facebook);
+            },
             child: Text("Login with Facebook"),
           ),
         ],

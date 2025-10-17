@@ -18,35 +18,30 @@ class FirebaseAuthService {
 
   Future<void> _ensureInitialized() async {
     if (_initialized) return;
-    await _gsi.initialize(serverClientId: kIsWeb ? null : webClientId);
+    await _gsi.initialize(clientId: kIsWeb ? null : webClientId);
     _initialized = true;
   }
 
   Future<String?> signInWithGoogle() async {
     await _ensureInitialized();
     try {
-      GoogleSignInAccount? account = await _gsi
-          .attemptLightweightAuthentication();
+      if (!_gsi.supportsAuthenticate()) return null;
+      // Isolate heavy logic to light isolate
+      return await Future.microtask(() async {
+        final GoogleSignInAccount account = await _gsi.authenticate();
 
-      account ??= await _gsi.authenticate(
-        scopeHint: const <String>[
-          'email',
-          'https://www.googleapis.com/auth/contacts.readonly',
-        ],
-      );
+        final googleAuth = account.authentication;
+        final idToken = googleAuth.idToken;
 
-      final googleAuth = account.authentication;
-      final googleIdToken = googleAuth.idToken;
-      if (googleIdToken == null) return null;
+        if (idToken == null) return null;
 
-      final credential = GoogleAuthProvider.credential(idToken: googleIdToken);
-      final userCred = await FirebaseAuth.instance.signInWithCredential(
-        credential,
-      );
+        final credential = GoogleAuthProvider.credential(idToken: idToken);
+        final userCred = await FirebaseAuth.instance.signInWithCredential(
+          credential,
+        );
 
-      // 4) Get **Firebase ID token**
-      final firebaseIdToken = await userCred.user?.getIdToken(true);
-      return firebaseIdToken;
+        return await userCred.user?.getIdToken(true);
+      });
     } on GoogleSignInException catch (e) {
       throw Exception('Google Sign-In failed: $e');
     } catch (e) {
