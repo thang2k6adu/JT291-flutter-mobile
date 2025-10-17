@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+/// Widget đơn giản để hiển thị SVG với khả năng tuỳ chỉnh size.
+/// Hỗ trợ 3 nguồn SVG: asset, network hoặc raw SVG string.
+/// Chỉ exposes các tuỳ chỉnh cơ bản như size, color, fit.
+/// Yêu cầu dependency: flutter_svg
+class SvgIconSimple extends StatelessWidget {
+  /// Tên file SVG trong assets
+  final String? assetName;
+
+  /// URL SVG từ mạng
+  final String? networkUrl;
+
+  /// Chuỗi SVG raw
+  final String? svgString;
+
+  /// Kích thước widget (width & height)
+  final double size;
+
+  /// Màu của SVG, sẽ override màu gốc nếu có
+  final Color? color;
+
+  /// Cách fit hình trong bounding box (BoxFit)
+  final BoxFit fit;
+
+  /// Label phục vụ cho accessibility
+  final String? semanticsLabel;
+
+  /// Constructor cho asset SVG
+  const SvgIconSimple.asset(
+    this.assetName, {
+    Key? key,
+    this.size = 24.0,
+    this.color,
+    this.fit = BoxFit.contain,
+    this.semanticsLabel,
+  })  : networkUrl = null,
+        svgString = null,
+        super(key: key);
+
+  /// Constructor cho network SVG
+  const SvgIconSimple.network(
+    this.networkUrl, {
+    Key? key,
+    this.size = 24.0,
+    this.color,
+    this.fit = BoxFit.contain,
+    this.semanticsLabel,
+  })  : assetName = null,
+        svgString = null,
+        super(key: key);
+
+  /// Constructor cho SVG raw string
+  const SvgIconSimple.string(
+    this.svgString, {
+    Key? key,
+    this.size = 24.0,
+    this.color,
+    this.fit = BoxFit.contain,
+    this.semanticsLabel,
+  })  : assetName = null,
+        networkUrl = null,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Widget child;
+
+    // Xác định loại SVG dựa trên constructor được dùng
+    if (assetName != null) {
+      child = SvgPicture.asset(
+        assetName!,
+        color: color, // override màu SVG nếu có
+        fit: fit,
+        semanticsLabel: semanticsLabel,
+      );
+    } else if (networkUrl != null) {
+      child = SvgPicture.network(
+        networkUrl!,
+        color: color,
+        fit: fit,
+        semanticsLabel: semanticsLabel,
+      );
+    } else if (svgString != null) {
+      child = SvgPicture.string(
+        svgString!,
+        color: color,
+        fit: fit,
+        semanticsLabel: semanticsLabel,
+      );
+    } else {
+      // Nếu không cung cấp nguồn nào → hiển thị SizedBox rỗng
+      child = const SizedBox.shrink();
+    }
+
+    // Bọc widget SVG trong SizedBox để đảm bảo kích thước
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Center(child: child), // center SVG trong bounding box
+    );
+  }
+}
