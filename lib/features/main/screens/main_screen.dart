@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/data/providers/auth/auth_provider.dart';
 import 'package:jt291_flutter_mobile/features/auth/screens/splash_screen.dart';
+import 'package:jt291_flutter_mobile/features/profile/screens/user_me_screen.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -27,7 +28,7 @@ class MainScreenState extends ConsumerState<MainScreen> {
       SplashScreen(title: "Home"),
       SplashScreen(title: "Messages"),
       SplashScreen(title: "Reels"),
-      SplashScreen(title: "Me"),
+      UserMeScreen(),
     ];
 
     return asyncAuth.when(

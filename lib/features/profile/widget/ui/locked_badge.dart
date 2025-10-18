@@ -1,5 +1,7 @@
 // Red "Locked" badge with icon
 import 'package:flutter/material.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
 
 /// Badge dạng pill màu đỏ có icon khóa và text
 /// - [label]: văn bản hiển thị (mặc định "Locked")
@@ -7,7 +9,7 @@ import 'package:flutter/material.dart';
 /// - [iconSize], [textStyle], [padding] có thể tuỳ chỉnh
 class LockedBadge extends StatelessWidget {
   final String label;
-  final Color color;
+  final Color? color;
   final double iconSize;
   final TextStyle? textStyle;
   final EdgeInsetsGeometry padding;
@@ -18,7 +20,7 @@ class LockedBadge extends StatelessWidget {
     this.color = const Color(0xFFD93B3B),
     this.iconSize = 14,
     this.textStyle,
-    this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
   }) : super(key: key);
 
   @override
@@ -27,7 +29,7 @@ class LockedBadge extends StatelessWidget {
         Theme.of(context)
             .textTheme
             .bodySmall!
-            .copyWith(color: Colors.white, fontWeight: FontWeight.w600);
+            .copyWith(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12);
     return Container(
       padding: padding,
       decoration: BoxDecoration(
@@ -44,8 +46,8 @@ class LockedBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.lock, size: iconSize, color: Colors.white),
-          const SizedBox(width: 6),
+          SvgIconSimple.asset(AppIcons.shield, size: iconSize),
+          SizedBox(width: 2),
           Text(label, style: effectiveTextStyle),
         ],
       ),

@@ -35,9 +35,9 @@ class SvgIconSimple extends StatelessWidget {
     this.color,
     this.fit = BoxFit.contain,
     this.semanticsLabel,
-  })  : networkUrl = null,
-        svgString = null,
-        super(key: key);
+  }) : networkUrl = null,
+       svgString = null,
+       super(key: key);
 
   /// Constructor cho network SVG
   const SvgIconSimple.network(
@@ -47,9 +47,9 @@ class SvgIconSimple extends StatelessWidget {
     this.color,
     this.fit = BoxFit.contain,
     this.semanticsLabel,
-  })  : assetName = null,
-        svgString = null,
-        super(key: key);
+  }) : assetName = null,
+       svgString = null,
+       super(key: key);
 
   /// Constructor cho SVG raw string
   const SvgIconSimple.string(
@@ -59,9 +59,9 @@ class SvgIconSimple extends StatelessWidget {
     this.color,
     this.fit = BoxFit.contain,
     this.semanticsLabel,
-  })  : assetName = null,
-        networkUrl = null,
-        super(key: key);
+  }) : assetName = null,
+       networkUrl = null,
+       super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -71,26 +71,31 @@ class SvgIconSimple extends StatelessWidget {
     if (assetName != null) {
       child = SvgPicture.asset(
         assetName!,
-        color: color, // override màu SVG nếu có
+        colorFilter: color != null
+            ? ColorFilter.mode(color!, BlendMode.srcIn)
+            : null, // nếu null thì giữ màu gốc
         fit: fit,
         semanticsLabel: semanticsLabel,
       );
     } else if (networkUrl != null) {
       child = SvgPicture.network(
         networkUrl!,
-        color: color,
+        colorFilter: color != null
+            ? ColorFilter.mode(color!, BlendMode.srcIn)
+            : null,
         fit: fit,
         semanticsLabel: semanticsLabel,
       );
     } else if (svgString != null) {
       child = SvgPicture.string(
         svgString!,
-        color: color,
+        colorFilter: color != null
+            ? ColorFilter.mode(color!, BlendMode.srcIn)
+            : null,
         fit: fit,
         semanticsLabel: semanticsLabel,
       );
     } else {
-      // Nếu không cung cấp nguồn nào → hiển thị SizedBox rỗng
       child = const SizedBox.shrink();
     }
 
