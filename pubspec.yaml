@@ -50,6 +50,7 @@ dependencies:
   freezed_annotation: ^3.1.0
   json_annotation: ^4.9.0
   google_sign_in: ^7.2.0
+  flutter_svg: ^2.2.1
 
 dependency_overrides:
   freezed: ^3.0.4
@@ -89,6 +90,7 @@ flutter:
   # https://flutter.dev/to/asset-from-package
   assets:
     - lib/assets/images/splash/
+    - lib/assets/icons/
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
