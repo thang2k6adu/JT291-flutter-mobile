@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/stats_section/stats_section.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/stats_row.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/bio_row.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/user_header_constants.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/stats_section/stats_section.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/stats_row.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/bio_row.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header_constants.dart';
 
 class UserHeaderLoading extends StatelessWidget {
   const UserHeaderLoading({super.key});

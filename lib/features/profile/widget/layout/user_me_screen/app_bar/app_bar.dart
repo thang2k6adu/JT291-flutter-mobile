@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// Widget AppBar custom với 2 icon (left & right)
 class CustomTopBar extends StatelessWidget {
@@ -18,7 +19,7 @@ class CustomTopBar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Spacer(), _circleIconWithEditMenu(Icons.more_horiz)],
+            children: [Spacer(), _circleIconWithEditMenu(context, Icons.more_horiz)],
           ),
         ),
       ),
@@ -27,16 +28,12 @@ class CustomTopBar extends StatelessWidget {
 }
 
 /// Biểu tượng tròn reusable
-Widget _circleIconWithEditMenu(IconData icon) {
+Widget _circleIconWithEditMenu(BuildContext context, IconData icon) {
   return MenuAnchor(
-    builder: (context, controller, child) {
+    builder: (contextAnchor, controller, child) {
       return GestureDetector(
         onTap: () {
-          if (controller.isOpen) {
-            controller.close();
-          } else {
-            controller.open();
-          }
+          controller.isOpen ? controller.close() : controller.open();
         },
         child: Container(
           decoration: BoxDecoration(
@@ -52,13 +49,12 @@ Widget _circleIconWithEditMenu(IconData icon) {
     menuChildren: [
       MenuItemButton(
         onPressed: () {
-          // TODO: mở màn hình edit hoặc dialog
-          print("Edit clicked");
+          GoRouter.of(context).go('/user/setting'); // sử dụng context cha
         },
         child: const Text(
           'Edit',
-          style:  TextStyle(
-            color: Colors.black87, // hoặc Colors.white / màu bạn muốn
+          style: TextStyle(
+            color: Colors.black87,
             fontSize: 16,
             fontWeight: FontWeight.w400,
           ),
@@ -67,3 +63,4 @@ Widget _circleIconWithEditMenu(IconData icon) {
     ],
   );
 }
+
