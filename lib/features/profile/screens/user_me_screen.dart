@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/assets/assets.dart';
 import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/draggable_sheet.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/user_header.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/user_header_loading.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/user_header_error.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_tab_content/profile_tab_content.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/app_bar/app_bar.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header_loading.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header_error.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/profile_tab_content.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/app_bar/app_bar.dart';
 
 class UserMeScreen extends ConsumerStatefulWidget {
   const UserMeScreen({super.key});

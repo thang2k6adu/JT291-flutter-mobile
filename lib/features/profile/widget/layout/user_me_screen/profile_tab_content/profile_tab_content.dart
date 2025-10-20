@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_tab_content/general_tab_content/general_tab_content.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_tab_content/ports_tab_content/ports_tab_content.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/general_tab_content/general_tab_content.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/ports_tab_content/ports_tab_content.dart';
 
 class ProfileTabContent extends ConsumerStatefulWidget {
   const ProfileTabContent({super.key});

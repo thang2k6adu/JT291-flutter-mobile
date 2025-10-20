@@ -7,6 +7,7 @@ import 'package:jt291_flutter_mobile/data/providers/auth/firebase_provider.dart'
 import 'package:jt291_flutter_mobile/features/auth/screens/app_initializer.dart';
 import 'package:jt291_flutter_mobile/features/auth/screens/login_screen.dart';
 import 'package:jt291_flutter_mobile/features/main/screens/main_screen.dart';
+import 'package:jt291_flutter_mobile/features/profile/screens/edit_user.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_me_screen.dart';
 
 class RouterRefreshNotifier extends ChangeNotifier {
@@ -42,6 +43,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: RouteConstants.userMe,
             builder: ((context, state) => const UserMeScreen()),
+          ),
+          GoRoute(
+            path: RouteConstants.userSetting,
+            builder: ((context, state) => EditUser()),
           ),
         ],
       ),
