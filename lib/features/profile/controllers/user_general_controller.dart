@@ -2,16 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/components.dart';
-import 'package:jt291_flutter_mobile/data/models/user_general/user_general.dart';
 import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
-import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 
 class UserGeneralController extends AutoDisposeNotifier<void> {
-  late final UserGeneralService _userService;
-
   @override
   void build() {
-    _userService = ref.read(userGeneralServiceProvider);
+    // Controller initialization
   }
 
   /// Cập nhật profile kèm overlay thông báo

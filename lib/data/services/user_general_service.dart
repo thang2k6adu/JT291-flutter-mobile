@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
+import 'package:jt291_flutter_mobile/data/models/user_general/user_general.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 
 class UserGeneralService {
@@ -11,10 +11,10 @@ class UserGeneralService {
   UserGeneralService();
 
   /// Lấy thông tin người dùng hiện tại (dựa trên accessToken)
-  FutureOr<UserModel?> getCurrentUser() async {
+  FutureOr<UserGeneralModel?> getCurrentUser() async {
     try {
       final response = await _apiService.get('/v1/users/me');
-      return UserModel.fromJson(response['data']);
+      return UserGeneralModel.fromJson(response['data']);
     } catch (e) {
       print("getCurrentUser failed: $e");
       return null;
@@ -23,10 +23,10 @@ class UserGeneralService {
 
   /// Cập nhật thông tin người dùng hiện tại
   /// [data] có thể bao gồm nickname, bio, gender, date_of_birth,...
-  FutureOr<UserModel?> updateCurrentUser(Map<String, dynamic> data) async {
+  FutureOr<UserGeneralModel?> updateCurrentUser(Map<String, dynamic> data) async {
     try {
       final response = await _apiService.put('/v1/users/me', data: data);
-      return UserModel.fromJson(response['data']);
+      return UserGeneralModel.fromJson(response['data']);
     } catch (e) {
       print("updateCurrentUser failed: $e");
       return null;
@@ -34,10 +34,10 @@ class UserGeneralService {
   }
 
   /// Lấy thông tin profile của người dùng khác qua [userId]
-  FutureOr<UserModel?> getUserProfile(String userId) async {
+  FutureOr<UserGeneralModel?> getUserProfile(String userId) async {
     try {
       final response = await _apiService.get('/v1/users/profile/$userId');
-      return UserModel.fromJson(response['data']);
+      return UserGeneralModel.fromJson(response['data']);
     } catch (e) {
       print("getUserProfile failed: $e");
       return null;

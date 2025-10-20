@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jt291_flutter_mobile/data/models/user_general/user_general.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/stats_section/stats_section.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/stats_row.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/bio_row.dart';
@@ -11,6 +12,7 @@ class UserHeader extends StatelessWidget {
   final String contribution;
   final String distance;
   final String bio;
+  final UserGeneralModel? user;
 
   const UserHeader({
     super.key,
@@ -19,9 +21,21 @@ class UserHeader extends StatelessWidget {
     this.contribution = "Contriburion: 1k",
     this.distance = "2.5 Km",
     this.bio = "I am an enthusiastic and curious individual with a passion for technology and creativity.",
+    this.user,
   });
 
-  /// Constructor với UserStatsModel
+  /// Constructor từ UserGeneralModel
+  UserHeader.fromUserGeneral({
+    super.key,
+    required UserGeneralModel? user,
+  }) : crownCount = user?.level?.currentLevel?.toString() ?? "0",
+       diamondCount = user?.level?.currentExp?.toString() ?? "0",
+       contribution = "Level: ${user?.level?.currentLevel?.toString() ?? "0"}",
+       distance = "2.5 Km",
+       bio = user?.bio ?? "No bio available",
+       user = user;
+
+  /// Constructor với UserStatsModel (giữ lại để backward compatibility)
   UserHeader.fromModel({
     super.key,
     required UserStatsModel stats,
@@ -29,7 +43,8 @@ class UserHeader extends StatelessWidget {
        diamondCount = stats.diamondCount,
        contribution = stats.contribution,
        distance = stats.distance,
-       bio = stats.bio;
+       bio = stats.bio,
+       user = null;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +52,7 @@ class UserHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const StatsSection(),
+        StatsSection(user: user),
         const SizedBox(height: UserHeaderConstants.sectionSpacing),
         StatsRow(
           crownCount: crownCount,

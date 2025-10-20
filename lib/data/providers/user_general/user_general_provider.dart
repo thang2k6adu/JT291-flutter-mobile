@@ -19,7 +19,7 @@ class UserGeneralNotifier extends AsyncNotifier<UserGeneralModel?> {
     // Tải thông tin user hiện tại khi provider được khởi tạo
     try {
       final me = await _userService.getCurrentUser();
-      return UserGeneralModel.fromJson(me?.toJson() ?? {});
+      return me;
     } catch (e, st) {
       state = AsyncError(e, st);
       return null;
@@ -31,8 +31,8 @@ class UserGeneralNotifier extends AsyncNotifier<UserGeneralModel?> {
     state = const AsyncLoading();
     try {
       final updatedUser = await _userService.updateCurrentUser(data);
-      state = AsyncData(UserGeneralModel.fromJson(updatedUser?.toJson() ?? {}));
-      return UserGeneralModel.fromJson(updatedUser?.toJson() ?? {});
+      state = AsyncData(updatedUser);
+      return updatedUser;
     } catch (e, st) {
       state = AsyncError(e, st);
       return null;
@@ -43,7 +43,7 @@ class UserGeneralNotifier extends AsyncNotifier<UserGeneralModel?> {
   Future<UserGeneralModel?> getUserProfile(String userId) async {
     try {
       final user = await _userService.getUserProfile(userId);
-      return UserGeneralModel.fromJson(user?.toJson() ?? {});
+      return user;
     } catch (e, st) {
       state = AsyncError(e, st);
       return null;
@@ -76,7 +76,7 @@ class UserGeneralNotifier extends AsyncNotifier<UserGeneralModel?> {
   Future<void> refreshProfile() async {
     try {
       final me = await _userService.getCurrentUser();
-      state = AsyncData(UserGeneralModel.fromJson(me?.toJson() ?? {}));
+      state = AsyncData(me);
     } catch (e, st) {
       state = AsyncError(e, st);
     }

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'level_model.dart';
 
 part 'user_general.freezed.dart';
 part 'user_general.g.dart';
@@ -7,13 +8,17 @@ part 'user_general.g.dart';
 abstract class UserGeneralModel with _$UserGeneralModel {
   const factory UserGeneralModel({
     String? id,
-    String? gender,
+    @JsonKey(name: 'is_deleted') bool? isDeleted,
+    @JsonKey(name: 'union_id') String? unionId,
+    @JsonKey(name: 'is_blocked') bool? isBlocked,
     String? nickname,
+    String? gender,
     String? bio,
     @JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,
-    @JsonKey(name: 'avatar_url') String? avatarUrl,
     @JsonKey(name: 'profile_urls') List<String>? profileUrls,
+    @JsonKey(name: 'avatar_url') String? avatarUrl,
     List<String>? interests,
+    LevelModel? level,
   }) = _UserGeneralModel;
 
   factory UserGeneralModel.fromJson(Map<String, dynamic> json) =>

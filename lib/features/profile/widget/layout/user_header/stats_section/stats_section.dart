@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:jt291_flutter_mobile/data/models/user_general/user_general.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/stats_section/avatar_section.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/stats_section/profile_section.dart';
 
 class StatsSection extends StatelessWidget {
-  const StatsSection({super.key});
+  final UserGeneralModel? user;
+  
+  const StatsSection({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        UserAvatarSection(),
-        SizedBox(width: 8),
-        UserProfileSection(),
+        UserAvatarSection(avatarUrl: user?.avatarUrl),
+        const SizedBox(width: 8),
+        Expanded(
+          child: UserProfileSection(
+            nickname: user?.nickname,
+            gender: user?.gender,
+            currentLevel: user?.level?.currentLevel,
+          ),
+        ),
       ],
     );
   }

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserGeneralModel {
 
- String? get id; String? get gender; String? get nickname; String? get bio;@JsonKey(name: 'date_of_birth') DateTime? get dateOfBirth;@JsonKey(name: 'avatar_url') String? get avatarUrl;@JsonKey(name: 'profile_urls') List<String>? get profileUrls; List<String>? get interests;
+ String? get id;@JsonKey(name: 'is_deleted') bool? get isDeleted;@JsonKey(name: 'union_id') String? get unionId;@JsonKey(name: 'is_blocked') bool? get isBlocked; String? get nickname; String? get gender; String? get bio;@JsonKey(name: 'date_of_birth') DateTime? get dateOfBirth;@JsonKey(name: 'profile_urls') List<String>? get profileUrls;@JsonKey(name: 'avatar_url') String? get avatarUrl; List<String>? get interests; LevelModel? get level;
 /// Create a copy of UserGeneralModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserGeneralModelCopyWith<UserGeneralModel> get copyWith => _$UserGeneralModelCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserGeneralModel&&(identical(other.id, id) || other.id == id)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.nickname, nickname) || other.nickname == nickname)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.dateOfBirth, dateOfBirth) || other.dateOfBirth == dateOfBirth)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&const DeepCollectionEquality().equals(other.profileUrls, profileUrls)&&const DeepCollectionEquality().equals(other.interests, interests));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserGeneralModel&&(identical(other.id, id) || other.id == id)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted)&&(identical(other.unionId, unionId) || other.unionId == unionId)&&(identical(other.isBlocked, isBlocked) || other.isBlocked == isBlocked)&&(identical(other.nickname, nickname) || other.nickname == nickname)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.dateOfBirth, dateOfBirth) || other.dateOfBirth == dateOfBirth)&&const DeepCollectionEquality().equals(other.profileUrls, profileUrls)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&const DeepCollectionEquality().equals(other.interests, interests)&&(identical(other.level, level) || other.level == level));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,gender,nickname,bio,dateOfBirth,avatarUrl,const DeepCollectionEquality().hash(profileUrls),const DeepCollectionEquality().hash(interests));
+int get hashCode => Object.hash(runtimeType,id,isDeleted,unionId,isBlocked,nickname,gender,bio,dateOfBirth,const DeepCollectionEquality().hash(profileUrls),avatarUrl,const DeepCollectionEquality().hash(interests),level);
 
 @override
 String toString() {
-  return 'UserGeneralModel(id: $id, gender: $gender, nickname: $nickname, bio: $bio, dateOfBirth: $dateOfBirth, avatarUrl: $avatarUrl, profileUrls: $profileUrls, interests: $interests)';
+  return 'UserGeneralModel(id: $id, isDeleted: $isDeleted, unionId: $unionId, isBlocked: $isBlocked, nickname: $nickname, gender: $gender, bio: $bio, dateOfBirth: $dateOfBirth, profileUrls: $profileUrls, avatarUrl: $avatarUrl, interests: $interests, level: $level)';
 }
 
 
@@ -48,11 +48,11 @@ abstract mixin class $UserGeneralModelCopyWith<$Res>  {
   factory $UserGeneralModelCopyWith(UserGeneralModel value, $Res Function(UserGeneralModel) _then) = _$UserGeneralModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? gender, String? nickname, String? bio,@JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'profile_urls') List<String>? profileUrls, List<String>? interests
+ String? id,@JsonKey(name: 'is_deleted') bool? isDeleted,@JsonKey(name: 'union_id') String? unionId,@JsonKey(name: 'is_blocked') bool? isBlocked, String? nickname, String? gender, String? bio,@JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,@JsonKey(name: 'profile_urls') List<String>? profileUrls,@JsonKey(name: 'avatar_url') String? avatarUrl, List<String>? interests, LevelModel? level
 });
 
 
-
+$LevelModelCopyWith<$Res>? get level;
 
 }
 /// @nodoc
@@ -65,20 +65,36 @@ class _$UserGeneralModelCopyWithImpl<$Res>
 
 /// Create a copy of UserGeneralModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? gender = freezed,Object? nickname = freezed,Object? bio = freezed,Object? dateOfBirth = freezed,Object? avatarUrl = freezed,Object? profileUrls = freezed,Object? interests = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? isDeleted = freezed,Object? unionId = freezed,Object? isBlocked = freezed,Object? nickname = freezed,Object? gender = freezed,Object? bio = freezed,Object? dateOfBirth = freezed,Object? profileUrls = freezed,Object? avatarUrl = freezed,Object? interests = freezed,Object? level = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,isDeleted: freezed == isDeleted ? _self.isDeleted : isDeleted // ignore: cast_nullable_to_non_nullable
+as bool?,unionId: freezed == unionId ? _self.unionId : unionId // ignore: cast_nullable_to_non_nullable
+as String?,isBlocked: freezed == isBlocked ? _self.isBlocked : isBlocked // ignore: cast_nullable_to_non_nullable
+as bool?,nickname: freezed == nickname ? _self.nickname : nickname // ignore: cast_nullable_to_non_nullable
 as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
-as String?,nickname: freezed == nickname ? _self.nickname : nickname // ignore: cast_nullable_to_non_nullable
 as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String?,dateOfBirth: freezed == dateOfBirth ? _self.dateOfBirth : dateOfBirth // ignore: cast_nullable_to_non_nullable
-as DateTime?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
-as String?,profileUrls: freezed == profileUrls ? _self.profileUrls : profileUrls // ignore: cast_nullable_to_non_nullable
-as List<String>?,interests: freezed == interests ? _self.interests : interests // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as DateTime?,profileUrls: freezed == profileUrls ? _self.profileUrls : profileUrls // ignore: cast_nullable_to_non_nullable
+as List<String>?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
+as String?,interests: freezed == interests ? _self.interests : interests // ignore: cast_nullable_to_non_nullable
+as List<String>?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
+as LevelModel?,
   ));
 }
+/// Create a copy of UserGeneralModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$LevelModelCopyWith<$Res>? get level {
+    if (_self.level == null) {
+    return null;
+  }
 
+  return $LevelModelCopyWith<$Res>(_self.level!, (value) {
+    return _then(_self.copyWith(level: value));
+  });
+}
 }
 
 
@@ -160,10 +176,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? gender,  String? nickname,  String? bio, @JsonKey(name: 'date_of_birth')  DateTime? dateOfBirth, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'profile_urls')  List<String>? profileUrls,  List<String>? interests)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id, @JsonKey(name: 'is_deleted')  bool? isDeleted, @JsonKey(name: 'union_id')  String? unionId, @JsonKey(name: 'is_blocked')  bool? isBlocked,  String? nickname,  String? gender,  String? bio, @JsonKey(name: 'date_of_birth')  DateTime? dateOfBirth, @JsonKey(name: 'profile_urls')  List<String>? profileUrls, @JsonKey(name: 'avatar_url')  String? avatarUrl,  List<String>? interests,  LevelModel? level)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserGeneralModel() when $default != null:
-return $default(_that.id,_that.gender,_that.nickname,_that.bio,_that.dateOfBirth,_that.avatarUrl,_that.profileUrls,_that.interests);case _:
+return $default(_that.id,_that.isDeleted,_that.unionId,_that.isBlocked,_that.nickname,_that.gender,_that.bio,_that.dateOfBirth,_that.profileUrls,_that.avatarUrl,_that.interests,_that.level);case _:
   return orElse();
 
 }
@@ -181,10 +197,10 @@ return $default(_that.id,_that.gender,_that.nickname,_that.bio,_that.dateOfBirth
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? gender,  String? nickname,  String? bio, @JsonKey(name: 'date_of_birth')  DateTime? dateOfBirth, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'profile_urls')  List<String>? profileUrls,  List<String>? interests)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id, @JsonKey(name: 'is_deleted')  bool? isDeleted, @JsonKey(name: 'union_id')  String? unionId, @JsonKey(name: 'is_blocked')  bool? isBlocked,  String? nickname,  String? gender,  String? bio, @JsonKey(name: 'date_of_birth')  DateTime? dateOfBirth, @JsonKey(name: 'profile_urls')  List<String>? profileUrls, @JsonKey(name: 'avatar_url')  String? avatarUrl,  List<String>? interests,  LevelModel? level)  $default,) {final _that = this;
 switch (_that) {
 case _UserGeneralModel():
-return $default(_that.id,_that.gender,_that.nickname,_that.bio,_that.dateOfBirth,_that.avatarUrl,_that.profileUrls,_that.interests);case _:
+return $default(_that.id,_that.isDeleted,_that.unionId,_that.isBlocked,_that.nickname,_that.gender,_that.bio,_that.dateOfBirth,_that.profileUrls,_that.avatarUrl,_that.interests,_that.level);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +217,10 @@ return $default(_that.id,_that.gender,_that.nickname,_that.bio,_that.dateOfBirth
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? gender,  String? nickname,  String? bio, @JsonKey(name: 'date_of_birth')  DateTime? dateOfBirth, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'profile_urls')  List<String>? profileUrls,  List<String>? interests)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id, @JsonKey(name: 'is_deleted')  bool? isDeleted, @JsonKey(name: 'union_id')  String? unionId, @JsonKey(name: 'is_blocked')  bool? isBlocked,  String? nickname,  String? gender,  String? bio, @JsonKey(name: 'date_of_birth')  DateTime? dateOfBirth, @JsonKey(name: 'profile_urls')  List<String>? profileUrls, @JsonKey(name: 'avatar_url')  String? avatarUrl,  List<String>? interests,  LevelModel? level)?  $default,) {final _that = this;
 switch (_that) {
 case _UserGeneralModel() when $default != null:
-return $default(_that.id,_that.gender,_that.nickname,_that.bio,_that.dateOfBirth,_that.avatarUrl,_that.profileUrls,_that.interests);case _:
+return $default(_that.id,_that.isDeleted,_that.unionId,_that.isBlocked,_that.nickname,_that.gender,_that.bio,_that.dateOfBirth,_that.profileUrls,_that.avatarUrl,_that.interests,_that.level);case _:
   return null;
 
 }
@@ -216,15 +232,17 @@ return $default(_that.id,_that.gender,_that.nickname,_that.bio,_that.dateOfBirth
 @JsonSerializable()
 
 class _UserGeneralModel implements UserGeneralModel {
-  const _UserGeneralModel({this.id, this.gender, this.nickname, this.bio, @JsonKey(name: 'date_of_birth') this.dateOfBirth, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'profile_urls') final  List<String>? profileUrls, final  List<String>? interests}): _profileUrls = profileUrls,_interests = interests;
+  const _UserGeneralModel({this.id, @JsonKey(name: 'is_deleted') this.isDeleted, @JsonKey(name: 'union_id') this.unionId, @JsonKey(name: 'is_blocked') this.isBlocked, this.nickname, this.gender, this.bio, @JsonKey(name: 'date_of_birth') this.dateOfBirth, @JsonKey(name: 'profile_urls') final  List<String>? profileUrls, @JsonKey(name: 'avatar_url') this.avatarUrl, final  List<String>? interests, this.level}): _profileUrls = profileUrls,_interests = interests;
   factory _UserGeneralModel.fromJson(Map<String, dynamic> json) => _$UserGeneralModelFromJson(json);
 
 @override final  String? id;
-@override final  String? gender;
+@override@JsonKey(name: 'is_deleted') final  bool? isDeleted;
+@override@JsonKey(name: 'union_id') final  String? unionId;
+@override@JsonKey(name: 'is_blocked') final  bool? isBlocked;
 @override final  String? nickname;
+@override final  String? gender;
 @override final  String? bio;
 @override@JsonKey(name: 'date_of_birth') final  DateTime? dateOfBirth;
-@override@JsonKey(name: 'avatar_url') final  String? avatarUrl;
  final  List<String>? _profileUrls;
 @override@JsonKey(name: 'profile_urls') List<String>? get profileUrls {
   final value = _profileUrls;
@@ -234,6 +252,7 @@ class _UserGeneralModel implements UserGeneralModel {
   return EqualUnmodifiableListView(value);
 }
 
+@override@JsonKey(name: 'avatar_url') final  String? avatarUrl;
  final  List<String>? _interests;
 @override List<String>? get interests {
   final value = _interests;
@@ -243,6 +262,7 @@ class _UserGeneralModel implements UserGeneralModel {
   return EqualUnmodifiableListView(value);
 }
 
+@override final  LevelModel? level;
 
 /// Create a copy of UserGeneralModel
 /// with the given fields replaced by the non-null parameter values.
@@ -257,16 +277,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserGeneralModel&&(identical(other.id, id) || other.id == id)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.nickname, nickname) || other.nickname == nickname)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.dateOfBirth, dateOfBirth) || other.dateOfBirth == dateOfBirth)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&const DeepCollectionEquality().equals(other._profileUrls, _profileUrls)&&const DeepCollectionEquality().equals(other._interests, _interests));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserGeneralModel&&(identical(other.id, id) || other.id == id)&&(identical(other.isDeleted, isDeleted) || other.isDeleted == isDeleted)&&(identical(other.unionId, unionId) || other.unionId == unionId)&&(identical(other.isBlocked, isBlocked) || other.isBlocked == isBlocked)&&(identical(other.nickname, nickname) || other.nickname == nickname)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.dateOfBirth, dateOfBirth) || other.dateOfBirth == dateOfBirth)&&const DeepCollectionEquality().equals(other._profileUrls, _profileUrls)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&const DeepCollectionEquality().equals(other._interests, _interests)&&(identical(other.level, level) || other.level == level));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,gender,nickname,bio,dateOfBirth,avatarUrl,const DeepCollectionEquality().hash(_profileUrls),const DeepCollectionEquality().hash(_interests));
+int get hashCode => Object.hash(runtimeType,id,isDeleted,unionId,isBlocked,nickname,gender,bio,dateOfBirth,const DeepCollectionEquality().hash(_profileUrls),avatarUrl,const DeepCollectionEquality().hash(_interests),level);
 
 @override
 String toString() {
-  return 'UserGeneralModel(id: $id, gender: $gender, nickname: $nickname, bio: $bio, dateOfBirth: $dateOfBirth, avatarUrl: $avatarUrl, profileUrls: $profileUrls, interests: $interests)';
+  return 'UserGeneralModel(id: $id, isDeleted: $isDeleted, unionId: $unionId, isBlocked: $isBlocked, nickname: $nickname, gender: $gender, bio: $bio, dateOfBirth: $dateOfBirth, profileUrls: $profileUrls, avatarUrl: $avatarUrl, interests: $interests, level: $level)';
 }
 
 
@@ -277,11 +297,11 @@ abstract mixin class _$UserGeneralModelCopyWith<$Res> implements $UserGeneralMod
   factory _$UserGeneralModelCopyWith(_UserGeneralModel value, $Res Function(_UserGeneralModel) _then) = __$UserGeneralModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? gender, String? nickname, String? bio,@JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'profile_urls') List<String>? profileUrls, List<String>? interests
+ String? id,@JsonKey(name: 'is_deleted') bool? isDeleted,@JsonKey(name: 'union_id') String? unionId,@JsonKey(name: 'is_blocked') bool? isBlocked, String? nickname, String? gender, String? bio,@JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,@JsonKey(name: 'profile_urls') List<String>? profileUrls,@JsonKey(name: 'avatar_url') String? avatarUrl, List<String>? interests, LevelModel? level
 });
 
 
-
+@override $LevelModelCopyWith<$Res>? get level;
 
 }
 /// @nodoc
@@ -294,21 +314,37 @@ class __$UserGeneralModelCopyWithImpl<$Res>
 
 /// Create a copy of UserGeneralModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? gender = freezed,Object? nickname = freezed,Object? bio = freezed,Object? dateOfBirth = freezed,Object? avatarUrl = freezed,Object? profileUrls = freezed,Object? interests = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? isDeleted = freezed,Object? unionId = freezed,Object? isBlocked = freezed,Object? nickname = freezed,Object? gender = freezed,Object? bio = freezed,Object? dateOfBirth = freezed,Object? profileUrls = freezed,Object? avatarUrl = freezed,Object? interests = freezed,Object? level = freezed,}) {
   return _then(_UserGeneralModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,isDeleted: freezed == isDeleted ? _self.isDeleted : isDeleted // ignore: cast_nullable_to_non_nullable
+as bool?,unionId: freezed == unionId ? _self.unionId : unionId // ignore: cast_nullable_to_non_nullable
+as String?,isBlocked: freezed == isBlocked ? _self.isBlocked : isBlocked // ignore: cast_nullable_to_non_nullable
+as bool?,nickname: freezed == nickname ? _self.nickname : nickname // ignore: cast_nullable_to_non_nullable
 as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
-as String?,nickname: freezed == nickname ? _self.nickname : nickname // ignore: cast_nullable_to_non_nullable
 as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String?,dateOfBirth: freezed == dateOfBirth ? _self.dateOfBirth : dateOfBirth // ignore: cast_nullable_to_non_nullable
-as DateTime?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
-as String?,profileUrls: freezed == profileUrls ? _self._profileUrls : profileUrls // ignore: cast_nullable_to_non_nullable
-as List<String>?,interests: freezed == interests ? _self._interests : interests // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as DateTime?,profileUrls: freezed == profileUrls ? _self._profileUrls : profileUrls // ignore: cast_nullable_to_non_nullable
+as List<String>?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
+as String?,interests: freezed == interests ? _self._interests : interests // ignore: cast_nullable_to_non_nullable
+as List<String>?,level: freezed == level ? _self.level : level // ignore: cast_nullable_to_non_nullable
+as LevelModel?,
   ));
 }
 
+/// Create a copy of UserGeneralModel
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$LevelModelCopyWith<$Res>? get level {
+    if (_self.level == null) {
+    return null;
+  }
 
+  return $LevelModelCopyWith<$Res>(_self.level!, (value) {
+    return _then(_self.copyWith(level: value));
+  });
+}
 }
 
 // dart format on
