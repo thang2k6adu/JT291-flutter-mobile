@@ -9,10 +9,10 @@ class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
 
   @override
-  MainScreenState createState() => MainScreenState();
+  ConsumerState<MainScreen> createState() => _MainScreenState();
 }
 
-class MainScreenState extends ConsumerState<MainScreen> {
+class _MainScreenState extends ConsumerState<MainScreen> {
   int selectedIndex = 0;
 
   void touchBottomNavBar(int index) {
@@ -25,10 +25,10 @@ class MainScreenState extends ConsumerState<MainScreen> {
   Widget build(BuildContext context) {
     final asyncAuth = ref.watch(userAuthProvider);
     final List<Widget> children = [
-      SplashScreen(title: "Home"),
-      SplashScreen(title: "Messages"),
-      SplashScreen(title: "Reels"),
-      UserMeScreen(),
+      const SplashScreen(title: "Home"),
+      const SplashScreen(title: "Messages"),
+      const SplashScreen(title: "Reels"),
+      const UserMeScreen(),
     ];
 
     return asyncAuth.when(

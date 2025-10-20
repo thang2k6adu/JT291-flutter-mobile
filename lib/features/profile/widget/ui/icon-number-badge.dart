@@ -33,7 +33,7 @@ class IconNumberBadge extends StatelessWidget {
   final double minWidth; // đảm bảo pill tròn đẹp
 
   const IconNumberBadge({
-    Key? key,
+    super.key,
     required this.icon,
     required this.count,
     this.backgroundColor = const Color(0xFF10B981), // green
@@ -49,7 +49,7 @@ class IconNumberBadge extends StatelessWidget {
     this.showShadow = true,
     this.onTap,
     this.minWidth = 44.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

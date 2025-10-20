@@ -17,14 +17,14 @@ class AvatarWidget extends StatelessWidget {
   final bool showGlow;
 
   const AvatarWidget({
-    Key? key,
+    super.key,
     required this.image,
     this.size = 64,
     this.borderWidth = 4,
     this.borderColors = const [Color(0xFF8A2387), Color(0xFF00C6FF)],
     this.backgroundColor = Colors.white,
     this.showGlow = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

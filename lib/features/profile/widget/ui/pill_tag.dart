@@ -15,14 +15,14 @@ class PillTag extends StatelessWidget {
   final EdgeInsetsGeometry padding;
 
   const PillTag({
-    Key? key,
+    super.key,
     required this.thumbnail,
     required this.label,
     this.backgroundColor = const Color(0xFF0F1724),
     this.borderColor = const Color(0xFF374151),
     this.textStyle,
     this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

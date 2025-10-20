@@ -1,21 +1,26 @@
 // lib/features/profile/screens/user_me_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/assets/assets.dart';
+import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/draggable_sheet.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/user_header.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/user_header_loading.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/user_header_error.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_tab_content/profile_tab_content.dart';
 
-class UserMeScreen extends StatefulWidget {
+class UserMeScreen extends ConsumerStatefulWidget {
   const UserMeScreen({super.key});
 
   @override
-  State<UserMeScreen> createState() => _UserMeScreenState();
+  ConsumerState<UserMeScreen> createState() => _UserMeScreenState();
 }
 
-class _UserMeScreenState extends State<UserMeScreen> {
+class _UserMeScreenState extends ConsumerState<UserMeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userGeneralAsync = ref.watch(userGeneralProvider);
     return Scaffold(
       body: Stack(
         children: [
@@ -26,9 +31,9 @@ class _UserMeScreenState extends State<UserMeScreen> {
             ),
           ),
 
-          // Draggable Sheet
+          // Draggable Sheet với data
           ReusableDraggableSheet(
-            initialChildSize: 0.3,
+            initialChildSize: 0.8,
             minChildSize: 0.12,
             maxChildSize: 0.95,
             builder: (context, scrollController) {
@@ -36,7 +41,12 @@ class _UserMeScreenState extends State<UserMeScreen> {
                 controller: scrollController,
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                 children: [
-                  const UserHeader(),
+                  // UserHeader với data thực
+                  userGeneralAsync.when(
+                    data: (user) => UserHeader.fromUserGeneral(user: user),
+                    loading: () => const UserHeaderLoading(),
+                    error: (error, stack) => UserHeaderError(error: error),
+                  ),
                   const ProfileTabContent(),
                 ],
               );

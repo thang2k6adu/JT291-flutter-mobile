@@ -15,13 +15,13 @@ class LockedBadge extends StatelessWidget {
   final EdgeInsetsGeometry padding;
 
   const LockedBadge({
-    Key? key,
+    super.key,
     this.label = 'Locked',
     this.color = const Color(0xFFD93B3B),
     this.iconSize = 14,
     this.textStyle,
     this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

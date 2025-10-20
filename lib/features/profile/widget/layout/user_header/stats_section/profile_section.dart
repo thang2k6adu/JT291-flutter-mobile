@@ -2,10 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/locked_badge.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/stats.dart';
 
 class UserProfileSection extends StatelessWidget {
-  const UserProfileSection({super.key});
+  final String? nickname;
+  final String? gender;
+  final int? currentLevel;
+
+  const UserProfileSection({
+    super.key,
+    this.nickname,
+    this.gender,
+    this.currentLevel,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +26,16 @@ class UserProfileSection extends StatelessWidget {
           // Hàng 1: Tên + Shield + LockedBadge
           Row(
             children: [
-              Text(
-                'Darlene Bears',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.3, // hoặc MediaQuery.of(context).size.width * 0.6
+                child: Text(
+                  nickname ?? 'Unknown User',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(width: 6),
@@ -36,13 +49,29 @@ class UserProfileSection extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          // Hàng 2: Followers + Following
+          // Hàng 2: Gender + Level info
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              UserStatItem(value: '360', label: 'Followers'),
-              const SizedBox(width: 12),
-              UserStatItem(value: '280', label: 'Following'),
+              if (gender != null) ...[
+                Text(
+                  gender!.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(width: 12),
+              ],
+              Text(
+                'Level ${currentLevel ?? 0}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey,
+                ),
+              ),
             ],
           ),
         ],

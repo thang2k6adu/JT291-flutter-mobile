@@ -30,38 +30,35 @@ class SvgIconSimple extends StatelessWidget {
   /// Constructor cho asset SVG
   const SvgIconSimple.asset(
     this.assetName, {
-    Key? key,
+    super.key,
     this.size = 24.0,
     this.color,
     this.fit = BoxFit.contain,
     this.semanticsLabel,
   }) : networkUrl = null,
-       svgString = null,
-       super(key: key);
+       svgString = null;
 
   /// Constructor cho network SVG
   const SvgIconSimple.network(
     this.networkUrl, {
-    Key? key,
+    super.key,
     this.size = 24.0,
     this.color,
     this.fit = BoxFit.contain,
     this.semanticsLabel,
   }) : assetName = null,
-       svgString = null,
-       super(key: key);
+       svgString = null;
 
   /// Constructor cho SVG raw string
   const SvgIconSimple.string(
     this.svgString, {
-    Key? key,
+    super.key,
     this.size = 24.0,
     this.color,
     this.fit = BoxFit.contain,
     this.semanticsLabel,
   }) : assetName = null,
-       networkUrl = null,
-       super(key: key);
+       networkUrl = null;
 
   @override
   Widget build(BuildContext context) {

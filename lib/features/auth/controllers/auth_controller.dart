@@ -10,6 +10,10 @@ import 'package:jt291_flutter_mobile/data/services/firebase_auth_service.dart';
 
 enum ProviderLogin { google, facebook, apple, password }
 
+// Tại sao auth controller lại dùng autoDisposeNotifier?
+// Bản chất authController chỉ quản lý logic tạm thời như là login, ....
+// Nó không lưu state data lâu dài và chỉ dùng khi navigate vào login
+// Out login mà không dispose sẽ gây hao bộ nhớ
 class AuthController extends AutoDisposeNotifier<void> {
   late final FirebaseAuthService authFirebase;
 

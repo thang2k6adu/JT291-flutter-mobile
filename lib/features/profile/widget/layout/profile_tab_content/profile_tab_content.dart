@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
+import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_tab_content/general_tab_content/general_tab_content.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_tab_content/ports_tab_content/ports_tab_content.dart';
 
-class ProfileTabContent extends StatefulWidget {
+class ProfileTabContent extends ConsumerStatefulWidget {
   const ProfileTabContent({super.key});
 
   @override
-  State<ProfileTabContent> createState() => _ProfileTabContentState();
+  ConsumerState<ProfileTabContent> createState() => _ProfileTabContentState();
 }
 
-class _ProfileTabContentState extends State<ProfileTabContent>
+class _ProfileTabContentState extends ConsumerState<ProfileTabContent>
     with TickerProviderStateMixin {
   late TabController _tabController;
   int _selectedTabIndex = 0;
@@ -34,6 +36,8 @@ class _ProfileTabContentState extends State<ProfileTabContent>
 
   @override
   Widget build(BuildContext context) {
+    final userGeneralAsync = ref.watch(userGeneralProvider);
+    
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -50,14 +54,18 @@ class _ProfileTabContentState extends State<ProfileTabContent>
             Tab(text: 'Ports'),
           ],
         ),
-        _buildTabContent(),
+        userGeneralAsync.when(
+          data: (user) => _buildTabContent(user),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('Error: $error')),
+        ),
       ],
     );
   }
 
-  Widget _buildTabContent() {
+  Widget _buildTabContent(user) {
     if (_selectedTabIndex == 0) {
-      return const GeneralTabContent();
+      return GeneralTabContent(user: user);
     } else {
       return const PortsTabContent();
     }

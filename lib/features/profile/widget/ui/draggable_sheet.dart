@@ -46,7 +46,7 @@ class ReusableDraggableSheet extends StatelessWidget {
   final SheetContentBuilder builder;
 
   const ReusableDraggableSheet({
-    Key? key,
+    super.key,
     required this.builder,
     this.initialChildSize = 0.8,
     this.minChildSize = 0.12,
@@ -58,8 +58,7 @@ class ReusableDraggableSheet extends StatelessWidget {
     this.topRadius = const Radius.circular(20),
   })  : assert(minChildSize >= 0 && minChildSize <= 1),
         assert(initialChildSize >= 0 && initialChildSize <= 1),
-        assert(maxChildSize >= 0 && maxChildSize <= 1),
-        super(key: key);
+        assert(maxChildSize >= 0 && maxChildSize <= 1);
 
   @override
   Widget build(BuildContext context) {
