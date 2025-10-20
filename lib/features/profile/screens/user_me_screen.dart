@@ -8,6 +8,7 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/user_header_loading.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/user_header_error.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_tab_content/profile_tab_content.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/app_bar/app_bar.dart';
 
 class UserMeScreen extends ConsumerStatefulWidget {
   const UserMeScreen({super.key});
@@ -17,7 +18,6 @@ class UserMeScreen extends ConsumerStatefulWidget {
 }
 
 class _UserMeScreenState extends ConsumerState<UserMeScreen> {
-
   @override
   Widget build(BuildContext context) {
     final userGeneralAsync = ref.watch(userGeneralProvider);
@@ -33,9 +33,9 @@ class _UserMeScreenState extends ConsumerState<UserMeScreen> {
 
           // Draggable Sheet với data
           ReusableDraggableSheet(
-            initialChildSize: 0.8,
+            initialChildSize: 0.87,
             minChildSize: 0.12,
-            maxChildSize: 0.95,
+            maxChildSize: 0.87,
             builder: (context, scrollController) {
               return ListView(
                 controller: scrollController,
@@ -52,9 +52,9 @@ class _UserMeScreenState extends ConsumerState<UserMeScreen> {
               );
             },
           ),
+          CustomTopBar(),
         ],
       ),
     );
   }
-
 }

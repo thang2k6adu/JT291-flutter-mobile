@@ -7,12 +7,16 @@ class UserProfileSection extends StatelessWidget {
   final String? nickname;
   final String? gender;
   final int? currentLevel;
+  final int? following;
+  final int? followers;
 
   const UserProfileSection({
     super.key,
     this.nickname,
     this.gender,
     this.currentLevel,
+    this.following,
+    this.followers,
   });
 
   @override
@@ -42,18 +46,11 @@ class UserProfileSection extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               // Hiển thị icon phù hợp theo giới tính
-              if (gender == "MALE")
-                SvgIconSimple.asset(
-                  AppIcons.shield,
-                  size: 24,
-                  color: Colors.blue,
-                )
-              else if (gender == "FEMALE")
-                SvgIconSimple.asset(
-                  AppIcons.dance,
-                  size: 24,
-                  color: Colors.pink,
-                ),
+              SvgIconSimple.asset(
+                AppIcons.male,
+                color: Color(0xFF0000FF),
+                size: 14,
+              ),
               const SizedBox(width: 8),
               const LockedBadge(iconSize: 18),
             ],
@@ -62,19 +59,35 @@ class UserProfileSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (gender != null) ...[
-                Text(
-                  gender!.toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(width: 12),
-              ],
               Text(
-                'Level ${currentLevel ?? 0}',
+                '${following ?? 0}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(width: 4),
+              Text(
+                'Following',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey,
+                ),
+              ),
+              SizedBox(width: 8),
+              Text(
+                '${followers ?? 0}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(width: 4),
+              Text(
+                'Followers',
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,

@@ -1,6 +1,6 @@
 
 class AppIcons {
-  static const String male = 'lib/assets/icons/male.svg';
+  static const String male = 'lib/assets/icons/male1.svg';
   static const String shield = 'lib/assets/icons/shield-security.svg';
   static const String levelBadge1 = 'lib/assets/icons/level_badge_1.png';
   static const String levelBadge2 = 'lib/assets/icons/level_badge_2.png';
