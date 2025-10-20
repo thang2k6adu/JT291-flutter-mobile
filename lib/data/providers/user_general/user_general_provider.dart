@@ -1,25 +1,25 @@
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
+import 'package:jt291_flutter_mobile/data/models/user_general/user_general.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 
 final userGeneralProvider =
-    AsyncNotifierProvider<UserGeneralNotifier, UserModel?>(
+    AsyncNotifierProvider<UserGeneralNotifier, UserGeneralModel?>(
   () => UserGeneralNotifier(),
 );
 
-class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
+class UserGeneralNotifier extends AsyncNotifier<UserGeneralModel?> {
   late final UserGeneralService _userService;
 
   @override
-  Future<UserModel?> build() async {
+  Future<UserGeneralModel?> build() async {
     // Inject service
     _userService = ref.read(userGeneralServiceProvider);
 
     // Tải thông tin user hiện tại khi provider được khởi tạo
     try {
       final me = await _userService.getCurrentUser();
-      return me;
+      return UserGeneralModel.fromJson(me?.toJson() ?? {});
     } catch (e, st) {
       state = AsyncError(e, st);
       return null;
@@ -27,12 +27,12 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
   }
 
   /// Cập nhật thông tin user hiện tại
-  Future<UserModel?> updateProfile(Map<String, dynamic> data) async {
+  Future<UserGeneralModel?> updateProfile(Map<String, dynamic> data) async {
     state = const AsyncLoading();
     try {
       final updatedUser = await _userService.updateCurrentUser(data);
-      state = AsyncData(updatedUser);
-      return updatedUser;
+      state = AsyncData(UserGeneralModel.fromJson(updatedUser?.toJson() ?? {}));
+      return UserGeneralModel.fromJson(updatedUser?.toJson() ?? {});
     } catch (e, st) {
       state = AsyncError(e, st);
       return null;
@@ -40,10 +40,10 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
   }
 
   /// Lấy thông tin profile người dùng khác
-  Future<UserModel?> getUserProfile(String userId) async {
+  Future<UserGeneralModel?> getUserProfile(String userId) async {
     try {
       final user = await _userService.getUserProfile(userId);
-      return user;
+      return UserGeneralModel.fromJson(user?.toJson() ?? {});
     } catch (e, st) {
       state = AsyncError(e, st);
       return null;
@@ -76,7 +76,7 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
   Future<void> refreshProfile() async {
     try {
       final me = await _userService.getCurrentUser();
-      state = AsyncData(me);
+      state = AsyncData(UserGeneralModel.fromJson(me?.toJson() ?? {}));
     } catch (e, st) {
       state = AsyncError(e, st);
     }
