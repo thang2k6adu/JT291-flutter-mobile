@@ -170,48 +170,50 @@ class SettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
-        decoration: BoxDecoration(color: Colors.white),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Title (left)
-            Expanded(
-              child: Text(
-                title,
-                style:
-                    titleStyle ??
-                    TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
+    return Material(
+        color: Colors.white,
+        child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Title (left)
+              Expanded(
+                child: Text(
+                  title,
+                  style:
+                      titleStyle ??
+                      TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                ),
               ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (trailingMode == TrailingMode.text) ...[
-                  _buildTrailing(context),
-                  if (showChevron) const SizedBox(width: 8),
-                ] else ...[
-                  _buildTrailing(context),
-                  if (showChevron) const SizedBox(width: 8),
-                ],
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (trailingMode == TrailingMode.text) ...[
+                    _buildTrailing(context),
+                    if (showChevron) const SizedBox(width: 8),
+                  ] else ...[
+                    _buildTrailing(context),
+                    if (showChevron) const SizedBox(width: 8),
+                  ],
 
-                // Chevron
-                if (showChevron)
-                  Icon(
-                    Icons.chevron_right,
-                    color: Theme.of(context).disabledColor,
-                  ),
-              ],
-            ),
-            // Trailing (text or avatar)
-          ],
+                  // Chevron
+                  if (showChevron)
+                    Icon(
+                      Icons.chevron_right,
+                      color: Theme.of(context).disabledColor,
+                    ),
+                ],
+              ),
+              // Trailing (text or avatar)
+            ],
+          ),
         ),
       ),
     );

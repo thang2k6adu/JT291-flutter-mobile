@@ -86,7 +86,7 @@ class AlbumWidget extends StatelessWidget {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             'My album (${images.length}/$maxCount)',
@@ -99,8 +99,8 @@ class AlbumWidget extends StatelessWidget {
           ),
           const SizedBox(height: 16.0),
           Wrap(
-            spacing: 19,
-            runSpacing: 19,
+            spacing: 12,
+            runSpacing: 12,
             children: [
               for (var i = 0; i < shownImages.length; i++) ...[
                 _buildImageTile(context, shownImages[i], i),
