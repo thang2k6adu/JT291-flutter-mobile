@@ -13,13 +13,13 @@ class IconLabel extends StatelessWidget {
   final MainAxisAlignment alignment;
 
   const IconLabel({
-    Key? key,
+    super.key,
     required this.icon,
     required this.label,
     this.spacing = 8,
     this.labelStyle,
     this.alignment = MainAxisAlignment.center,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

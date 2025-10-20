@@ -3,7 +3,7 @@ import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/pill_tag.dart';
 
 class InterestsSection extends StatelessWidget {
-  const InterestsSection({Key? key}) : super(key: key);
+  const InterestsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class InterestsSection extends StatelessWidget {
 }
 
 class InterestsList extends StatelessWidget {
-  const InterestsList({Key? key}) : super(key: key);
+  const InterestsList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,37 +37,37 @@ class InterestsList extends StatelessWidget {
         InterestPillTag(
           label: 'Art',
           icon: Icons.palette,
-          gradientColors: [AppColors.purple[4]!, AppColors.pink[4]!],
+          gradientColors: [AppColors.purple[4], AppColors.pink[4]],
         ),
         InterestPillTag(
           label: 'Yoga',
           icon: Icons.self_improvement,
-          gradientColors: [AppColors.green[4]!, AppColors.emerald[4]!],
+          gradientColors: [AppColors.green[4], AppColors.emerald[4]],
         ),
         InterestPillTag(
           label: 'Pet',
           icon: Icons.pets,
-          gradientColors: [AppColors.orange[4]!, AppColors.amber[4]!],
+          gradientColors: [AppColors.orange[4], AppColors.amber[4]],
         ),
         InterestPillTag(
           label: 'Music',
           icon: Icons.music_note,
-          gradientColors: [AppColors.blue[4]!, AppColors.indigo[4]!],
+          gradientColors: [AppColors.blue[4], AppColors.indigo[4]],
         ),
         InterestPillTag(
           label: 'Gaming',
           icon: Icons.sports_esports,
-          gradientColors: [AppColors.purple[4]!, AppColors.violet[4]!],
+          gradientColors: [AppColors.purple[4], AppColors.violet[4]],
         ),
         InterestPillTag(
           label: 'Dancing',
           icon: Icons.music_note,
-          gradientColors: [AppColors.pink[4]!, AppColors.rose[4]!],
+          gradientColors: [AppColors.pink[4], AppColors.rose[4]],
         ),
         InterestPillTag(
           label: 'Painting',
           icon: Icons.brush,
-          gradientColors: [AppColors.teal[4]!, AppColors.cyan[4]!],
+          gradientColors: [AppColors.teal[4], AppColors.cyan[4]],
         ),
       ],
     );
@@ -80,11 +80,11 @@ class InterestPillTag extends StatelessWidget {
   final List<Color> gradientColors;
 
   const InterestPillTag({
-    Key? key,
+    super.key,
     required this.label,
     required this.icon,
     required this.gradientColors,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -97,9 +97,9 @@ class InterestPillTag extends StatelessWidget {
         child: Icon(icon, color: Colors.white, size: 16),
       ),
       label: label,
-      backgroundColor: AppColors.gray[1]!,
-      borderColor: AppColors.gray[3]!,
-      textStyle: TextStyle(color: AppColors.gray[7]!),
+      backgroundColor: AppColors.gray[1],
+      borderColor: AppColors.gray[3],
+      textStyle: TextStyle(color: AppColors.gray[7]),
     );
   }
 }

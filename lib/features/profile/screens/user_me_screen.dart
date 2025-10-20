@@ -28,7 +28,7 @@ class _UserMeScreenState extends State<UserMeScreen> {
 
           // Draggable Sheet
           ReusableDraggableSheet(
-            initialChildSize: 0.3,
+            initialChildSize: 0.8,
             minChildSize: 0.12,
             maxChildSize: 0.95,
             builder: (context, scrollController) {

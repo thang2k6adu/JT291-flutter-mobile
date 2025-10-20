@@ -30,10 +30,10 @@ class SupportersList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final supporters = [
-      {'name': 'User 1', 'score': '1200', 'color': AppColors.blue[4]!},
-      {'name': 'User 2', 'score': '1000', 'color': AppColors.pink[4]!},
-      {'name': 'User 3', 'score': '900', 'color': AppColors.green[4]!},
-      {'name': 'User 4', 'score': '840', 'color': AppColors.orange[4]!},
+      {'name': 'User 1', 'score': '1200', 'color': AppColors.blue[4]},
+      {'name': 'User 2', 'score': '1000', 'color': AppColors.pink[4]},
+      {'name': 'User 3', 'score': '900', 'color': AppColors.green[4]},
+      {'name': 'User 4', 'score': '840', 'color': AppColors.orange[4]},
     ];
 
     return SizedBox(
@@ -59,11 +59,11 @@ class SupporterItem extends StatelessWidget {
   final Color color;
 
   const SupporterItem({
-    Key? key,
+    super.key,
     required this.name,
     required this.score,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

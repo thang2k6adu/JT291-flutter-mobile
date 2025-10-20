@@ -26,7 +26,7 @@ class GiftsSection extends StatelessWidget {
 }
 
 class GiftsContainer extends StatelessWidget {
-  const GiftsContainer({Key? key}) : super(key: key);
+  const GiftsContainer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class GiftsContainer extends StatelessWidget {
       height: 100,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColors.pink[3]!, AppColors.pink[6]!],
+          colors: [AppColors.pink[3], AppColors.pink[6]],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
@@ -44,9 +44,9 @@ class GiftsContainer extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            Expanded(child: GiftItem(label: 'Rocket', icon: Icons.rocket_launch, color: AppColors.red[5]!)),
-            Expanded(child: GiftItem(label: 'Flower', icon: Icons.local_florist, color: AppColors.orange[5]!)),
-            Expanded(child: GiftItem(label: 'Crown', icon: Icons.workspace_premium, color: AppColors.amber[5]!)),
+            Expanded(child: GiftItem(label: 'Rocket', icon: Icons.rocket_launch, color: AppColors.red[5])),
+            Expanded(child: GiftItem(label: 'Flower', icon: Icons.local_florist, color: AppColors.orange[5])),
+            Expanded(child: GiftItem(label: 'Crown', icon: Icons.workspace_premium, color: AppColors.amber[5])),
             const Expanded(child: GiftsCounter()),
           ],
         ),
@@ -61,11 +61,11 @@ class GiftItem extends StatelessWidget {
   final Color color;
 
   const GiftItem({
-    Key? key,
+    super.key,
     required this.label,
     required this.icon,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,7 @@ class GiftItem extends StatelessWidget {
 }
 
 class GiftsCounter extends StatelessWidget {
-  const GiftsCounter({Key? key}) : super(key: key);
+  const GiftsCounter({super.key});
 
   @override
   Widget build(BuildContext context) {

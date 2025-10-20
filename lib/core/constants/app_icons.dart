@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 class AppIcons {
   static const String male = 'lib/assets/icons/male.svg';
