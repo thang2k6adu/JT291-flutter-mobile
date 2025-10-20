@@ -26,8 +26,10 @@ class UserProfileSection extends StatelessWidget {
           // Hàng 1: Tên + Shield + LockedBadge
           Row(
             children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3, // hoặc MediaQuery.of(context).size.width * 0.6
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.3,
+                ),
                 child: Text(
                   nickname ?? 'Unknown User',
                   maxLines: 1,
@@ -39,17 +41,24 @@ class UserProfileSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 6),
-              SvgIconSimple.asset(
-                AppIcons.shield,
-                size: 24,
-                color: Colors.blue,
-              ),
+              // Hiển thị icon phù hợp theo giới tính
+              if (gender == "MALE")
+                SvgIconSimple.asset(
+                  AppIcons.shield,
+                  size: 24,
+                  color: Colors.blue,
+                )
+              else if (gender == "FEMALE")
+                SvgIconSimple.asset(
+                  AppIcons.dance,
+                  size: 24,
+                  color: Colors.pink,
+                ),
               const SizedBox(width: 8),
               const LockedBadge(iconSize: 18),
             ],
           ),
           const SizedBox(height: 4),
-          // Hàng 2: Gender + Level info
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

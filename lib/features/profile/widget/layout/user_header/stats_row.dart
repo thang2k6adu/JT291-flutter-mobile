@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/icon-number-badge.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_header/user_header_constants.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
 class StatsRow extends StatelessWidget {
   final String crownCount;
