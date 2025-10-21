@@ -6,7 +6,7 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 
 class GeneralTabContent extends StatelessWidget {
   final UserGeneralModel? user;
-  
+
   const GeneralTabContent({super.key, this.user});
 
   @override
@@ -14,7 +14,10 @@ class GeneralTabContent extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 24),
-        InterestsSection(interests: user?.interests ?? []),
+        InterestsSection(
+          interests:
+              ['Art', 'Yoga', 'Pet', 'Music', 'Gaming', 'Dancing', 'Reading'],
+        ),
         const SizedBox(height: 24),
         const GiftsSection(),
         const SizedBox(height: 24),

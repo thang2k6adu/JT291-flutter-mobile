@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/pill_tag.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
 
 class InterestsSection extends StatelessWidget {
   final List<String> interests;
-  
-  const InterestsSection({super.key, required this.interests});
+
+  InterestsSection({super.key, required this.interests}) {
+    print(interests);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +35,7 @@ class InterestsSection extends StatelessWidget {
 
 class InterestsList extends StatelessWidget {
   final List<String> interests;
-  
+
   const InterestsList({super.key, required this.interests});
 
   @override
@@ -38,72 +43,60 @@ class InterestsList extends StatelessWidget {
     if (interests.isEmpty) {
       return Text(
         'No interests added yet',
-        style: TextStyle(
-          color: AppColors.gray[5],
-          fontStyle: FontStyle.italic,
-        ),
+        style: TextStyle(color: AppColors.gray[5], fontStyle: FontStyle.italic),
       );
     }
-    
+
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: interests.map((interest) => InterestPillTag(
-        label: interest,
-        icon: _getIconForInterest(interest),
-      )).toList(),
+      children: interests
+          .map(
+            (interest) => PillTag(
+              label: interest,
+              thumbnail: _getIconForInterest(interest),
+              backgroundColor: AppColors.gray[1],
+            ),
+          )
+          .toList(),
     );
   }
-  
-  IconData _getIconForInterest(String interest) {
+
+  Widget _getIconForInterest(String interest) {
     switch (interest.toLowerCase()) {
       case 'art':
+        return SvgPicture.asset(AppIcons.art);
       case 'painting':
-        return Icons.palette;
+        return SvgIconSimple.asset(AppIcons.paint);
       case 'yoga':
-      case 'fitness':
-        return Icons.self_improvement;
+        return SvgPicture.asset(AppIcons.yoga);
       case 'pet':
+        return SvgPicture.asset(AppIcons.pet);
       case 'animals':
-        return Icons.pets;
+        return SvgPicture.asset(AppIcons.pet);
       case 'music':
-        return Icons.music_note;
+        return SvgPicture.asset(AppIcons.music);
       case 'gaming':
-        return Icons.sports_esports;
+        return SvgPicture.asset(AppIcons.game);
       case 'dancing':
-        return Icons.music_note;
-      case 'reading':
-        return Icons.book;
-      case 'cooking':
-        return Icons.restaurant;
-      case 'travel':
-        return Icons.travel_explore;
-      case 'photography':
-        return Icons.camera_alt;
+        return SvgPicture.asset(AppIcons.dance);
       default:
-        return Icons.favorite;
+        return SvgPicture.asset(AppIcons.art);
     }
   }
-  
 }
 
 class InterestPillTag extends StatelessWidget {
   final String label;
   final IconData icon;
 
-  const InterestPillTag({
-    super.key,
-    required this.label,
-    required this.icon,
-  });
+  const InterestPillTag({super.key, required this.label, required this.icon});
 
   @override
   Widget build(BuildContext context) {
     return PillTag(
       thumbnail: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(4)),
         child: Icon(icon, color: Colors.white, size: 16),
       ),
       label: label,
