@@ -171,10 +171,12 @@ class SettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-        color: Colors.white,
-        child: InkWell(
+      color: Colors.white,
+      child: InkWell(
         onTap: onTap,
-        child: Container(
+        splashColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+        highlightColor: Colors.transparent,
+        child: Ink(
           padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
