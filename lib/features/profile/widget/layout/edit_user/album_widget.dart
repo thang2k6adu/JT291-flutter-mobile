@@ -70,7 +70,7 @@ class AlbumWidget extends StatelessWidget {
     final remainingSlots = maxCount - images.length;
     final showAdd = remainingSlots > 0;
 
-    return 
+    return
     // Thêm container cho album
     Container(
       padding: padding,
@@ -90,7 +90,8 @@ class AlbumWidget extends StatelessWidget {
         children: [
           Text(
             'My album (${images.length}/$maxCount)',
-            style: titleStyle ??
+            style:
+                titleStyle ??
                 TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -145,7 +146,7 @@ class AlbumWidget extends StatelessWidget {
                   strokeWidth: 2.0,
                   value: progress.expectedTotalBytes != null
                       ? progress.cumulativeBytesLoaded /
-                          (progress.expectedTotalBytes ?? 1)
+                            (progress.expectedTotalBytes ?? 1)
                       : null,
                 ),
               ),
@@ -176,33 +177,31 @@ class AlbumWidget extends StatelessWidget {
   }
 
   Widget _buildAddTile(BuildContext context) {
-    final addContent = Container(
-      width: itemSize,
-      height: itemSize,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
+    final clickable = Material(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: InkWell(
+        onTap: onAdd,
         borderRadius: BorderRadius.circular(borderRadius),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
+        splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        child: Ink(
+          width: itemSize,
+          height: itemSize,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(borderRadius),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Center(
-        child: Icon(
-          Icons.add,
-          size: 32,
-          color: Colors.black54,
+          child: const Center(
+            child: Icon(Icons.add, size: 32, color: Colors.black54),
+          ),
         ),
       ),
-    );
-
-    final clickable = InkWell(
-      onTap: onAdd,
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: addContent,
     );
 
     return kIsWeb
