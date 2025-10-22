@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 
 /// Widget AppBar custom với 2 icon (left & right)
 class CustomTopBar extends StatelessWidget {
@@ -49,7 +50,7 @@ Widget _circleIconWithEditMenu(BuildContext context, IconData icon) {
     menuChildren: [
       MenuItemButton(
         onPressed: () {
-          GoRouter.of(context).go('/user/setting'); // sử dụng context cha
+          GoRouter.of(context).push(RouteConstants.userSetting); // sử dụng context cha
         },
         child: const Text(
           'Edit',

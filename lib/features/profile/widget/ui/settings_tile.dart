@@ -74,7 +74,7 @@ class SettingsTile extends StatelessWidget {
   final Color? avatarBackgroundColor;
 
   const SettingsTile({
-    Key? key,
+    super.key,
     required this.title,
     this.trailingText,
     this.imageUrl,
@@ -86,7 +86,7 @@ class SettingsTile extends StatelessWidget {
     this.titleStyle,
     this.trailingTextStyle,
     this.avatarBackgroundColor,
-  }) : super(key: key);
+  });
 
   String _generateInitials(String? explicit, String? fallback) {
     if (explicit != null && explicit.trim().isNotEmpty) {
@@ -154,7 +154,6 @@ class SettingsTile extends StatelessWidget {
       case TrailingMode.avatar:
         return _avatarWithFallback(context);
       case TrailingMode.text:
-      default:
         return Flexible(
           child: Text(
             trailingText ?? '',
