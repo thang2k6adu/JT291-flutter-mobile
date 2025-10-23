@@ -58,8 +58,6 @@ class _UserMeScreenState extends ConsumerState<UserMeScreen>
             ),
           ),
 
-          // Animated Header
-
           // Draggable Sheet với CustomScrollView
           ReusableDraggableSheet(
             controller: _draggableController,
@@ -99,10 +97,22 @@ class _UserMeScreenState extends ConsumerState<UserMeScreen>
               );
             },
           ),
-          AnimatedCustomTopBar(
-            extent: _currentExtent,
-            title: 'My Profile',
-            onBackPressed: () => GoRouter.of(context).pop(),
+          userGeneralAsync.when(
+            data: (user) => AnimatedCustomTopBar(
+              extent: _currentExtent,
+              avatarUrl: user?.avatarUrl,
+              nickname: user?.nickname,
+              uid: user?.unionId,
+              onBackPressed: () => GoRouter.of(context).pop(),
+            ),
+            loading: () => AnimatedCustomTopBar(
+              extent: _currentExtent,
+              onBackPressed: () => GoRouter.of(context).pop(),
+            ),
+            error: (error, stack) => AnimatedCustomTopBar(
+              extent: _currentExtent,
+              onBackPressed: () => GoRouter.of(context).pop(),
+            ),
           ),
         ],
       ),

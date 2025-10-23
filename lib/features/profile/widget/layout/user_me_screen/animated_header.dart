@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:go_router/go_router.dart';
 
 class AnimatedCustomTopBar extends StatelessWidget {
   final double extent;
   final VoidCallback? onBackPressed;
   final VoidCallback? onMenuPressed;
-  final String? title;
+  final String? avatarUrl;
+  final String? nickname;
+  final String? uid;
 
   const AnimatedCustomTopBar({
     super.key,
     required this.extent,
     this.onBackPressed,
     this.onMenuPressed,
-    this.title,
+    this.avatarUrl,
+    this.nickname,
+    this.uid,
   });
 
   @override
   Widget build(BuildContext context) {
     const double threshold = 1;
-    final bool shouldShowWhiteBackground = extent >= threshold;
     final bool shouldShowContent = extent >= threshold;
 
     return AnimatedContainer(
@@ -40,24 +42,17 @@ class AnimatedCustomTopBar extends StatelessWidget {
               children: [
                 // Back button (always visible, no animation)
                 _buildBackButton(context),
-
-                // Title (simple fade in/out)
-                if (shouldShowContent)
-                  AnimatedOpacity(
-                    opacity: shouldShowContent ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Text(
-                      title ?? 'Profile',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  )
-                else
-                  const Spacer(),
-
+                const SizedBox(width: 12),
+                 // User Info (avatar, nickname, uid)
+                 if (shouldShowContent)
+                   AnimatedOpacity(
+                     opacity: shouldShowContent ? 1.0 : 0.0,
+                     duration: const Duration(milliseconds: 200),
+                     child: _buildUserInfo(),
+                   )
+                 else
+                   const Spacer(),
+                const Spacer(),
                 // Menu button (always visible)
                 _buildMenuButton(context),
               ],
@@ -65,6 +60,73 @@ class AnimatedCustomTopBar extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildUserInfo() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        // Avatar
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.grey.shade300, width: 1),
+          ),
+          child: ClipOval(
+            child: avatarUrl != null
+                ? Image.network(
+                    avatarUrl!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey.shade200,
+                        child: const Icon(
+                          Icons.person,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
+                      );
+                    },
+                  )
+                : Container(
+                    color: Colors.grey.shade200,
+                    child: const Icon(
+                      Icons.person,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
+                  ),
+          ),
+        ),
+        const SizedBox(width: 6),
+        // Nickname and UID
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              nickname ?? 'Unknown',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 0.5),
+            Text(
+              uid != null ? '@$uid' : '@unknown',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
