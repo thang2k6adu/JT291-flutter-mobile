@@ -28,13 +28,13 @@ class AnimatedCustomTopBar extends StatelessWidget {
       duration: const Duration(milliseconds: 0),
       // curve: Curves.easeInOut,
       decoration: BoxDecoration(
-        color:Colors.white,
+        color: shouldShowContent ? Colors.white : Colors.transparent,
       ),
       child: SafeArea(
         top: true,
         child: Container(
           height: 60,
-          color: Colors.white,
+          color: shouldShowContent ? Colors.white : Colors.transparent,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
             child: Row(
