@@ -8,6 +8,7 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header_loading.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header_error.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/profile_tab_content.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/sliver_tab_bar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/app_bar/app_bar.dart';
 
 class UserMeScreen extends ConsumerStatefulWidget {
@@ -17,7 +18,22 @@ class UserMeScreen extends ConsumerStatefulWidget {
   ConsumerState<UserMeScreen> createState() => _UserMeScreenState();
 }
 
-class _UserMeScreenState extends ConsumerState<UserMeScreen> {
+class _UserMeScreenState extends ConsumerState<UserMeScreen>
+    with TickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final userGeneralAsync = ref.watch(userGeneralProvider);
@@ -31,23 +47,37 @@ class _UserMeScreenState extends ConsumerState<UserMeScreen> {
             ),
           ),
 
-          // Draggable Sheet với data
+          // Draggable Sheet với CustomScrollView
           ReusableDraggableSheet(
             initialChildSize: 0.87,
             minChildSize: 0.12,
-            maxChildSize: 0.87,
+            maxChildSize: 1,
             builder: (context, scrollController) {
-              return ListView(
+              return CustomScrollView(
                 controller: scrollController,
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                children: [
-                  // UserHeader với data thực
-                  userGeneralAsync.when(
-                    data: (user) => UserHeader.fromUserGeneral(user: user),
-                    loading: () => const UserHeaderLoading(),
-                    error: (error, stack) => UserHeaderError(error: error),
+                slivers: [
+                  // User Header
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        userGeneralAsync.when(
+                          data: (user) => UserHeader.fromUserGeneral(user: user),
+                          loading: () => const UserHeaderLoading(),
+                          error: (error, stack) => UserHeaderError(error: error),
+                        ),
+                      ]),
+                    ),
                   ),
-                  const ProfileTabContent(),
+                  
+                  // TabBar as SliverPersistentHeader
+                  SliverTabBar(tabController: _tabController),
+                  
+                  // Tab Content
+                  SliverFillRemaining(
+                    hasScrollBody: true,
+                    child: ProfileTabContent(tabController: _tabController),
+                  ),
                 ],
               );
             },

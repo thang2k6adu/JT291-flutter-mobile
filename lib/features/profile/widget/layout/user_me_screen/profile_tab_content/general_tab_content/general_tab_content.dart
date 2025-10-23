@@ -11,18 +11,22 @@ class GeneralTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 24),
-        InterestsSection(
-          interests:
-              ['Art', 'Yoga', 'Pet', 'Music', 'Gaming', 'Dancing', 'Reading'],
-        ),
-        const SizedBox(height: 24),
-        const GiftsSection(),
-        const SizedBox(height: 24),
-        const TopSupporterSection(),
-      ],
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          const SizedBox(height: 24),
+          InterestsSection(
+            interests:
+                ['Art', 'Yoga', 'Pet', 'Music', 'Gaming', 'Dancing', 'Reading'],
+          ),
+          const SizedBox(height: 24),
+          const GiftsSection(),
+          const SizedBox(height: 24),
+          const TopSupporterSection(),
+          const SizedBox(height: 24), // Thêm padding bottom
+        ],
+      ),
     );
   }
 }
