@@ -8,6 +8,7 @@ import 'package:jt291_flutter_mobile/features/auth/screens/app_initializer.dart'
 import 'package:jt291_flutter_mobile/features/auth/screens/login_screen.dart';
 import 'package:jt291_flutter_mobile/features/main/screens/main_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/edit_user.dart';
+import 'package:jt291_flutter_mobile/features/profile/screens/my_album.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_me_screen.dart';
 
 class RouterRefreshNotifier extends ChangeNotifier {
@@ -47,6 +48,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: RouteConstants.userSetting,
             builder: ((context, state) => EditUser()),
+          ),
+          GoRoute(
+            path: RouteConstants.myAlbum,
+            builder: ((context, state) => const MyAlbumScreen()),
           ),
         ],
       ),

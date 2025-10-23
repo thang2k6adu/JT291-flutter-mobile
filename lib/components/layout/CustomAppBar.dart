@@ -80,7 +80,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: IconButton(
         padding: const EdgeInsets.only(left: 8.0),
         icon: const Icon(Icons.arrow_back_ios),
-        onPressed: onBackPressed ?? () => GoRouter.of(context).go(RouteConstants.userMe),
+        onPressed: onBackPressed ?? () => GoRouter.of(context).pop(),
       ),
       leadingWidth: 72,
       title: Text(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/components/layout/CustomAppBar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/edit_user/album_widget.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/settings_tile.dart';
+import 'package:go_router/go_router.dart';
+import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 
 class EditUser extends StatelessWidget {
   @override
@@ -25,7 +27,7 @@ class EditUser extends StatelessWidget {
                 borderRadius: 8,
                 padding: EdgeInsets.all(16.0),
                 onAdd: () {
-                  print("Add image tapped");
+                  GoRouter.of(context).push(RouteConstants.myAlbum);
                 },
                 onImageTap: (index) {
                   print("Tapped image $index");
