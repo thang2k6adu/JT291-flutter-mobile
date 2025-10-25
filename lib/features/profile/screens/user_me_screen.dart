@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/assets/assets.dart';
 import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/stats_section/avatar_section.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/draggable_sheet.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header_loading.dart';
@@ -49,8 +50,9 @@ class _UserMeScreenState extends ConsumerState<UserMeScreen>
     if (_currentExtent >= 0.95) {
       // Tính toán padding top dựa trên mức độ vượt quá 0.95
       final extraExtent = _currentExtent - 0.95;
-      final maxPadding = 80.0; // Padding top tối đa
-      final paddingValue = (extraExtent / 0.05) * maxPadding; // 0.05 là khoảng từ 0.95 đến 1.0
+      final maxPadding = 100.0; // Padding top tối đa
+      final paddingValue =
+          (extraExtent / 0.05) * maxPadding; // 0.05 là khoảng từ 0.95 đến 1.0
       return EdgeInsets.only(top: paddingValue);
     }
     return EdgeInsets.zero;
@@ -110,6 +112,17 @@ class _UserMeScreenState extends ConsumerState<UserMeScreen>
                 ],
               );
             },
+          ),
+          Positioned(
+            top:
+                MediaQuery.of(context).size.height -
+                700 * (_currentExtent - 0.12) / (1.0 - 0.12) - 240,
+            left: MediaQuery.of(context).size.width / 2 - 190,
+            child: userGeneralAsync.when(
+              data: (user) => UserAvatarSection(avatarUrl: user?.avatarUrl),
+              loading: () => const SizedBox.shrink(),
+              error: (error, stack) => const SizedBox.shrink(),
+            ),
           ),
           userGeneralAsync.when(
             data: (user) => AnimatedCustomTopBar(

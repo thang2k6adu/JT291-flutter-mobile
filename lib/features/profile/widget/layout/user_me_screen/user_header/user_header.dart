@@ -52,6 +52,7 @@ class UserHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        SizedBox(height: 8),
         StatsSection(user: user),
         const SizedBox(height: UserHeaderConstants.sectionSpacing),
         StatsRow(

@@ -108,27 +108,27 @@ class _ReusableDraggableSheetState extends State<ReusableDraggableSheet> {
           decoration: BoxDecoration(
             color: widget.backgroundColor,
             borderRadius: BorderRadius.vertical(top: widget.topRadius),
-            boxShadow: const [
-              BoxShadow(color: Colors.black26, blurRadius: 8, spreadRadius: 1),
-            ],
+            // boxShadow: const [
+            //   BoxShadow(color: Colors.black26, blurRadius: 8, spreadRadius: 1),
+            // ],
           ),
           child: SafeArea(
             top: false,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (widget.showHandle)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 6),
-                    child: Container(
-                      width: 40,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
+                // if (widget.showHandle)
+                //   Padding(
+                //     padding: const EdgeInsets.only(top: 8.0, bottom: 6),
+                //     child: Container(
+                //       width: 40,
+                //       height: 5,
+                //       decoration: BoxDecoration(
+                //         color: Colors.grey[300],
+                //         borderRadius: BorderRadius.circular(10),
+                //       ),
+                //     ),
+                //   ),
                 if (widget.header != null)
                   Padding(
                     padding:

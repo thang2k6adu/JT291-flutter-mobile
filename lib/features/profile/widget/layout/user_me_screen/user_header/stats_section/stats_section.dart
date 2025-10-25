@@ -12,7 +12,8 @@ class StatsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        UserAvatarSection(avatarUrl: user?.avatarUrl),
+        // UserAvatarSection(avatarUrl: user?.avatarUrl),
+        SizedBox(width: 90),
         const SizedBox(width: 8),
         Expanded(
           child: UserProfileSection(
