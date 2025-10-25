@@ -7,6 +7,7 @@ typedef SheetContentBuilder = Widget Function(BuildContext context, ScrollContro
 /// - hiển thị handle (thanh kéo) ở đầu sheet
 /// - header tuỳ chỉnh
 /// - bo góc, màu nền, shadow
+/// - callback theo dõi thay đổi extent
 /// 
 /// Tham số:
 /// - [builder]: callback để xây dựng nội dung scrollable, nhận `BuildContext` và `ScrollController`.
@@ -18,6 +19,8 @@ typedef SheetContentBuilder = Widget Function(BuildContext context, ScrollContro
 /// - [header]: widget header tuỳ chỉnh hiển thị trên nội dung scrollable.
 /// - [backgroundColor]: màu nền của sheet (mặc định Colors.white).
 /// - [topRadius]: bo góc ở phía trên của sheet (mặc định `Radius.circular(16)`).
+/// - [onExtentChanged]: callback được gọi khi extent của sheet thay đổi.
+/// - [controller]: DraggableScrollableController để điều khiển sheet.
 ///
 /// Ví dụ sử dụng:
 /// ```dart
@@ -25,6 +28,7 @@ typedef SheetContentBuilder = Widget Function(BuildContext context, ScrollContro
 ///   initialChildSize: 0.3,
 ///   maxChildSize: 0.8,
 ///   header: Text("Header"),
+///   onExtentChanged: (extent) => print('Extent: $extent'),
 ///   builder: (context, scrollController) {
 ///     return ListView.builder(
 ///       controller: scrollController,
@@ -34,7 +38,7 @@ typedef SheetContentBuilder = Widget Function(BuildContext context, ScrollContro
 ///   },
 /// )
 /// ```
-class ReusableDraggableSheet extends StatelessWidget {
+class ReusableDraggableSheet extends StatefulWidget {
   final double initialChildSize;
   final double minChildSize;
   final double maxChildSize;
@@ -44,6 +48,8 @@ class ReusableDraggableSheet extends StatelessWidget {
   final Color backgroundColor;
   final Radius topRadius;
   final SheetContentBuilder builder;
+  final ValueChanged<double>? onExtentChanged;
+  final DraggableScrollableController? controller;
 
   const ReusableDraggableSheet({
     super.key,
@@ -56,22 +62,52 @@ class ReusableDraggableSheet extends StatelessWidget {
     this.header,
     this.backgroundColor = Colors.white,
     this.topRadius = const Radius.circular(20),
+    this.onExtentChanged,
+    this.controller,
   })  : assert(minChildSize >= 0 && minChildSize <= 1),
         assert(initialChildSize >= 0 && initialChildSize <= 1),
         assert(maxChildSize >= 0 && maxChildSize <= 1);
 
   @override
+  State<ReusableDraggableSheet> createState() => _ReusableDraggableSheetState();
+}
+
+class _ReusableDraggableSheetState extends State<ReusableDraggableSheet> {
+  late DraggableScrollableController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller ?? DraggableScrollableController();
+    _controller.addListener(_onExtentChanged);
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_onExtentChanged);
+    if (widget.controller == null) {
+      _controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onExtentChanged() {
+    widget.onExtentChanged?.call(_controller.size);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: initialChildSize,
-      minChildSize: minChildSize,
-      maxChildSize: maxChildSize,
-      snap: snap,
+      controller: _controller,
+      initialChildSize: widget.initialChildSize,
+      minChildSize: widget.minChildSize,
+      maxChildSize: widget.maxChildSize,
+      snap: widget.snap,
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.vertical(top: topRadius),
+            color: widget.backgroundColor,
+            borderRadius: BorderRadius.vertical(top: widget.topRadius),
             boxShadow: const [
               BoxShadow(color: Colors.black26, blurRadius: 8, spreadRadius: 1),
             ],
@@ -81,7 +117,7 @@ class ReusableDraggableSheet extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (showHandle)
+                if (widget.showHandle)
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0, bottom: 6),
                     child: Container(
@@ -93,14 +129,14 @@ class ReusableDraggableSheet extends StatelessWidget {
                       ),
                     ),
                   ),
-                if (header != null)
+                if (widget.header != null)
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                    child: header,
+                    child: widget.header,
                   ),
-                if (header != null) const Divider(height: 1),
-                Expanded(child: builder(context, scrollController)),
+                if (widget.header != null) const Divider(height: 1),
+                Expanded(child: widget.builder(context, scrollController)),
               ],
             ),
           ),
