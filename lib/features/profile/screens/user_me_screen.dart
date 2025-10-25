@@ -45,6 +45,17 @@ class _UserMeScreenState extends ConsumerState<UserMeScreen>
     });
   }
 
+  EdgeInsets _getTabBarPadding() {
+    if (_currentExtent >= 0.95) {
+      // Tính toán padding top dựa trên mức độ vượt quá 0.95
+      final extraExtent = _currentExtent - 0.95;
+      final maxPadding = 80.0; // Padding top tối đa
+      final paddingValue = (extraExtent / 0.05) * maxPadding; // 0.05 là khoảng từ 0.95 đến 1.0
+      return EdgeInsets.only(top: paddingValue);
+    }
+    return EdgeInsets.zero;
+  }
+
   @override
   Widget build(BuildContext context) {
     final userGeneralAsync = ref.watch(userGeneralProvider);
@@ -86,7 +97,10 @@ class _UserMeScreenState extends ConsumerState<UserMeScreen>
                   ),
 
                   // TabBar as SliverPersistentHeader
-                  SliverTabBar(tabController: _tabController),
+                  SliverTabBar(
+                    tabController: _tabController,
+                    padding: _getTabBarPadding(),
+                  ),
 
                   // Tab Content
                   SliverFillRemaining(

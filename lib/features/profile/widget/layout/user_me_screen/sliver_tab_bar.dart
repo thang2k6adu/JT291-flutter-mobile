@@ -4,8 +4,13 @@ import 'package:jt291_flutter_mobile/features/profile/widget/ui/sliver_tab_bar_d
 
 class SliverTabBar extends StatelessWidget {
   final TabController tabController;
+  final EdgeInsets padding;
 
-  const SliverTabBar({super.key, required this.tabController});
+  const SliverTabBar({
+    super.key, 
+    required this.tabController,
+    this.padding = EdgeInsets.zero,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +38,7 @@ class SliverTabBar extends StatelessWidget {
             Tab(text: 'Ports'),
           ],
         ),
+        padding: padding,
       ),
     );
   }
