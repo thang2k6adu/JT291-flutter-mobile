@@ -66,7 +66,7 @@ class _UserMeScreenState extends ConsumerState<UserMeScreen>
         children: [
           Positioned.fill(
             child: Image.asset(
-              ImagePaths.getPath(ImagePath.splash),
+              ImagePaths.getPath(ImagePath.profileBackground),
               fit: BoxFit.cover,
             ),
           ),

@@ -34,6 +34,7 @@ class AvatarWidget extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2),
         gradient: LinearGradient(
           colors: borderColors,
           begin: Alignment.topLeft,
@@ -58,10 +59,7 @@ class AvatarWidget extends StatelessWidget {
             shape: BoxShape.circle,
           ),
           child: ClipOval(
-            child: Image(
-              image: image,
-              fit: BoxFit.cover,
-            ),
+            child: Image(image: image, fit: BoxFit.cover),
           ),
         ),
       ),

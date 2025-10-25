@@ -46,10 +46,10 @@ class UserProfileSection extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               // Hiển thị icon phù hợp theo giới tính
-              SvgIconSimple.asset(
-                AppIcons.male,
-                color: Color(0xFF0000FF),
-                size: 14,
+              Image.asset(
+                AppIcons.malePng,
+                width: 14,
+                height: 14,
               ),
               const SizedBox(width: 8),
               const LockedBadge(iconSize: 18),

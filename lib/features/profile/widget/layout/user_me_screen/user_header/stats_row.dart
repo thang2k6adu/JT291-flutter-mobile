@@ -3,13 +3,14 @@ import 'package:jt291_flutter_mobile/features/profile/widget/ui/icon-number-badg
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header_constants.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
+import 'package:vector_math/vector_math_64.dart' show Vector3;
 
 class StatsRow extends StatelessWidget {
   final String crownCount;
   final String diamondCount;
   final String contribution;
   final String distance;
-  
+
   const StatsRow({
     super.key,
     required this.crownCount,
@@ -34,37 +35,51 @@ class StatsRow extends StatelessWidget {
   }
 
   Widget _buildCrownBadge() {
-    return IconNumberBadge(
-      icon: SvgIconSimple.string(
-        UserHeaderConstants.crownSvg,
-        size: UserHeaderConstants.iconSize,
-        color: Colors.white,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFCB3126), Color(0xFFFFC432)],
+        ),
+        borderRadius: BorderRadius.circular(
+          UserHeaderConstants.badgeBorderRadius,
+        ),
       ),
-      count: crownCount,
-      backgroundColor: UserHeaderConstants.crownBadgeColor,
-      iconBackgroundColor: UserHeaderConstants.crownIconColor,
-      textColor: Colors.white,
-      padding: const EdgeInsets.symmetric(
-        horizontal: UserHeaderConstants.badgePadding,
-        vertical: UserHeaderConstants.badgeVerticalPadding,
+      // padding: const EdgeInsets.symmetric(
+      //   horizontal: UserHeaderConstants.badgePadding,
+      //   vertical: UserHeaderConstants.badgeVerticalPadding,
+      // ),
+      child: IconNumberBadge(
+        padding: const EdgeInsets.only(left: 6, right: 6, top: 2, bottom: 2),
+        icon: Transform(
+          transform: Matrix4.identity()
+            ..translateByVector3(Vector3(-16.0, -12, 0.0))
+            ..scaleByVector3(Vector3(2.5, 2.5, 2.5)),
+          child: Image.asset(AppIcons.badge1Png),
+        ),
+        count: crownCount,
+        backgroundColor:
+            Colors.transparent, // transparent vì gradient từ Container
+        iconBackgroundColor: Colors.transparent,
+        iconSize: UserHeaderConstants.iconSize,
+        gap: UserHeaderConstants.iconGap,
+        minWidth: UserHeaderConstants.minBadgeWidth,
       ),
-      borderRadius: UserHeaderConstants.badgeBorderRadius,
-      iconSize: UserHeaderConstants.iconSize,
-      gap: UserHeaderConstants.iconGap,
-      minWidth: UserHeaderConstants.minBadgeWidth,
     );
   }
 
   Widget _buildDiamondBadge() {
     return IconNumberBadge(
-      icon: SvgIconSimple.string(
-        UserHeaderConstants.diamondSvg,
-        size: UserHeaderConstants.iconSize,
-        color: Colors.white,
+      icon: Transform(
+        transform: Matrix4.identity()
+          ..translateByVector3(Vector3(-12.0, -7, 0.0))
+          ..scaleByVector3(Vector3(1.8, 1.8, 1.8)),
+        child: SvgIconSimple.asset(
+          AppIcons.levelBadge2,
+          size: UserHeaderConstants.iconSize,
+        ),
       ),
       count: diamondCount,
       backgroundColor: UserHeaderConstants.diamondBadgeColor,
-      iconBackgroundColor: UserHeaderConstants.diamondIconColor,
       textColor: Colors.white,
       padding: const EdgeInsets.symmetric(
         horizontal: UserHeaderConstants.badgePadding,
@@ -72,7 +87,7 @@ class StatsRow extends StatelessWidget {
       ),
       borderRadius: UserHeaderConstants.badgeBorderRadius,
       iconSize: UserHeaderConstants.iconSize,
-      gap: UserHeaderConstants.iconGap,
+      gap: 0,
       minWidth: UserHeaderConstants.minBadgeWidth,
     );
   }
@@ -96,10 +111,7 @@ class StatsRow extends StatelessWidget {
   Widget _buildDistanceText(BuildContext context) {
     return Text(
       distance,
-      style: const TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.w500,
-      ),
+      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
     );
   }
 }

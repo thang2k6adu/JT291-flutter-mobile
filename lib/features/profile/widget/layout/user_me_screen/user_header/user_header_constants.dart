@@ -10,7 +10,7 @@ class UserHeaderConstants {
   // Sizes
   static const double badgePadding = 8.0;
   static const double badgeVerticalPadding = 2.0;
-  static const double badgeBorderRadius = 12.0;
+  static const double badgeBorderRadius = 40.0;
   static const double iconSize = 16.0;
   static const double iconGap = 6.0;
   static const double minBadgeWidth = 40.0;

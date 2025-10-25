@@ -36,8 +36,8 @@ class IconNumberBadge extends StatelessWidget {
     super.key,
     required this.icon,
     required this.count,
-    this.backgroundColor = const Color(0xFF10B981), // green
-    this.iconBackgroundColor = const Color(0xFF0EA95F),
+    this.backgroundColor = Colors.transparent, // green
+    this.iconBackgroundColor = Colors.transparent,
     this.textColor = Colors.white,
     this.borderColor,
     this.borderWidth = 0.0,
@@ -46,7 +46,7 @@ class IconNumberBadge extends StatelessWidget {
     this.iconSize = 18.0,
     this.gap = 8.0,
     this.textStyle,
-    this.showShadow = true,
+    this.showShadow = false,
     this.onTap,
     this.minWidth = 44.0,
   });
