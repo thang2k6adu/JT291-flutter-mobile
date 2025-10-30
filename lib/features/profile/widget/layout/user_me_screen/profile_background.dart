@@ -49,7 +49,7 @@ class ProfileBackground extends ConsumerWidget {
         options: CarouselOptions(
           viewportFraction: 1.0,
           height: backgroundHeight,
-          enlargeCenterPage: false,
+          enlargeCenterPage: true,
           enableInfiniteScroll: true,
           autoPlay: true,
           autoPlayInterval: const Duration(seconds: 5),
