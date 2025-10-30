@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jt291_flutter_mobile/components/layout/CustomAppBar.dart';
-import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
+import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
 
 class MyAlbumScreen extends ConsumerStatefulWidget {
   const MyAlbumScreen({super.key});
@@ -15,72 +15,48 @@ class MyAlbumScreen extends ConsumerStatefulWidget {
 class _MyAlbumScreenState extends ConsumerState<MyAlbumScreen> {
   final ImagePicker _picker = ImagePicker();
   final int _maxPhotos = 6;
-
-  List<XFile> _selected = [];
   bool _isUploading = false;
-  List<String> _uploadedUrls = [];
 
-  Future<void> _pickImages() async {
+  Future<void> _pickAndUpload() async {
     try {
-      final images = await _picker.pickMultiImage(imageQuality: 85);
-      if (images.isEmpty) return;
+      final picked = await _picker.pickMultiImage(imageQuality: 85);
+      if (picked.isEmpty) return;
 
-      final List<XFile> merged = List<XFile>.from(_selected)..addAll(images);
+      setState(() {
+        _isUploading = true;
+      });
+
+      final files = picked.map((x) => File(x.path)).toList();
+
+      // Upload
+      final notifier = ref.read(userGeneralProvider.notifier);
+      final uploadedUrls = await notifier.uploadAttachments(files);
+      if (uploadedUrls.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Upload failed.')),
+          );
+        }
+        return;
+      }
+
+      // Merge with existing and cap at _maxPhotos
+      final current = ref.read(userGeneralProvider).value?.profileUrls ?? const <String>[];
+      final merged = List<String>.from(current)..addAll(uploadedUrls);
       if (merged.length > _maxPhotos) {
         merged.removeRange(_maxPhotos, merged.length);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('You can upload up to 6 photos.')),
+            SnackBar(content: Text('Album is limited to $_maxPhotos photos. Extra photos ignored.')),
           );
         }
       }
-      setState(() {
-        _selected = merged.take(_maxPhotos).toList();
-      });
+
+      // Save to profile
+      await notifier.updateProfile({'profile_urls': merged});
+      await notifier.refreshProfile();
     } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to pick images: $e')),
-      );
-    }
-  }
-
-  Future<void> _upload() async {
-    if (_selected.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one photo.')),
-      );
-      return;
-    }
-
-    setState(() {
-      _isUploading = true;
-    });
-    try {
-      final service = ref.read(userGeneralServiceProvider);
-      final files = _selected.map((x) => File(x.path)).toList();
-      final urls = await service.uploadAttachments(files);
-
-      setState(() {
-        _uploadedUrls = urls;
-      });
-
-      if (urls.isNotEmpty) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Upload successful.')),
-        );
-      } else {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Upload failed.')),
-        );
-      }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Upload error: $e')),
-      );
+      print('Error: $e');
     } finally {
       if (mounted) {
         setState(() {
@@ -90,14 +66,14 @@ class _MyAlbumScreenState extends ConsumerState<MyAlbumScreen> {
     }
   }
 
-  void _removeAt(int index) {
-    setState(() {
-      _selected.removeAt(index);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final userAsync = ref.watch(userGeneralProvider);
+    final profileUrls = userAsync.value?.profileUrls ?? const <String>[];
+
+    final canAddMore = profileUrls.length < _maxPhotos;
+    final itemCount = canAddMore ? profileUrls.length + 1 : profileUrls.length;
+
     return Scaffold(
       appBar: CustomAppBar(title: 'My Album'),
       bottomNavigationBar: Padding(
@@ -106,19 +82,10 @@ class _MyAlbumScreenState extends ConsumerState<MyAlbumScreen> {
           width: double.infinity,
           height: 56,
           child: ElevatedButton(
-            onPressed: _isUploading ? null : _upload,
-            child: _isUploading
-                ? const SizedBox(
-                    height: 22,
-                    width: 22,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                : const Text('Upload Photos'),
+            onPressed: null, // Save disabled per current design
+            child: const Text('Save'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.pinkAccent,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -148,114 +115,53 @@ class _MyAlbumScreenState extends ConsumerState<MyAlbumScreen> {
                 SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Selected photos (${_selected.length}/$_maxPhotos)',
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          TextButton.icon(
-                            onPressed: _isUploading ? null : _pickImages,
-                            icon: const Icon(Icons.add_photo_alternate_outlined),
-                            label: const Text('Add'),
-                          ),
-                        ],
-                      ),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _maxPhotos,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 1,
-                        ),
-                        itemBuilder: (context, index) {
-                          final hasImage = index < _selected.length;
-                          if (hasImage) {
-                            final x = _selected[index];
-                            return Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.file(
-                                    File(x.path),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 6,
-                                  right: 6,
-                                  child: InkWell(
-                                    onTap: _isUploading ? null : () => _removeAt(index),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.black54,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      padding: const EdgeInsets.all(4),
-                                      child: const Icon(
-                                        Icons.close,
-                                        color: Colors.white,
-                                        size: 18,
-                                      ),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: itemCount,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 1,
+                    ),
+                    itemBuilder: (context, index) {
+                      final isAddTile = canAddMore && index == profileUrls.length;
+                      if (isAddTile) {
+                        return InkWell(
+                          onTap: _isUploading ? null : _pickAndUpload,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey.shade300),
+                            ),
+                            child: Center(
+                              child: _isUploading
+                                  ? const SizedBox(
+                                      height: 24,
+                                      width: 24,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    )
+                                  : const Icon(
+                                      Icons.add,
+                                      color: Colors.black54,
+                                      size: 36,
                                     ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          } else {
-                            final isFirstEmpty = _selected.isEmpty && index == 0;
-                            return InkWell(
-                              onTap: _isUploading ? null : _pickImages,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: Colors.grey.shade300),
-                                ),
-                                child: Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        Icons.add_photo_alternate,
-                                        color: isFirstEmpty ? Colors.red : Colors.grey,
-                                        size: 36,
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        'Add photo',
-                                        style: TextStyle(
-                                          color: isFirstEmpty ? Colors.red : Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                      if (_uploadedUrls.isNotEmpty) ...[
-                        const SizedBox(height: 16),
-                        const Text('Uploaded URLs', style: TextStyle(fontWeight: FontWeight.w600)),
-                        const SizedBox(height: 8),
-                        ..._uploadedUrls.map((u) => Text(
-                              u,
-                              style: const TextStyle(fontSize: 12, color: Colors.grey),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            )),
-                      ],
-                    ],
+                            ),
+                          ),
+                        );
+                      }
+
+                      final url = profileUrls[index];
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          url,
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],

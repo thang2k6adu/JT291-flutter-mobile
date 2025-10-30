@@ -27,15 +27,15 @@ class UserGeneralNotifier extends AsyncNotifier<UserGeneralModel?> {
   }
 
   /// Cập nhật thông tin user hiện tại
-  Future<UserGeneralModel?> updateProfile(Map<String, dynamic> data) async {
+  Future<bool> updateProfile(Map<String, dynamic> data) async {
     state = const AsyncLoading();
     try {
       final updatedUser = await _userService.updateCurrentUser(data);
-      state = AsyncData(updatedUser);
+      print('updatedUser: $updatedUser');
       return updatedUser;
     } catch (e, st) {
-      state = AsyncError(e, st);
-      return null;
+      print('updateProfile failed: $e');
+      return false;
     }
   }
 
