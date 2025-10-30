@@ -10,6 +10,11 @@ import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
 import 'package:jt291_flutter_mobile/components/helper/image_helper.dart';
 
+const Map<String, String> genderItems = {
+  'male': 'Male',
+  'female': 'Female',
+};
+
 class EditUser extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -82,7 +87,7 @@ class EditUser extends ConsumerWidget {
                     SettingsTile(
                       title: 'Gender',
                       trailingMode: TrailingMode.text,
-                      trailingText: user?.gender ?? '-',
+                      trailingText: genderItems[user?.gender ?? ''] ?? '-',
                       onTap: () async {
                         final gender = await _pickGender(context, initial: user?.gender);
                         if (gender == null) return;
@@ -199,7 +204,6 @@ Future<String?> _promptText(BuildContext context, {required String title, String
 }
 
 Future<String?> _pickGender(BuildContext context, {String? initial}) async {
-  const items = ['Male', 'Female', 'Other'];
   return showModalBottomSheet<String>(
     context: context,
     builder: (context) {
@@ -207,9 +211,9 @@ Future<String?> _pickGender(BuildContext context, {String? initial}) async {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            for (final g in items)
+            for (final g in genderItems.keys)
               ListTile(
-                title: Text(g),
+                title: Text(genderItems[g] ?? '-'),
                 trailing: initial == g ? const Icon(Icons.check) : null,
                 onTap: () => Navigator.pop(context, g),
               ),
