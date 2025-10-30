@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_background.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_background_indicator.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_draggable_sheet.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_floating_avatar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_top_bar.dart';
@@ -13,18 +14,21 @@ class UserMeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: Stack(
-        children: const [
+        children: [
           // Background
-          ProfileBackground(),
-          
+          const ProfileBackground(),
+
+          // Background progress indicator (small line ~2px)
+          const ProfileBackgroundIndicator(value: 0.2, maxWidth: 60),
+
           // Draggable Sheet
-          ProfileDraggableSheet(),
-          
+          const ProfileDraggableSheet(),
+
           // Floating Avatar
-          ProfileFloatingAvatar(),
-          
+          const ProfileFloatingAvatar(),
+
           // Top Bar
-          ProfileTopBar(),
+          const ProfileTopBar(),
         ],
       ),
     );

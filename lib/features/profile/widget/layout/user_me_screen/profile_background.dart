@@ -3,7 +3,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 /// Background component cho Profile Screen
 class ProfileBackground extends StatelessWidget {
-  const ProfileBackground({super.key});
+  const ProfileBackground({super.key, this.onIndexChanged});
+
+  final void Function(int index)? onIndexChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,9 @@ class ProfileBackground extends StatelessWidget {
           autoPlayInterval: const Duration(seconds: 5),
           autoPlayAnimationDuration: const Duration(milliseconds: 800),
           autoPlayCurve: Curves.easeInOut,
+          onPageChanged: (index, reason) {
+            onIndexChanged?.call(index);
+          },
         ),
         itemCount: images.length,
         itemBuilder: (context, index, realIndex) {
