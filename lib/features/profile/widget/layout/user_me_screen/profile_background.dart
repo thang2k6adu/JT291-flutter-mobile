@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/features/profile/controllers/draggable_sheet_controller.dart';
 
 final profileBackgroundIndexProvider = StateProvider<double>((ref) => 0.0);
 
@@ -25,7 +26,16 @@ class ProfileBackground extends ConsumerWidget {
       }
     });
 
-    return Positioned.fill(
+    final extent = ref.watch(draggableSheetControllerProvider).currentExtent;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final double sheetTop = screenHeight * (1 - extent);
+    final double backgroundHeight = sheetTop.clamp(0.0, screenHeight);
+
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      height: backgroundHeight,
       child: CarouselSlider.builder(
         itemCount: images.length,
         itemBuilder: (context, index, realIndex) {
@@ -33,12 +43,12 @@ class ProfileBackground extends ConsumerWidget {
             images[index],
             fit: BoxFit.cover,
             width: double.infinity,
-            height: double.infinity,
+            height: backgroundHeight,
           );
         },
         options: CarouselOptions(
           viewportFraction: 1.0,
-          height: double.infinity,
+          height: backgroundHeight,
           enlargeCenterPage: false,
           enableInfiniteScroll: true,
           autoPlay: true,

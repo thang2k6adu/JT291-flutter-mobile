@@ -31,7 +31,6 @@ class ProfileBackgroundIndicator extends ConsumerWidget {
     // final double sheetTop = screenHeight * (1 - extent);
     final double bottom = (screenHeight - 60)* extent;
     final double bottomMargin = (bottom + thickness);
-    print(bottom);
 
     return Positioned(
       bottom: bottomMargin,
