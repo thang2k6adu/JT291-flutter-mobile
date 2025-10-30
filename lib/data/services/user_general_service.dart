@@ -25,6 +25,7 @@ class UserGeneralService {
   /// [data] có thể bao gồm nickname, bio, gender, date_of_birth,...
   FutureOr<UserGeneralModel?> updateCurrentUser(Map<String, dynamic> data) async {
     try {
+      print('updateCurrentUser: $data');
       final response = await _apiService.put('/v1/users/me', data: data);
       return UserGeneralModel.fromJson(response['data']);
     } catch (e) {
