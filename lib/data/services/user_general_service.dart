@@ -23,13 +23,14 @@ class UserGeneralService {
 
   /// Cập nhật thông tin người dùng hiện tại
   /// [data] có thể bao gồm nickname, bio, gender, date_of_birth,...
-  FutureOr<UserGeneralModel?> updateCurrentUser(Map<String, dynamic> data) async {
+  FutureOr<bool> updateCurrentUser(Map<String, dynamic> data) async {
     try {
+      print('updateCurrentUser: $data');
       final response = await _apiService.put('/v1/users/me', data: data);
-      return UserGeneralModel.fromJson(response['data']);
+      return response['success'] as bool;
     } catch (e) {
       print("updateCurrentUser failed: $e");
-      return null;
+      return false;
     }
   }
 
@@ -80,7 +81,7 @@ class UserGeneralService {
       );
 
       final List<dynamic> urls = response['data'];
-      return urls.map((e) => e.toString()).toList();
+      return urls.map((e) => (e as Map<String, dynamic>)['source_url'] as String).toList();
     } catch (e) {
       print("uploadAttachments failed: $e");
       return [];
