@@ -8,9 +8,7 @@ import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
 class InterestsSection extends StatelessWidget {
   final List<String> interests;
 
-  InterestsSection({super.key, required this.interests}) {
-    print(interests);
-  }
+  InterestsSection({super.key, required this.interests});
 
   @override
   Widget build(BuildContext context) {
