@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_background.dart';
 
-class ProfileBackgroundIndicator extends StatelessWidget {
+class ProfileBackgroundIndicator extends ConsumerWidget {
   const ProfileBackgroundIndicator({
     super.key,
-    this.value,
     this.thickness = 6,
     this.trackColor,
     this.progressColor,
     this.maxWidth = 340,
   });
 
-  final double? value; // 0..1 for determinate; null for indeterminate
   final double thickness;
   final Color? trackColor;
   final Color? progressColor;
   final double maxWidth;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final Color effectiveTrackColor = trackColor ?? Colors.white24;
     final Color effectiveProgressColor = progressColor ?? Colors.white;
+    final currentIndex = ref.watch(profileBackgroundIndexProvider);
 
     return SafeArea(
       bottom: false,
@@ -35,7 +36,7 @@ class ProfileBackgroundIndicator extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: LinearProgressIndicator(
-                  value: value,
+                  value: currentIndex,
                   minHeight: thickness,
                   backgroundColor: effectiveTrackColor,
                   color: effectiveProgressColor,
@@ -48,5 +49,3 @@ class ProfileBackgroundIndicator extends StatelessWidget {
     );
   }
 }
-
-

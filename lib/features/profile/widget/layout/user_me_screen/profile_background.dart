@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Background component cho Profile Screen
-class ProfileBackground extends StatelessWidget {
-  const ProfileBackground({super.key, this.onIndexChanged});
+final profileBackgroundIndexProvider = StateProvider<double>((ref) => 0.0);
 
-  final void Function(int index)? onIndexChanged;
+class ProfileBackground extends ConsumerWidget {
+  const ProfileBackground({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final images = <String>[
       'lib/assets/images/demo1.jpg',
       'lib/assets/images/demo2.jpg',
@@ -17,6 +17,15 @@ class ProfileBackground extends StatelessWidget {
 
     return Positioned.fill(
       child: CarouselSlider.builder(
+        itemCount: images.length,
+        itemBuilder: (context, index, realIndex) {
+          return Image.asset(
+            images[index],
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          );
+        },
         options: CarouselOptions(
           viewportFraction: 1.0,
           height: double.infinity,
@@ -27,18 +36,10 @@ class ProfileBackground extends StatelessWidget {
           autoPlayAnimationDuration: const Duration(milliseconds: 800),
           autoPlayCurve: Curves.easeInOut,
           onPageChanged: (index, reason) {
-            onIndexChanged?.call(index);
+            ref.read(profileBackgroundIndexProvider.notifier).state = (index + 1) / images.length;
+            print(ref.read(profileBackgroundIndexProvider.notifier).state);
           },
         ),
-        itemCount: images.length,
-        itemBuilder: (context, index, realIndex) {
-          return Image.asset(
-            images[index],
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          );
-        },
       ),
     );
   }

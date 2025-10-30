@@ -9,6 +9,7 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 
 class UserMeScreen extends ConsumerWidget {
   const UserMeScreen({super.key});
+  
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,7 +20,7 @@ class UserMeScreen extends ConsumerWidget {
           const ProfileBackground(),
 
           // Background progress indicator (small line ~2px)
-          const ProfileBackgroundIndicator(value: 0.2, maxWidth: 60),
+          const ProfileBackgroundIndicator(maxWidth: 60),
 
           // Draggable Sheet
           const ProfileDraggableSheet(),
