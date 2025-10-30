@@ -15,52 +15,128 @@ class MyAlbumScreen extends ConsumerStatefulWidget {
 class _MyAlbumScreenState extends ConsumerState<MyAlbumScreen> {
   final ImagePicker _picker = ImagePicker();
   final int _maxPhotos = 6;
-  bool _isUploading = false;
 
-  Future<void> _pickAndUpload() async {
+  bool _isPicking = false;
+  bool _isSaving = false;
+  bool _initialized = false;
+
+  // Local working state
+  List<String> _currentUrls = <String>[]; // existing images from server
+  List<XFile> _pendingFiles = <XFile>[]; // newly selected images, not uploaded yet
+
+  Future<void> _pickImages() async {
+    if (_isPicking) return;
+    setState(() {
+      _isPicking = true;
+    });
     try {
       final picked = await _picker.pickMultiImage(imageQuality: 85);
       if (picked.isEmpty) return;
 
-      setState(() {
-        _isUploading = true;
-      });
-
-      final files = picked.map((x) => File(x.path)).toList();
-
-      // Upload
-      final notifier = ref.read(userGeneralProvider.notifier);
-      final uploadedUrls = await notifier.uploadAttachments(files);
-      if (uploadedUrls.isEmpty) {
+      // Respect max size cap considering both existing and pending
+      final remainingSlots = _maxPhotos - (_currentUrls.length + _pendingFiles.length);
+      if (remainingSlots <= 0) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Upload failed.')),
+            SnackBar(content: Text('Album is limited to $_maxPhotos photos.')),
           );
         }
         return;
       }
 
-      // Merge with existing and cap at _maxPhotos
-      final current = ref.read(userGeneralProvider).value?.profileUrls ?? const <String>[];
-      final merged = List<String>.from(current)..addAll(uploadedUrls);
-      if (merged.length > _maxPhotos) {
-        merged.removeRange(_maxPhotos, merged.length);
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Album is limited to $_maxPhotos photos. Extra photos ignored.')),
-          );
-        }
-      }
+      final toAdd = picked.take(remainingSlots).toList();
+      setState(() {
+        _pendingFiles.addAll(toAdd);
+      });
 
-      // Save to profile
-      await notifier.updateProfile({'profile_urls': merged});
-      await notifier.refreshProfile();
+      if (picked.length > remainingSlots && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Only $remainingSlots more photo(s) allowed. Extra photos ignored.')),
+        );
+      }
     } catch (e) {
-      print('Error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error picking images: $e')),
+        );
+      }
     } finally {
       if (mounted) {
         setState(() {
-          _isUploading = false;
+          _isPicking = false;
+        });
+      }
+    }
+  }
+
+  void _removeAt(int index) {
+    // Index spans existing urls first, then pending files
+    if (index < _currentUrls.length) {
+      setState(() {
+        _currentUrls.removeAt(index);
+      });
+    } else {
+      final pendingIndex = index - _currentUrls.length;
+      if (pendingIndex >= 0 && pendingIndex < _pendingFiles.length) {
+        setState(() {
+          _pendingFiles.removeAt(pendingIndex);
+        });
+      }
+    }
+  }
+
+  Future<void> _save() async {
+    if (_isSaving) return;
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      final notifier = ref.read(userGeneralProvider.notifier);
+
+      // Upload pending files (if any)
+      List<String> uploadedUrls = <String>[];
+      if (_pendingFiles.isNotEmpty) {
+        final files = _pendingFiles.map((x) => File(x.path)).toList();
+        uploadedUrls = await notifier.uploadAttachments(files);
+        if (uploadedUrls.isEmpty) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Upload failed.')),
+            );
+          }
+          return;
+        }
+      }
+
+      // Merge and cap at max
+      final merged = <String>[..._currentUrls, ...uploadedUrls];
+      if (merged.length > _maxPhotos) {
+        merged.removeRange(_maxPhotos, merged.length);
+      }
+
+      // Persist profile_urls
+      await notifier.updateProfile({'profile_urls': merged});
+      await notifier.refreshProfile();
+
+      if (mounted) {
+        setState(() {
+          _pendingFiles.clear();
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Saved successfully.')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Save error: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
         });
       }
     }
@@ -69,11 +145,18 @@ class _MyAlbumScreenState extends ConsumerState<MyAlbumScreen> {
   @override
   Widget build(BuildContext context) {
     final userAsync = ref.watch(userGeneralProvider);
-    final profileUrls = userAsync.value?.profileUrls ?? const <String>[];
+    final serverUrls = userAsync.value?.profileUrls ?? const <String>[];
 
-    final canAddMore = profileUrls.length < _maxPhotos;
-    final itemCount = canAddMore ? profileUrls.length + 1 : profileUrls.length;
+    if (!_initialized && serverUrls.isNotEmpty) {
+      // Initialize local working state once when data arrives
+      _initialized = true;
+      _currentUrls = List<String>.from(serverUrls);
+    }
 
+    final totalItems = _currentUrls.length + _pendingFiles.length;
+    final canAddMore = totalItems < _maxPhotos;
+    final itemCount = canAddMore ? totalItems + 1 : totalItems; // + tile at end
+    
     return Scaffold(
       appBar: CustomAppBar(title: 'My Album'),
       bottomNavigationBar: Padding(
@@ -82,8 +165,14 @@ class _MyAlbumScreenState extends ConsumerState<MyAlbumScreen> {
           width: double.infinity,
           height: 56,
           child: ElevatedButton(
-            onPressed: null, // Save disabled per current design
-            child: const Text('Save'),
+            onPressed: _isSaving ? null : _save,
+            child: _isSaving
+                ? const SizedBox(
+                    height: 22,
+                    width: 22,
+                    child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                  )
+                : const Text('Save'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.pinkAccent,
               shape: RoundedRectangleBorder(
@@ -126,10 +215,10 @@ class _MyAlbumScreenState extends ConsumerState<MyAlbumScreen> {
                       childAspectRatio: 1,
                     ),
                     itemBuilder: (context, index) {
-                      final isAddTile = canAddMore && index == profileUrls.length;
+                      final isAddTile = canAddMore && index == totalItems;
                       if (isAddTile) {
                         return InkWell(
-                          onTap: _isUploading ? null : _pickAndUpload,
+                          onTap: _isPicking ? null : _pickImages,
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.grey.shade200,
@@ -137,29 +226,47 @@ class _MyAlbumScreenState extends ConsumerState<MyAlbumScreen> {
                               border: Border.all(color: Colors.grey.shade300),
                             ),
                             child: Center(
-                              child: _isUploading
+                              child: _isPicking
                                   ? const SizedBox(
                                       height: 24,
                                       width: 24,
                                       child: CircularProgressIndicator(strokeWidth: 2),
                                     )
-                                  : const Icon(
-                                      Icons.add,
-                                      color: Colors.black54,
-                                      size: 36,
-                                    ),
+                                  : const Icon(Icons.add, color: Colors.black54, size: 36),
                             ),
                           ),
                         );
                       }
 
-                      final url = profileUrls[index];
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          url,
-                          fit: BoxFit.cover,
-                        ),
+                      final isExisting = index < _currentUrls.length;
+                      return Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: isExisting
+                                ? Image.network(_currentUrls[index], fit: BoxFit.cover)
+                                : Image.file(
+                                    File(_pendingFiles[index - _currentUrls.length].path),
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
+                          Positioned(
+                            top: 6,
+                            right: 6,
+                            child: InkWell(
+                              onTap: () => _removeAt(index),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black54,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                padding: const EdgeInsets.all(4),
+                                child: const Icon(Icons.close, color: Colors.white, size: 18),
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),
