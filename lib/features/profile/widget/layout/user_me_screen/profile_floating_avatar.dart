@@ -38,7 +38,7 @@ class ProfileFloatingAvatar extends ConsumerWidget {
         (ProfileConstants.maxChildSize - ProfileConstants.minChildSize) - 
         ProfileConstants.avatarOffset;
     
-    final left = screenWidth / 2 - ProfileConstants.avatarSize / 2;
+    final left = screenWidth / 6.8 - ProfileConstants.avatarSize / 2;
     
     return Offset(left, top);
   }

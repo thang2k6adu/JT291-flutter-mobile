@@ -11,7 +11,7 @@ class ProfileConstants {
   static const double paddingRange = 0.05; // 0.95 to 1.0
   
   // Avatar Configuration
-  static const double avatarSize = 190.0;
+  static const double avatarSize = 90.0;
   static const double avatarOffset = 240.0;
   static const double avatarAnimationRange = 700.0;
   
