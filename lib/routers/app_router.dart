@@ -43,7 +43,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: RouteConstants.userMe,
-            builder: ((context, state) => const UserMeScreen()),
+            builder: ((context, state) => UserMeScreen()),
           ),
           GoRoute(
             path: RouteConstants.userSetting,

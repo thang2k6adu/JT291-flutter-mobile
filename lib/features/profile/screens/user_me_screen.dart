@@ -8,8 +8,13 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_top_bar.dart';
 
 class UserMeScreen extends ConsumerWidget {
-  const UserMeScreen({super.key});
-  
+  UserMeScreen({super.key});
+
+  final List<String> images = [
+    'lib/assets/images/demo1.jpg',
+    'lib/assets/images/demo2.jpg',
+    'lib/assets/images/demo3.jpg',
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,7 +22,7 @@ class UserMeScreen extends ConsumerWidget {
       body: Stack(
         children: [
           // Background
-          const ProfileBackground(),
+          ProfileBackground(images: images),
 
           // Background progress indicator (small line ~2px)
           const ProfileBackgroundIndicator(maxWidth: 60),

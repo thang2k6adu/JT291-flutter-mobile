@@ -5,15 +5,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final profileBackgroundIndexProvider = StateProvider<double>((ref) => 0.0);
 
 class ProfileBackground extends ConsumerWidget {
-  const ProfileBackground({super.key});
+  const ProfileBackground({
+    super.key,
+    required this.images,
+    this.initialIndex = 0,
+  });
+
+  final List<String> images;
+  final int initialIndex;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final images = <String>[
-      'lib/assets/images/demo1.jpg',
-      'lib/assets/images/demo2.jpg',
-      'lib/assets/images/demo3.jpg',
-    ];
+    // Initialize the progress indicator when the widget is built
+    // Add post frame callback (Hàm nhận vào tham số là thời gian app bắt đầu chạy)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final initProgress = (initialIndex + 1) / images.length;
+      if (ref.read(profileBackgroundIndexProvider) != initProgress) {
+        ref.read(profileBackgroundIndexProvider.notifier).state = initProgress;
+      }
+    });
 
     return Positioned.fill(
       child: CarouselSlider.builder(
@@ -36,9 +46,10 @@ class ProfileBackground extends ConsumerWidget {
           autoPlayAnimationDuration: const Duration(milliseconds: 800),
           autoPlayCurve: Curves.easeInOut,
           onPageChanged: (index, reason) {
-            ref.read(profileBackgroundIndexProvider.notifier).state = (index + 1) / images.length;
-            print(ref.read(profileBackgroundIndexProvider.notifier).state);
+            ref.read(profileBackgroundIndexProvider.notifier).state =
+                (index + 1) / images.length;
           },
+          initialPage: initialIndex,
         ),
       ),
     );

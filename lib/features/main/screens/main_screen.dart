@@ -28,7 +28,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       const SplashScreen(title: "Home"),
       const SplashScreen(title: "Messages"),
       const SplashScreen(title: "Reels"),
-      const UserMeScreen(),
+      UserMeScreen(),
     ];
 
     return asyncAuth.when(
