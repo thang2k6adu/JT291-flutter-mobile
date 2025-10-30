@@ -32,11 +32,7 @@ class ProfileFloatingAvatar extends ConsumerWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     
-    final top = screenHeight - 
-        ProfileConstants.avatarAnimationRange * 
-        (currentExtent - ProfileConstants.minChildSize) / 
-        (ProfileConstants.maxChildSize - ProfileConstants.minChildSize) - 
-        ProfileConstants.avatarOffset;
+    final top = screenHeight * 0.9 * (1 - currentExtent) - ProfileConstants.avatarSize / 3;
     
     final left = screenWidth / 6.8 - ProfileConstants.avatarSize / 2;
     
