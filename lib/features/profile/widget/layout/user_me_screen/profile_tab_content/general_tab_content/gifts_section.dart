@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/icon_label.dart';
 
@@ -44,9 +45,9 @@ class GiftsContainer extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            Expanded(child: GiftItem(label: 'Rocket', icon: Icons.rocket_launch, color: AppColors.red[5])),
-            Expanded(child: GiftItem(label: 'Flower', icon: Icons.local_florist, color: AppColors.orange[5])),
-            Expanded(child: GiftItem(label: 'Crown', icon: Icons.workspace_premium, color: AppColors.amber[5])),
+            Expanded(child: GiftItem(label: 'Rocket', icon: AppIcons.rocketRed)),
+            Expanded(child: GiftItem(label: 'Flower', icon: AppIcons.flower)),
+            Expanded(child: GiftItem(label: 'Crown', icon: AppIcons.grown)),
             const Expanded(child: GiftsCounter()),
           ],
         ),
@@ -57,14 +58,14 @@ class GiftsContainer extends StatelessWidget {
 
 class GiftItem extends StatelessWidget {
   final String label;
-  final IconData icon;
-  final Color color;
+  final String icon;
+  final Color? color;
 
   const GiftItem({
     super.key,
     required this.label,
     required this.icon,
-    required this.color,
+    this.color,
   });
 
   @override
@@ -74,10 +75,10 @@ class GiftItem extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: color,
+          color:  color ?? Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Icon(icon, color: Colors.white, size: 24),
+        child: Image.asset(icon, width: 24, height: 24),
       ),
       label: label,
       spacing: 4,
