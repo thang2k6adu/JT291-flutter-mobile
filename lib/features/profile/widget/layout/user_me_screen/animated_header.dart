@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 
 class AnimatedCustomTopBar extends StatelessWidget {
   final double extent;
@@ -167,6 +168,7 @@ class AnimatedCustomTopBar extends StatelessWidget {
         MenuItemButton(
           onPressed: () {
             // Handle edit action
+            GoRouter.of(context).push(RouteConstants.userSetting);
           },
           child: const Text(
             'Edit',
