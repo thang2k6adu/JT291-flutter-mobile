@@ -154,7 +154,8 @@ class SettingsTile extends StatelessWidget {
       case TrailingMode.avatar:
         return _avatarWithFallback(context);
       case TrailingMode.text:
-        return Flexible(
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 150), // giới hạn chiều rộng
           child: Text(
             trailingText ?? '',
             style:
@@ -162,6 +163,7 @@ class SettingsTile extends StatelessWidget {
                 TextStyle(color: Colors.black54, fontSize: 16),
             textAlign: TextAlign.right,
             overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         );
     }
@@ -173,7 +175,9 @@ class SettingsTile extends StatelessWidget {
       color: Colors.white,
       child: InkWell(
         onTap: onTap,
-        splashColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+        splashColor: Theme.of(
+          context,
+        ).colorScheme.primary.withValues(alpha: 0.1),
         highlightColor: Colors.transparent,
         child: Ink(
           padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
