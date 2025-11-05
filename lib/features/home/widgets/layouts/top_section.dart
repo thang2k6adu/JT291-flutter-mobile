@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/features/home/widgets/layouts/avatar_button.dart';
 
 class TopSection extends StatelessWidget {
-  const TopSection({super.key});
+  final VoidCallback onAvatarTap;
+  const TopSection({super.key, required this.onAvatarTap});
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +13,13 @@ class TopSection extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             TitleWithUnderline(),
-            AvatarButton(imagePath: 'lib/assets/images/demo1.jpg', borderRadius: 16),
+            AvatarButton(
+              imagePath: 'lib/assets/images/demo1.jpg',
+              borderRadius: 16,
+              onTap: onAvatarTap,
+            ),
           ],
         ),
       ),
