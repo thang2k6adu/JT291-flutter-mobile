@@ -81,7 +81,7 @@ class EditUser extends ConsumerWidget {
                     SettingsTile(
                       title: 'UserID',
                       trailingMode: TrailingMode.text,
-                      trailingText: user?.id ?? '-',
+                      trailingText: user?.unionId ?? '-',
                       onTap: () {},
                     ),
                     SettingsTile(

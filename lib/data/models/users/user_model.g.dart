@@ -22,6 +22,12 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
           .toList() ??
       const [],
   avatarUrl: json['avatar_url'] as String?,
+  followingCount: (json['following_count'] as num?)?.toInt(),
+  followersCount: (json['followers_count'] as num?)?.toInt(),
+  viewsCount: (json['views_count'] as num?)?.toInt(),
+  interests: (json['interests'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
   level: json['level'] == null
       ? null
       : UserLevelModel.fromJson(json['level'] as Map<String, dynamic>),
@@ -38,5 +44,9 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'date_of_birth': instance.dateOfBirth?.toIso8601String(),
       'profile_urls': instance.profileUrls,
       'avatar_url': instance.avatarUrl,
+      'following_count': instance.followingCount,
+      'followers_count': instance.followersCount,
+      'views_count': instance.viewsCount,
+      'interests': instance.interests,
       'level': instance.level,
     };

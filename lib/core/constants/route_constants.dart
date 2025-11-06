@@ -19,6 +19,7 @@ class RouteConstants {
   static const String userSettingAccounts = "/user/setting/accounts";
   static const String userSettingNotification = "/user/setting/notification";
   static const String userSettingPrivacy = "/user/setting/privacy";
+  static const String userRelationships = "/user/relationships";
 
   static const String channels = "channels";
   static const String channelMessagesDualInfo = "/channels/messages/dual/info";

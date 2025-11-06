@@ -16,7 +16,10 @@ abstract class UserModel with _$UserModel {
     @JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,
     @JsonKey(name: 'profile_urls') @Default([]) List<String> profileUrls,
     @JsonKey(name: 'avatar_url') String? avatarUrl,
-    // List<String>? interests,
+    @JsonKey(name: 'following_count') int? followingCount,
+    @JsonKey(name: 'followers_count') int? followersCount,
+    @JsonKey(name: 'views_count') int? viewsCount,
+    List<String>? interests,
     UserLevelModel? level,
   }) = _UserModel;
 

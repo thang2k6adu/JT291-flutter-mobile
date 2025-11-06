@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jt291_flutter_mobile/data/models/user_general/user_general.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/stats_section/stats_section.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/stats_row.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/bio_row.dart';
@@ -12,7 +12,7 @@ class UserHeader extends StatelessWidget {
   final String contribution;
   final String distance;
   final String bio;
-  final UserGeneralModel? user;
+  final UserModel? user;
 
   const UserHeader({
     super.key,
@@ -27,7 +27,7 @@ class UserHeader extends StatelessWidget {
   /// Constructor từ UserGeneralModel
   UserHeader.fromUserGeneral({
     super.key,
-    required UserGeneralModel? user,
+    required UserModel? user,
   }) : crownCount = user?.level?.currentLevel?.toString() ?? "0",
        diamondCount = user?.level?.currentExp?.toString() ?? "0",
        contribution = "Contributor: ${user?.level?.currentLevel?.toString() ?? "0"}",
