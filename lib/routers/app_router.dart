@@ -71,7 +71,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: RouteConstants.userProfile,
-            builder: ((context, state) => const ProfileScreen()),
+            builder: ((context, state) => ProfileScreen()),
           ),
         ],
       ),
