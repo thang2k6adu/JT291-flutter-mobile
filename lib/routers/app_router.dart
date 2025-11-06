@@ -12,6 +12,7 @@ import 'package:jt291_flutter_mobile/features/profile/screens/my_album.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_me_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/edit_nickname.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/edit_bio.dart';
+import 'package:jt291_flutter_mobile/features/home/screens/home_screen.dart';
 
 class RouterRefreshNotifier extends ChangeNotifier {
   void refresh() => notifyListeners();
@@ -26,7 +27,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 
   return GoRouter(
-    initialLocation: RouteConstants.main,
+    initialLocation: RouteConstants.home,
     debugLogDiagnostics: true,
     refreshListenable: routerRefreshNotifier,
     routes: <RouteBase>[
@@ -42,6 +43,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: RouteConstants.main,
             builder: ((context, state) => const MainScreen()),
+          ),
+          GoRoute(
+            path: RouteConstants.home,
+            builder: ((context, state) => const HomeScreen()),
           ),
           GoRoute(
             path: RouteConstants.userMe,

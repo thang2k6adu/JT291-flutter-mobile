@@ -45,7 +45,7 @@ class AuthController extends AutoDisposeNotifier<void> {
         overlay.showWithTimeout(message: "Đăng nhập thành công");
         await Future.delayed(Duration(microseconds: 500));
         if (context.mounted) {
-          goScreen(context, RouteConstants.main);
+          goScreen(context, RouteConstants.home);
         }
       }
     } catch (e) {
@@ -86,7 +86,7 @@ class AuthController extends AutoDisposeNotifier<void> {
         overlay.showWithTimeout(message: "Đăng nhập thành công");
         await Future.delayed(Duration(microseconds: 500));
         if (context.mounted) {
-          goScreen(context, RouteConstants.main);
+          goScreen(context, RouteConstants.home);
         }
       }
     } catch (e) {
