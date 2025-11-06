@@ -29,13 +29,13 @@ class ProfileBackground extends ConsumerWidget {
     final extent = ref.watch(draggableSheetControllerProvider).currentExtent;
     final screenHeight = MediaQuery.of(context).size.height;
     final double sheetTop = screenHeight * (1 - extent);
-    final double backgroundHeight = sheetTop.clamp(0.0, screenHeight);
+    final double backgroundHeight = sheetTop.clamp(0.0, screenHeight) * 1.2;
 
     return Positioned(
       top: 0,
       left: 0,
       right: 0,
-      height: backgroundHeight*1.2,
+      height: backgroundHeight,
       child: CarouselSlider.builder(
         itemCount: images.length,
         itemBuilder: (context, index, realIndex) {
