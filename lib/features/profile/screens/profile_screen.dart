@@ -11,6 +11,8 @@ import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/components/ui/vertical_section.dart';
+
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -57,19 +59,7 @@ class ProfileScreen extends ConsumerWidget {
     return userGeneralAsync.when(
       data: (user) => Scaffold(
         backgroundColor: Colors.white,
-        appBar: ProfileAppBar(
-          title: user?.nickname ?? '',
-          actions: [
-            IconButton(
-              icon: SvgIconSimple.asset(AppIcons.scanner),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: SvgIconSimple.asset(AppIcons.setting),
-              onPressed: () {},
-            ),
-          ],
-        ),
+        appBar: ProfileAppBar(title: user?.nickname ?? ''),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -82,14 +72,10 @@ class ProfileScreen extends ConsumerWidget {
                   pushScreen(context, RouteConstants.userMe);
                 },
               ),
-              WalletCard(balance: '100'),
-              const SizedBox(height: 20),
-              QuickAccessRow(items: quickAccessItems),
-              const SizedBox(height: 20),
-              MenuSection(items: menuSection1),
-              const SizedBox(height: 10),
-              MenuSection(items: menuSection2),
-              const SizedBox(height: 100),
+              VerticalSection(child: WalletCard(balance: '100')),
+              VerticalSection(child: QuickAccessRow(items: quickAccessItems)),
+              VerticalSection(spacing: 10, child: MenuSection(items: menuSection1)),
+              VerticalSection(spacing: 100, child: MenuSection(items: menuSection2)),
             ],
           ),
         ),
@@ -97,7 +83,9 @@ class ProfileScreen extends ConsumerWidget {
           currentIndex: 4,
           onTap: (index) {},
           profileNavItems: profileNavItems,
-          image: user?.avatarUrl != null ? Image.network(user!.avatarUrl!).image : null,
+          image: user?.avatarUrl != null
+              ? Image.network(user!.avatarUrl!).image
+              : null,
         ),
       ),
       loading: () => const Center(child: CircularProgressIndicator()),

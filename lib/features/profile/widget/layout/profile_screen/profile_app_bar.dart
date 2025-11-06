@@ -3,9 +3,10 @@ import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
 class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const ProfileAppBar({super.key, required this.title, this.actions});
+  const ProfileAppBar({super.key, required this.title, this.scannerOnPressed, this.settingOnPressed });
   final String title;
-  final List<Widget>? actions;
+  final VoidCallback? scannerOnPressed;
+  final VoidCallback? settingOnPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +24,11 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: SvgIconSimple.asset(AppIcons.scanner),
-          onPressed: () {},
+          onPressed: scannerOnPressed,
         ),
         IconButton(
           icon: SvgIconSimple.asset(AppIcons.setting),
-          onPressed: () {},
+          onPressed: settingOnPressed,
         ),
       ],
     );
