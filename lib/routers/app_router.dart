@@ -9,6 +9,7 @@ import 'package:jt291_flutter_mobile/features/auth/screens/login_screen.dart';
 import 'package:jt291_flutter_mobile/features/main/screens/main_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/edit_user.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/my_album.dart';
+import 'package:jt291_flutter_mobile/features/profile/screens/profile_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_me_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/edit_nickname.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/edit_bio.dart';
@@ -67,6 +68,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: RouteConstants.userEditBio,
             builder: ((context, state) => const EditBioScreen()),
+          ),
+          GoRoute(
+            path: RouteConstants.userProfile,
+            builder: ((context, state) => ProfileScreen()),
           ),
         ],
       ),

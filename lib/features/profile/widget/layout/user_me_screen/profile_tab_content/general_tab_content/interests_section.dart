@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/pill_tag.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
+import 'package:jt291_flutter_mobile/components/ui/pill_tag.dart';
+import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 
 class InterestsSection extends StatelessWidget {
   final List<String> interests;

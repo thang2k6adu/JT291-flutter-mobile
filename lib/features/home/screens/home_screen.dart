@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   void _onAvatarTap(BuildContext context) {
-    pushScreen(context, RouteConstants.userMe);
+    pushScreen(context, RouteConstants.userProfile);
   }
 
   @override
