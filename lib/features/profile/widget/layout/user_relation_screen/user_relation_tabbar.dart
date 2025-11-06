@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
 class UserRelationTabBar extends StatelessWidget implements PreferredSizeWidget {
-  const UserRelationTabBar({super.key});
+  final int followingUsersCount;
+  final int followersUsersCount;
+  final int friendsUsersCount;
+
+  const UserRelationTabBar({super.key, required this.followingUsersCount, required this.followersUsersCount, required this.friendsUsersCount});
 
   @override
   Widget build(BuildContext context) {
-    return const TabBar(
+    return TabBar(
       labelColor: Colors.black,
       unselectedLabelColor: Colors.grey,
       indicatorColor: Colors.black,
@@ -16,9 +20,9 @@ class UserRelationTabBar extends StatelessWidget implements PreferredSizeWidget 
         fontWeight: FontWeight.w600,
       ),
       tabs: [
-        Tab(text: 'Following'),
-        Tab(text: 'Followers'),
-        Tab(text: 'Friends'),
+        Tab(text: 'Following ($followingUsersCount)'),
+        Tab(text: 'Followers ($followersUsersCount)'),
+        Tab(text: 'Friends ($friendsUsersCount)'),
       ],
     );
   }

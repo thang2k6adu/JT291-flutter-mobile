@@ -9,9 +9,7 @@ abstract class FollowingModel with _$FollowingModel {
   const factory FollowingModel({
     @JsonKey(name: 'following_id') String? followingId,
     @JsonKey(name: 'created_at') DateTime? createdAt,
-    @JsonKey(name: 'is_mutual') bool? isMutual,
     @JsonKey(name: 'is_friend') bool? isFriend,
-    @JsonKey(name: 'is_blocked') bool? isBlocked,
     UserModel? user,
   }) = _FollowingModel;
 

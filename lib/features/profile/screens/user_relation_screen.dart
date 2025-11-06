@@ -2,30 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/components/ui/app_search_field.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_relation_appbar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_list_section.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/user_relation_screen/user_item_widget.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_relation_tabbar.dart';
+import 'package:jt291_flutter_mobile/data/mocks/following_mock.dart';
+import 'package:jt291_flutter_mobile/data/models/users/following_model.dart';
+import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
 
 class UserRelationScreen extends StatelessWidget {
   UserRelationScreen({super.key});
 
-  final List<UserItem> users = [
-    UserItem(
-      name: 'Leo Herwitz',
-      description: 'Striving for excellence, embra...',
-      avatar: 'assets/images/avatar1.png',
-      gender: 'female',
-    ),
-
-    UserItem(
-      name: 'Marley Schleifer',
-      description: 'Striving for excellence, embra...',
-      avatar: 'assets/images/avatar2.png',
-      gender: 'male',
-    ),
-  ];
+  final List<FollowingModel> followings = followingMock;
 
   @override
   Widget build(BuildContext context) {
+    final List<UserRelationItem> followingItems = followings
+        .map((following) => UserRelationItem.fromFollowingModel(following))
+        .toList();
+
+    final List<UserRelationItem> followersItems = followings
+        .map((following) => UserRelationItem.fromFollowingModel(following))
+        .toList();
+
+    final List<UserRelationItem> friendsItems = followings
+        .map((following) => UserRelationItem.fromFollowingModel(following))
+        .toList();
+
     final TextEditingController searchController = TextEditingController();
 
     return DefaultTabController(
@@ -34,7 +34,11 @@ class UserRelationScreen extends StatelessWidget {
         backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
         appBar: UserRelationAppBar(
           title: 'Darlene Bears',
-          bottom: UserRelationTabBar(),
+          bottom: UserRelationTabBar(
+            followingUsersCount: followings.length,
+            followersUsersCount: 0,
+            friendsUsersCount: 0,
+          ),
         ),
         body: Column(
           children: [
@@ -47,9 +51,9 @@ class UserRelationScreen extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  UserListSection(title: 'Following', users: users),
-                  UserListSection(title: 'Followers', users: users),
-                  UserListSection(title: 'Friends', users: users),
+                  UserListSection(title: 'Following', users: followingItems),
+                  UserListSection(title: 'Followers', users: followersItems),
+                  UserListSection(title: 'Friends', users: friendsItems),
                 ],
               ),
             ),

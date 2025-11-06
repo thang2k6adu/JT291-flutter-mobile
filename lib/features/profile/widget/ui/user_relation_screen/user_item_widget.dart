@@ -1,22 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/components/ui/action_button.dart';
-
-class UserItem {
-  final String name;
-  final String description;
-  final String avatar;
-  final String gender;
-
-  UserItem({
-    required this.name,
-    required this.description,
-    required this.avatar,
-    required this.gender,
-  });
-}
+import 'package:jt291_flutter_mobile/data/models/users/following_model.dart';
+import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
 
 class UserItemWidget extends StatelessWidget {
-  final UserItem user;
+  final UserRelationItem user;
   final VoidCallback? onButtonPressed;
   final String buttonText;
   final Color buttonBackgroundColor;
@@ -26,7 +14,7 @@ class UserItemWidget extends StatelessWidget {
     super.key,
     required this.user,
     this.onButtonPressed,
-    this.buttonText = 'Follow',
+    this.buttonText = 'Following',
     this.buttonBackgroundColor = const Color(0xFFF5F5F5),
     this.buttonTextColor = Colors.black87,
   });
@@ -37,7 +25,7 @@ class UserItemWidget extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          CircleAvatar(radius: 28, backgroundImage: AssetImage(user.avatar)),
+          CircleAvatar(radius: 28, backgroundImage: AssetImage(user.avatarUrl)),
           const SizedBox(width: 12),
 
           // Info
@@ -48,7 +36,7 @@ class UserItemWidget extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      user.name,
+                      user.nickname,
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
@@ -67,7 +55,7 @@ class UserItemWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  user.description,
+                  user.bio,
                   style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
