@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/icon_label.dart';
+import 'package:jt291_flutter_mobile/components/ui/icon_label.dart';
 
 class GiftsSection extends StatelessWidget {
   const GiftsSection({super.key});

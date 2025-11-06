@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/avatar.dart';
+import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/avatar_fullscreen_view.dart';
 
 class UserAvatarSection extends StatelessWidget {

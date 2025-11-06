@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
+import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
 class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {

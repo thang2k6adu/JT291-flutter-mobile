@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/icon-number-badge.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
+import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header_constants.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;

@@ -7,7 +7,7 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_scre
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/wallet_card.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/quick_access_row.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/menu_section.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
+import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';

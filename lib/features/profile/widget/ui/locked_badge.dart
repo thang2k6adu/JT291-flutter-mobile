@@ -1,7 +1,7 @@
 // Red "Locked" badge with icon
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
+import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 
 /// Badge dạng pill màu đỏ có icon khóa và text
 /// - [label]: văn bản hiển thị (mặc định "Locked")
