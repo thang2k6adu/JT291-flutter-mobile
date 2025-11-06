@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MenuSection extends StatelessWidget {
-  final List<(IconData, String)> items;
+  final List<(Widget, String)> items;
   const MenuSection({required this.items, super.key});
 
   @override
@@ -16,7 +16,7 @@ class MenuSection extends StatelessWidget {
         children: items
             .map(
               (item) => ListTile(
-                leading: Icon(item.$1, color: Colors.black87),
+                leading: item.$1,
                 title: Text(
                   item.$2,
                   style: const TextStyle(

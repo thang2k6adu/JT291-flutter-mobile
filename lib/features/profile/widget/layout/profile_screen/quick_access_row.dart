@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/ui/stat_item.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
 class QuickAccessRow extends StatelessWidget {
   const QuickAccessRow({super.key});
@@ -6,10 +8,10 @@ class QuickAccessRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      ('👑', 'Vip', Colors.purple.shade100),
-      ('🦄', 'Store', Colors.blue.shade100),
-      ('🎯', 'Task Center', Colors.blue.shade100),
-      ('❤️', 'Love Space', Colors.pink.shade100),
+      (Image.asset(AppIcons.vipPng, width: 40, height: 40), 'Vip'),
+      (Image.asset(AppIcons.storePng, width: 40, height: 40), 'Store'),
+      (Image.asset(AppIcons.taskCenterPng, width: 40, height: 40), 'Task Center'),
+      (Image.asset(AppIcons.loveSpacePng, width: 40, height: 40), 'Love Space'),
     ];
 
     return Padding(
@@ -17,49 +19,16 @@ class QuickAccessRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: items
-            .map((e) => _QuickAccessItem(
-                  emoji: e.$1,
-                  label: e.$2,
-                  bgColor: e.$3,
-                ))
-            .toList(),
+            .map(
+              (e) => Expanded(child: 
+              StatItem(
+                label: e.$2,
+                icon: e.$1,
+              ),
+            ),
+          )
+          .toList(),
       ),
-    );
-  }
-}
-
-class _QuickAccessItem extends StatelessWidget {
-  final String emoji;
-  final String label;
-  final Color bgColor;
-
-  const _QuickAccessItem({
-    required this.emoji,
-    required this.label,
-    required this.bgColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Center(
-            child: Text(emoji, style: const TextStyle(fontSize: 30)),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        ),
-      ],
     );
   }
 }

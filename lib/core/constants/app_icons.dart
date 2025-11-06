@@ -21,4 +21,16 @@ class AppIcons {
   static const String setting = 'lib/assets/icons/setting.svg';
   static const String eye = 'lib/assets/icons/eye.svg';
   static const String eyePng = 'lib/assets/icons/eye.png';
+  static const String vipPng = 'lib/assets/icons/vip.png';
+  static const String storePng = 'lib/assets/icons/store.png';
+  static const String taskCenterPng = 'lib/assets/icons/task_center.png';
+  static const String loveSpacePng = 'lib/assets/icons/love_space.png';
+  static const String myPosts = 'lib/assets/icons/my_posts.svg';
+  static const String myBackpack = 'lib/assets/icons/my_backpack.svg';
+  static const String taskClans = 'lib/assets/icons/task_clans.svg';
+  static const String myReferral = 'lib/assets/icons/my_referral.svg';
+  static const String customerService = 'lib/assets/icons/customer_service.svg';
+  static const String helpCenter = 'lib/assets/icons/help_center.svg';
+  static const String feedback = 'lib/assets/icons/feedback.svg';
+  static const String contractUs = 'lib/assets/icons/contract_us.svg';
 }
