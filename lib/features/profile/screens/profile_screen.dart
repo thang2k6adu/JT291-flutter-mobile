@@ -71,6 +71,9 @@ class ProfileScreen extends ConsumerWidget {
                 onAvatarTap: () {
                   pushScreen(context, RouteConstants.userMe);
                 },
+                onStatsTap: () {
+                  pushScreen(context, RouteConstants.userRelationships);
+                },
               ),
               VerticalSection(child: WalletCard(balance: '100')),
               VerticalSection(child: QuickAccessRow(items: quickAccessItems)),

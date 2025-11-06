@@ -9,6 +9,7 @@ class ProfileHeader extends StatelessWidget {
   final int followersCount;
   final int viewsCount;
   final VoidCallback? onAvatarTap;
+  final VoidCallback? onStatsTap;
 
   const ProfileHeader({
     super.key,
@@ -17,6 +18,7 @@ class ProfileHeader extends StatelessWidget {
     required this.followersCount,
     required this.viewsCount,
     this.onAvatarTap,
+    this.onStatsTap,
   });
 
   @override
@@ -43,43 +45,52 @@ class ProfileHeader extends StatelessWidget {
           const SizedBox(width: 16),
           // Stats
           Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                StatItem(count: followingCount.toString(), label: 'Following'),
-                StatItem(count: followersCount.toString(), label: 'Followers'),
+            child: GestureDetector(
+              onTap: onStatsTap,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  StatItem(
+                    count: followingCount.toString(),
+                    label: 'Following',
+                  ),
+                  StatItem(
+                    count: followersCount.toString(),
+                    label: 'Followers',
+                  ),
 
-                // Views with optional badge
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    StatItem(
-                      icon: Image.asset(AppIcons.eyePng),
-                      label: 'Views',
-                    ),
-                    if (viewsCount > 0)
-                      Positioned(
-                        right: -6,
-                        top: -4,
-                        child: Container(
-                          padding: const EdgeInsets.all(2),
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Text(
-                            '$viewsCount',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
+                  // Views with optional badge
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      StatItem(
+                        icon: Image.asset(AppIcons.eyePng),
+                        label: 'Views',
+                      ),
+                      if (viewsCount > 0)
+                        Positioned(
+                          right: -6,
+                          top: -4,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              '$viewsCount',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
