@@ -1,18 +1,18 @@
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jt291_flutter_mobile/data/models/user_general/user_general.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 
 final userGeneralProvider =
-    AsyncNotifierProvider<UserGeneralNotifier, UserGeneralModel?>(
+    AsyncNotifierProvider<UserGeneralNotifier, UserModel?>(
   () => UserGeneralNotifier(),
 );
 
-class UserGeneralNotifier extends AsyncNotifier<UserGeneralModel?> {
+class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
   late final UserGeneralService _userService;
 
   @override
-  Future<UserGeneralModel?> build() async {
+  Future<UserModel?> build() async {
     // Inject service
     _userService = ref.read(userGeneralServiceProvider);
 
@@ -40,7 +40,7 @@ class UserGeneralNotifier extends AsyncNotifier<UserGeneralModel?> {
   }
 
   /// Lấy thông tin profile người dùng khác
-  Future<UserGeneralModel?> getUserProfile(String userId) async {
+  Future<UserModel?> getUserProfile(String userId) async {
     try {
       final user = await _userService.getUserProfile(userId);
       return user;

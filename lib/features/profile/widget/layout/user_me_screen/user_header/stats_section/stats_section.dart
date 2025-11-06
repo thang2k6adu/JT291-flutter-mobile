@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:jt291_flutter_mobile/data/models/user_general/user_general.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/stats_section/profile_section.dart';
 
 class StatsSection extends StatelessWidget {
-  final UserGeneralModel? user;
+  final UserModel? user;
   
   const StatsSection({super.key, this.user});
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:jt291_flutter_mobile/data/models/user_general/user_general.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/general_tab_content/interests_section.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/general_tab_content/gifts_section.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/general_tab_content/supporters_section.dart';
 
 class GeneralTabContent extends StatelessWidget {
-  final UserGeneralModel? user;
+  final UserModel? user;
 
   const GeneralTabContent({super.key, this.user});
 
