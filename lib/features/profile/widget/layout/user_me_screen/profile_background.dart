@@ -35,7 +35,7 @@ class ProfileBackground extends ConsumerWidget {
       top: 0,
       left: 0,
       right: 0,
-      height: backgroundHeight,
+      height: backgroundHeight*1.2,
       child: CarouselSlider.builder(
         itemCount: images.length,
         itemBuilder: (context, index, realIndex) {
@@ -49,7 +49,7 @@ class ProfileBackground extends ConsumerWidget {
         options: CarouselOptions(
           viewportFraction: 1.0,
           height: backgroundHeight,
-          enlargeCenterPage: true,
+          enlargeCenterPage: false,
           enableInfiniteScroll: true,
           autoPlay: true,
           autoPlayInterval: const Duration(seconds: 5),

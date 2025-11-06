@@ -6,7 +6,7 @@ class ProfileConstants {
   static const double maxChildSize = 1.0;
   
   // Animation Configuration
-  static const double maxPadding = 100.0;
+  static const double maxPadding = 120.0;
   static const double paddingThreshold = 0.95;
   static const double paddingRange = 0.05; // 0.95 to 1.0
   

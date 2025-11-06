@@ -28,12 +28,11 @@ class ProfileBackgroundIndicator extends ConsumerWidget {
 
     final mediaQuery = MediaQuery.of(context);
     final double screenHeight = mediaQuery.size.height;
-    // final double sheetTop = screenHeight * (1 - extent);
-    final double bottom = (screenHeight - 60)* extent;
-    final double bottomMargin = (bottom + thickness);
+    final double sheetTop = screenHeight * (1 - extent);
+    final double topMargin = sheetTop.clamp(0.0, screenHeight);
 
     return Positioned(
-      bottom: bottomMargin,
+      top: topMargin - thickness - gap,
       left: 0,
       right: 0,
       child: IgnorePointer(
