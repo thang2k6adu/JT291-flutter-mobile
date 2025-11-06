@@ -1,12 +1,15 @@
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/data/models/users/following_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
+import 'package:jt291_flutter_mobile/data/models/users/follower_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/friend_model.dart';
 
 final userGeneralProvider =
     AsyncNotifierProvider<UserGeneralNotifier, UserModel?>(
-  () => UserGeneralNotifier(),
-);
+      () => UserGeneralNotifier(),
+    );
 
 class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
   late final UserGeneralService _userService;
@@ -79,6 +82,39 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
       state = AsyncData(me);
     } catch (e, st) {
       state = AsyncError(e, st);
+    }
+  }
+
+  /// Lấy danh sách Following
+  Future<List<FollowingModel>> getFollowingList() async {
+    try {
+      final followingList = await _userService.getFollowingList();
+      return followingList;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      return [];
+    }
+  }
+
+  /// Lấy danh sách Follower
+  Future<List<FollowerModel>> getFollowerList() async {
+    try {
+      final followerList = await _userService.getFollowerList();
+      return followerList;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      return [];
+    }
+  }
+
+  /// Lấy danh sách Friend
+  Future<List<FriendModel>> getFriendList() async {
+    try {
+      final friendList = await _userService.getFriendList();
+      return friendList;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      return [];
     }
   }
 }
