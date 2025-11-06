@@ -24,13 +24,13 @@ class ProfileHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Avatar
           GestureDetector(
             onTap: onAvatarTap,
             child: CircleAvatar(
-              radius: 40,
+              radius: 44,
               backgroundImage: avatarUrl.isNotEmpty
                   ? NetworkImage(avatarUrl)
                   : null,
@@ -40,37 +40,47 @@ class ProfileHeader extends StatelessWidget {
                   : null,
             ),
           ),
-
+          const SizedBox(width: 16),
           // Stats
-          StatItem(count: followingCount.toString(), label: 'Following'),
-          StatItem(count: followersCount.toString(), label: 'Followers'),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                StatItem(count: followingCount.toString(), label: 'Following'),
+                StatItem(count: followersCount.toString(), label: 'Followers'),
 
-          // Views with optional badge
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              StatItem(icon: Image.asset(AppIcons.eyePng), label: 'Views'),
-              if (viewsCount > 0)
-                Positioned(
-                  right: -6,
-                  top: -4,
-                  child: Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
+                // Views with optional badge
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    StatItem(
+                      icon: Image.asset(AppIcons.eyePng),
+                      label: 'Views',
                     ),
-                    child: Text(
-                      '$viewsCount',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
+                    if (viewsCount > 0)
+                      Positioned(
+                        right: -6,
+                        top: -4,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            '$viewsCount',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                  ],
                 ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
