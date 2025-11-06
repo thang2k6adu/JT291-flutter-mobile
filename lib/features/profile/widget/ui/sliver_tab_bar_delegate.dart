@@ -20,10 +20,10 @@ class SliverTabBarDelegate extends SliverPersistentHeaderDelegate {
   }
   
   @override
-  double get maxExtent => 48.0 + padding.top;
+  double get maxExtent => padding.top + 48.0;
   
   @override
-  double get minExtent => 48.0 + padding.top;
+  double get minExtent => padding.top + 48.0;
   
   @override
   bool shouldRebuild(SliverTabBarDelegate oldDelegate) {
