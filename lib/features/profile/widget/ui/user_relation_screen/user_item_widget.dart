@@ -1,31 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/components/ui/action_button.dart';
-import 'package:jt291_flutter_mobile/data/models/users/following_model.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
+
+enum UserButtonType { friends, following, followBack }
 
 class UserItemWidget extends StatelessWidget {
   final UserRelationItem user;
-  final VoidCallback? onButtonPressed;
-  final String buttonText;
-  final Color buttonBackgroundColor;
-  final Color buttonTextColor;
+  final UserButtonType buttonType;
+  final void Function(UserRelationItem user, UserButtonType type)?
+  onUserButtonPressed;
 
   const UserItemWidget({
     super.key,
     required this.user,
-    this.onButtonPressed,
-    this.buttonText = 'Following',
-    this.buttonBackgroundColor = const Color(0xFFF5F5F5),
-    this.buttonTextColor = Colors.black87,
+    required this.buttonType,
+    this.onUserButtonPressed,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Xác định UI button dựa trên type
+    String buttonText;
+    Color buttonBg;
+    Color buttonTextColor;
+
+    switch (buttonType) {
+      case UserButtonType.friends:
+        buttonText = 'Friends';
+        buttonBg = const Color(0xFFF5F5F5);
+        buttonTextColor = Colors.black87;
+        break;
+      case UserButtonType.following:
+        buttonText = 'Following';
+        buttonBg = const Color(0xFFF5F5F5);
+        buttonTextColor = Colors.black87;
+        break;
+      case UserButtonType.followBack:
+        buttonText = 'Follow back';
+        buttonBg = const Color(0xFFE65983);
+        buttonTextColor = Colors.white;
+        break;
+    }
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          CircleAvatar(radius: 28, backgroundImage: AssetImage(user.avatarUrl)),
+          CircleAvatar(
+            radius: 28,
+            backgroundImage: NetworkImage(user.avatarUrl),
+          ),
           const SizedBox(width: 12),
 
           // Info
@@ -67,9 +91,9 @@ class UserItemWidget extends StatelessWidget {
           // Button
           ActionButton(
             text: buttonText,
-            backgroundColor: buttonBackgroundColor,
+            backgroundColor: buttonBg,
             textColor: buttonTextColor,
-            onPressed: onButtonPressed,
+            onPressed: () => onUserButtonPressed?.call(user, buttonType),
           ),
         ],
       ),

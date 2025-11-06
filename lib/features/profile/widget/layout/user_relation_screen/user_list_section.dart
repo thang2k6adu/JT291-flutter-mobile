@@ -4,12 +4,13 @@ import 'package:jt291_flutter_mobile/features/profile/widget/ui/user_relation_sc
 
 /// Widget hiển thị danh sách User với label tab.
 /// - [title]: Tên tab (Following, Followers, Friends)
-/// - [followings]: Danh sách FollowingModel hiển thị
+/// - [users]: Danh sách UserRelationItem hiển thị
 class UserListSection extends StatelessWidget {
   final String title;
   final List<UserRelationItem> users;
+  final void Function(UserRelationItem user, UserButtonType type)? onUserButtonPressed;
 
-  const UserListSection({super.key, required this.title, required this.users});
+  const UserListSection({super.key, required this.title, required this.users, this.onUserButtonPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -41,17 +42,12 @@ class UserListSection extends StatelessWidget {
               final user = users[index];
               return UserItemWidget(
                 user: user,
-                buttonText: user.isFriend
-                    ? 'Friends'
+                buttonType: user.isFriend
+                    ? UserButtonType.friends
                     : title == 'Following'
-                    ? 'Following'
-                    : 'Follow back',
-                buttonBackgroundColor: title == 'Followers' && !user.isFriend
-                    ? const Color(0xFFE65983)
-                    : const Color(0xFFF5F5F5),
-                buttonTextColor: title == 'Followers' && !user.isFriend
-                    ? Colors.white
-                    : const Color(0xFF000000),
+                    ? UserButtonType.following
+                    : UserButtonType.followBack,
+                onUserButtonPressed: onUserButtonPressed,
               );
             },
           ),

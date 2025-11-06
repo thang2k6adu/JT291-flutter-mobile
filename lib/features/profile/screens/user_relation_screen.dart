@@ -10,6 +10,7 @@ import 'package:jt291_flutter_mobile/data/models/users/follower_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/friend_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/follower_mock.dart';
 import 'package:jt291_flutter_mobile/data/mocks/friend_mock.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/ui/user_relation_screen/user_item_widget.dart';
 
 class UserRelationScreen extends StatelessWidget {
   UserRelationScreen({super.key});
@@ -17,6 +18,21 @@ class UserRelationScreen extends StatelessWidget {
   final List<FollowingModel> followings = followingMock;
   final List<FollowerModel> followers = followerMock;
   final List<FriendModel> friends = friendMock;
+
+  void _handleUserButtonPressed(UserRelationItem user, UserButtonType type) {
+    switch (type) {
+      case UserButtonType.friends:
+        print('Open friend profile: ${user.nickname}' + ' ${user.id}');
+        break;
+      case UserButtonType.following:
+        print('Unfollow user: ${user.nickname}' + ' ${user.id}');
+        break;
+      case UserButtonType.followBack:
+        print('Follow back user: ${user.nickname}' + ' ${user.id}');
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<UserRelationItem> followingItems = followings
@@ -56,9 +72,21 @@ class UserRelationScreen extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  UserListSection(title: 'Following', users: followingItems),
-                  UserListSection(title: 'Followers', users: followersItems),
-                  UserListSection(title: 'Friends', users: friendsItems),
+                  UserListSection(
+                    title: 'Following',
+                    users: followingItems,
+                    onUserButtonPressed: _handleUserButtonPressed,
+                  ),
+                  UserListSection(
+                    title: 'Followers',
+                    users: followersItems,
+                    onUserButtonPressed: _handleUserButtonPressed,
+                  ),
+                  UserListSection(
+                    title: 'Friends',
+                    users: friendsItems,
+                    onUserButtonPressed: _handleUserButtonPressed,
+                  ),
                 ],
               ),
             ),
