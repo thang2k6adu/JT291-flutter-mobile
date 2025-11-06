@@ -9,8 +9,9 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_scre
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/menu_section.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
-
-class ProfileScreen extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   static final quickAccessItems = [
@@ -51,51 +52,56 @@ class ProfileScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: ProfileAppBar(
-        title: 'Darlene Bears',
-        actions: [
-          IconButton(
-            icon: SvgIconSimple.asset(AppIcons.scanner),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: SvgIconSimple.asset(AppIcons.setting),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            ProfileHeader(
-              avatarUrl:
-                  'https://statictuoitre.mediacdn.vn/thumb_w/640/2017/7-1512755474943.jpg',
-              followingCount: 100,
-              followersCount: 100,
-              viewsCount: 100,
-              onAvatarTap: () {
-                pushScreen(context, RouteConstants.userMe);
-              },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userGeneralAsync = ref.watch(userGeneralProvider);
+    return userGeneralAsync.when(
+      data: (user) => Scaffold(
+        backgroundColor: Colors.white,
+        appBar: ProfileAppBar(
+          title: user?.nickname ?? '',
+          actions: [
+            IconButton(
+              icon: SvgIconSimple.asset(AppIcons.scanner),
+              onPressed: () {},
             ),
-            WalletCard(balance: '100'),
-            const SizedBox(height: 20),
-            QuickAccessRow(items: quickAccessItems),
-            const SizedBox(height: 20),
-            MenuSection(items: menuSection1),
-            const SizedBox(height: 10),
-            MenuSection(items: menuSection2),
-            const SizedBox(height: 100),
+            IconButton(
+              icon: SvgIconSimple.asset(AppIcons.setting),
+              onPressed: () {},
+            ),
           ],
         ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              ProfileHeader(
+                avatarUrl: user?.avatarUrl,
+                followingCount: user?.followingCount ?? 0,
+                followersCount: user?.followersCount ?? 0,
+                viewsCount: user?.viewsCount ?? 0,
+                onAvatarTap: () {
+                  pushScreen(context, RouteConstants.userMe);
+                },
+              ),
+              WalletCard(balance: '100'),
+              const SizedBox(height: 20),
+              QuickAccessRow(items: quickAccessItems),
+              const SizedBox(height: 20),
+              MenuSection(items: menuSection1),
+              const SizedBox(height: 10),
+              MenuSection(items: menuSection2),
+              const SizedBox(height: 100),
+            ],
+          ),
+        ),
+        bottomNavigationBar: ProfileBottomNavBar(
+          currentIndex: 4,
+          onTap: (index) {},
+          profileNavItems: profileNavItems,
+          image: user?.avatarUrl != null ? Image.network(user!.avatarUrl!).image : null,
+        ),
       ),
-      bottomNavigationBar: ProfileBottomNavBar(
-        currentIndex: 4,
-        onTap: (index) {},
-        profileNavItems: profileNavItems,
-      ),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }
 }

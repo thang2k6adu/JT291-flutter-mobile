@@ -4,7 +4,8 @@ class ProfileBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int>? onTap;
   final List<BottomNavigationBarItem> profileNavItems;
-  const ProfileBottomNavBar({super.key, this.currentIndex = 0, this.onTap, required this.profileNavItems});
+  final ImageProvider? image;
+  const ProfileBottomNavBar({super.key, this.currentIndex = 0, this.onTap, required this.profileNavItems, this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class ProfileBottomNavBar extends StatelessWidget {
       unselectedItemColor: Colors.grey,
       onTap: onTap,
       items: profileNavItems
-          .map((e) => BottomNavigationBarItem(icon: e.icon, label: e.label))
+          .map((e) => BottomNavigationBarItem(icon: e.icon, label: e.label, activeIcon: image != null ? CircleAvatar(radius: 15, backgroundImage: image!) : null))
           .toList(),
     );
   }

@@ -22,6 +22,9 @@ _UserGeneralModel _$UserGeneralModelFromJson(Map<String, dynamic> json) =>
           ?.map((e) => e as String)
           .toList(),
       avatarUrl: json['avatar_url'] as String?,
+      followingCount: (json['following_count'] as num?)?.toInt(),
+      followersCount: (json['followers_count'] as num?)?.toInt(),
+      viewsCount: (json['views_count'] as num?)?.toInt(),
       interests: (json['interests'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -42,6 +45,9 @@ Map<String, dynamic> _$UserGeneralModelToJson(_UserGeneralModel instance) =>
       'date_of_birth': instance.dateOfBirth?.toIso8601String(),
       'profile_urls': instance.profileUrls,
       'avatar_url': instance.avatarUrl,
+      'following_count': instance.followingCount,
+      'followers_count': instance.followersCount,
+      'views_count': instance.viewsCount,
       'interests': instance.interests,
       'level': instance.level,
     };
