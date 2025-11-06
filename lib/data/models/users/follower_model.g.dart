@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'following_model.dart';
+part of 'follower_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_FollowingModel _$FollowingModelFromJson(Map<String, dynamic> json) =>
-    _FollowingModel(
-      followingId: json['following_id'] as String?,
+_FollowerModel _$FollowerModelFromJson(Map<String, dynamic> json) =>
+    _FollowerModel(
+      followerId: json['follower_id'] as String?,
       createdAt: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -18,9 +18,9 @@ _FollowingModel _$FollowingModelFromJson(Map<String, dynamic> json) =>
           : UserModel.fromJson(json['user'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$FollowingModelToJson(_FollowingModel instance) =>
+Map<String, dynamic> _$FollowerModelToJson(_FollowerModel instance) =>
     <String, dynamic>{
-      'following_id': instance.followingId,
+      'follower_id': instance.followerId,
       'created_at': instance.createdAt?.toIso8601String(),
       'is_friend': instance.isFriend,
       'user': instance.user,

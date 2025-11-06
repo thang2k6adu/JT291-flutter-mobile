@@ -1,4 +1,6 @@
 import 'package:jt291_flutter_mobile/data/models/users/following_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/follower_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/friend_model.dart';
 
 class UserRelationItem {
   final String id;
@@ -25,6 +27,30 @@ class UserRelationItem {
       avatarUrl: user.avatarUrl ?? '',
       bio: user.bio ?? '',
       isFriend: following.isFriend ?? false,
+      gender: user.gender ?? 'male',
+    );
+  }
+
+  factory UserRelationItem.fromFollowerModel(FollowerModel follower) {
+    final user = follower.user!;
+    return UserRelationItem(
+      id: user.unionId,
+      nickname: user.nickname ?? '',
+      avatarUrl: user.avatarUrl ?? '',
+      bio: user.bio ?? '',
+      isFriend: follower.isFriend ?? false,
+      gender: user.gender ?? 'male',
+    );
+  }
+
+  factory UserRelationItem.fromFriendModel(FriendModel friend) {
+    final user = friend.user!;
+    return UserRelationItem(
+      id: user.unionId,
+      nickname: user.nickname ?? '',
+      avatarUrl: user.avatarUrl ?? '',
+      bio: user.bio ?? '',
+      isFriend: true,
       gender: user.gender ?? 'male',
     );
   }

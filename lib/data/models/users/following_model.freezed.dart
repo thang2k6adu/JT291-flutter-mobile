@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$FollowingModel {
 
-@JsonKey(name: 'following_id') String? get followingId;@JsonKey(name: 'created_at') DateTime? get createdAt;@JsonKey(name: 'is_mutual') bool? get isMutual;@JsonKey(name: 'is_friend') bool? get isFriend;@JsonKey(name: 'is_blocked') bool? get isBlocked; UserModel? get user;
+@JsonKey(name: 'following_id') String? get followingId;@JsonKey(name: 'created_at') DateTime? get createdAt;@JsonKey(name: 'is_friend') bool? get isFriend; UserModel? get user;
 /// Create a copy of FollowingModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $FollowingModelCopyWith<FollowingModel> get copyWith => _$FollowingModelCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FollowingModel&&(identical(other.followingId, followingId) || other.followingId == followingId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isMutual, isMutual) || other.isMutual == isMutual)&&(identical(other.isFriend, isFriend) || other.isFriend == isFriend)&&(identical(other.isBlocked, isBlocked) || other.isBlocked == isBlocked)&&(identical(other.user, user) || other.user == user));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FollowingModel&&(identical(other.followingId, followingId) || other.followingId == followingId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isFriend, isFriend) || other.isFriend == isFriend)&&(identical(other.user, user) || other.user == user));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,followingId,createdAt,isMutual,isFriend,isBlocked,user);
+int get hashCode => Object.hash(runtimeType,followingId,createdAt,isFriend,user);
 
 @override
 String toString() {
-  return 'FollowingModel(followingId: $followingId, createdAt: $createdAt, isMutual: $isMutual, isFriend: $isFriend, isBlocked: $isBlocked, user: $user)';
+  return 'FollowingModel(followingId: $followingId, createdAt: $createdAt, isFriend: $isFriend, user: $user)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $FollowingModelCopyWith<$Res>  {
   factory $FollowingModelCopyWith(FollowingModel value, $Res Function(FollowingModel) _then) = _$FollowingModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'following_id') String? followingId,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'is_mutual') bool? isMutual,@JsonKey(name: 'is_friend') bool? isFriend,@JsonKey(name: 'is_blocked') bool? isBlocked, UserModel? user
+@JsonKey(name: 'following_id') String? followingId,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'is_friend') bool? isFriend, UserModel? user
 });
 
 
@@ -65,13 +65,11 @@ class _$FollowingModelCopyWithImpl<$Res>
 
 /// Create a copy of FollowingModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? followingId = freezed,Object? createdAt = freezed,Object? isMutual = freezed,Object? isFriend = freezed,Object? isBlocked = freezed,Object? user = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? followingId = freezed,Object? createdAt = freezed,Object? isFriend = freezed,Object? user = freezed,}) {
   return _then(_self.copyWith(
 followingId: freezed == followingId ? _self.followingId : followingId // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,isMutual: freezed == isMutual ? _self.isMutual : isMutual // ignore: cast_nullable_to_non_nullable
-as bool?,isFriend: freezed == isFriend ? _self.isFriend : isFriend // ignore: cast_nullable_to_non_nullable
-as bool?,isBlocked: freezed == isBlocked ? _self.isBlocked : isBlocked // ignore: cast_nullable_to_non_nullable
+as DateTime?,isFriend: freezed == isFriend ? _self.isFriend : isFriend // ignore: cast_nullable_to_non_nullable
 as bool?,user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as UserModel?,
   ));
@@ -170,10 +168,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'following_id')  String? followingId, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'is_mutual')  bool? isMutual, @JsonKey(name: 'is_friend')  bool? isFriend, @JsonKey(name: 'is_blocked')  bool? isBlocked,  UserModel? user)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'following_id')  String? followingId, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'is_friend')  bool? isFriend,  UserModel? user)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _FollowingModel() when $default != null:
-return $default(_that.followingId,_that.createdAt,_that.isMutual,_that.isFriend,_that.isBlocked,_that.user);case _:
+return $default(_that.followingId,_that.createdAt,_that.isFriend,_that.user);case _:
   return orElse();
 
 }
@@ -191,10 +189,10 @@ return $default(_that.followingId,_that.createdAt,_that.isMutual,_that.isFriend,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'following_id')  String? followingId, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'is_mutual')  bool? isMutual, @JsonKey(name: 'is_friend')  bool? isFriend, @JsonKey(name: 'is_blocked')  bool? isBlocked,  UserModel? user)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'following_id')  String? followingId, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'is_friend')  bool? isFriend,  UserModel? user)  $default,) {final _that = this;
 switch (_that) {
 case _FollowingModel():
-return $default(_that.followingId,_that.createdAt,_that.isMutual,_that.isFriend,_that.isBlocked,_that.user);case _:
+return $default(_that.followingId,_that.createdAt,_that.isFriend,_that.user);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -211,10 +209,10 @@ return $default(_that.followingId,_that.createdAt,_that.isMutual,_that.isFriend,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'following_id')  String? followingId, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'is_mutual')  bool? isMutual, @JsonKey(name: 'is_friend')  bool? isFriend, @JsonKey(name: 'is_blocked')  bool? isBlocked,  UserModel? user)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'following_id')  String? followingId, @JsonKey(name: 'created_at')  DateTime? createdAt, @JsonKey(name: 'is_friend')  bool? isFriend,  UserModel? user)?  $default,) {final _that = this;
 switch (_that) {
 case _FollowingModel() when $default != null:
-return $default(_that.followingId,_that.createdAt,_that.isMutual,_that.isFriend,_that.isBlocked,_that.user);case _:
+return $default(_that.followingId,_that.createdAt,_that.isFriend,_that.user);case _:
   return null;
 
 }
@@ -226,14 +224,12 @@ return $default(_that.followingId,_that.createdAt,_that.isMutual,_that.isFriend,
 @JsonSerializable()
 
 class _FollowingModel implements FollowingModel {
-  const _FollowingModel({@JsonKey(name: 'following_id') this.followingId, @JsonKey(name: 'created_at') this.createdAt, @JsonKey(name: 'is_mutual') this.isMutual, @JsonKey(name: 'is_friend') this.isFriend, @JsonKey(name: 'is_blocked') this.isBlocked, this.user});
+  const _FollowingModel({@JsonKey(name: 'following_id') this.followingId, @JsonKey(name: 'created_at') this.createdAt, @JsonKey(name: 'is_friend') this.isFriend, this.user});
   factory _FollowingModel.fromJson(Map<String, dynamic> json) => _$FollowingModelFromJson(json);
 
 @override@JsonKey(name: 'following_id') final  String? followingId;
 @override@JsonKey(name: 'created_at') final  DateTime? createdAt;
-@override@JsonKey(name: 'is_mutual') final  bool? isMutual;
 @override@JsonKey(name: 'is_friend') final  bool? isFriend;
-@override@JsonKey(name: 'is_blocked') final  bool? isBlocked;
 @override final  UserModel? user;
 
 /// Create a copy of FollowingModel
@@ -249,16 +245,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FollowingModel&&(identical(other.followingId, followingId) || other.followingId == followingId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isMutual, isMutual) || other.isMutual == isMutual)&&(identical(other.isFriend, isFriend) || other.isFriend == isFriend)&&(identical(other.isBlocked, isBlocked) || other.isBlocked == isBlocked)&&(identical(other.user, user) || other.user == user));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FollowingModel&&(identical(other.followingId, followingId) || other.followingId == followingId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.isFriend, isFriend) || other.isFriend == isFriend)&&(identical(other.user, user) || other.user == user));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,followingId,createdAt,isMutual,isFriend,isBlocked,user);
+int get hashCode => Object.hash(runtimeType,followingId,createdAt,isFriend,user);
 
 @override
 String toString() {
-  return 'FollowingModel(followingId: $followingId, createdAt: $createdAt, isMutual: $isMutual, isFriend: $isFriend, isBlocked: $isBlocked, user: $user)';
+  return 'FollowingModel(followingId: $followingId, createdAt: $createdAt, isFriend: $isFriend, user: $user)';
 }
 
 
@@ -269,7 +265,7 @@ abstract mixin class _$FollowingModelCopyWith<$Res> implements $FollowingModelCo
   factory _$FollowingModelCopyWith(_FollowingModel value, $Res Function(_FollowingModel) _then) = __$FollowingModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'following_id') String? followingId,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'is_mutual') bool? isMutual,@JsonKey(name: 'is_friend') bool? isFriend,@JsonKey(name: 'is_blocked') bool? isBlocked, UserModel? user
+@JsonKey(name: 'following_id') String? followingId,@JsonKey(name: 'created_at') DateTime? createdAt,@JsonKey(name: 'is_friend') bool? isFriend, UserModel? user
 });
 
 
@@ -286,13 +282,11 @@ class __$FollowingModelCopyWithImpl<$Res>
 
 /// Create a copy of FollowingModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? followingId = freezed,Object? createdAt = freezed,Object? isMutual = freezed,Object? isFriend = freezed,Object? isBlocked = freezed,Object? user = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? followingId = freezed,Object? createdAt = freezed,Object? isFriend = freezed,Object? user = freezed,}) {
   return _then(_FollowingModel(
 followingId: freezed == followingId ? _self.followingId : followingId // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime?,isMutual: freezed == isMutual ? _self.isMutual : isMutual // ignore: cast_nullable_to_non_nullable
-as bool?,isFriend: freezed == isFriend ? _self.isFriend : isFriend // ignore: cast_nullable_to_non_nullable
-as bool?,isBlocked: freezed == isBlocked ? _self.isBlocked : isBlocked // ignore: cast_nullable_to_non_nullable
+as DateTime?,isFriend: freezed == isFriend ? _self.isFriend : isFriend // ignore: cast_nullable_to_non_nullable
 as bool?,user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as UserModel?,
   ));

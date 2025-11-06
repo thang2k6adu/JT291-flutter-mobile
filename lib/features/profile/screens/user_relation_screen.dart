@@ -6,24 +6,29 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relatio
 import 'package:jt291_flutter_mobile/data/mocks/following_mock.dart';
 import 'package:jt291_flutter_mobile/data/models/users/following_model.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/follower_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/friend_model.dart';
+import 'package:jt291_flutter_mobile/data/mocks/follower_mock.dart';
+import 'package:jt291_flutter_mobile/data/mocks/friend_mock.dart';
 
 class UserRelationScreen extends StatelessWidget {
   UserRelationScreen({super.key});
 
   final List<FollowingModel> followings = followingMock;
-
+  final List<FollowerModel> followers = followerMock;
+  final List<FriendModel> friends = friendMock;
   @override
   Widget build(BuildContext context) {
     final List<UserRelationItem> followingItems = followings
         .map((following) => UserRelationItem.fromFollowingModel(following))
         .toList();
 
-    final List<UserRelationItem> followersItems = followings
-        .map((following) => UserRelationItem.fromFollowingModel(following))
+    final List<UserRelationItem> followersItems = followers
+        .map((follower) => UserRelationItem.fromFollowerModel(follower))
         .toList();
 
-    final List<UserRelationItem> friendsItems = followings
-        .map((following) => UserRelationItem.fromFollowingModel(following))
+    final List<UserRelationItem> friendsItems = friends
+        .map((friend) => UserRelationItem.fromFriendModel(friend))
         .toList();
 
     final TextEditingController searchController = TextEditingController();
@@ -36,8 +41,8 @@ class UserRelationScreen extends StatelessWidget {
           title: 'Darlene Bears',
           bottom: UserRelationTabBar(
             followingUsersCount: followings.length,
-            followersUsersCount: 0,
-            friendsUsersCount: 0,
+            followersUsersCount: followers.length,
+            friendsUsersCount: friends.length,
           ),
         ),
         body: Column(
