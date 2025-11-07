@@ -9,6 +9,7 @@ import 'package:jt291_flutter_mobile/data/providers/relationship/following_list_
 import 'package:jt291_flutter_mobile/data/providers/relationship/follower_list_notifier.dart';
 import 'package:jt291_flutter_mobile/data/providers/relationship/friend_list_notifier.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
+import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
 
 /// Provider lưu từ khóa tìm kiếm
 final searchQueryProvider = StateProvider<String>((ref) => '');
@@ -64,12 +65,7 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
 
     // Hiển thị kết quả
     if (filtered.isEmpty && searchQuery.isNotEmpty) {
-      return const Center(
-        child: Text(
-          'No matching result',
-          style: TextStyle(color: Colors.grey),
-        ),
-      );
+      return const NoMatchingResults();
     }
 
     return UserListSection(
