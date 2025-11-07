@@ -13,7 +13,7 @@ class ProfileViewScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBarWithBack(title: 'Profile Views'),
+      appBar: AppBarWithBack(title: 'Profile Views', bottomBorder: true),
       body: profileViewAsync.when(
         data: (profileView) {
           if (profileView == null || profileView.views.isEmpty) {
@@ -30,7 +30,10 @@ class ProfileViewScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 if (index < profileView.views.length) {
                   final view = profileView.views[index];
-                  return ProfileViewItem(view: view);
+
+                  final isDimmed = !profileView.canViewFull && index != 0;
+
+                  return ProfileViewItem(view: view, isDimmed: isDimmed);
                 } else {
                   // Hiển thị loading khi load thêm
                   return const Padding(

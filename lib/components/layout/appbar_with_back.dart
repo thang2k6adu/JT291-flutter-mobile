@@ -22,7 +22,8 @@ class AppBarWithBack extends StatelessWidget
   final Color textColor;
   final double elevation;
   final bool centerTitle;
-
+  final bool bottomBorder;
+  
   const AppBarWithBack({
     super.key,
     required this.title,
@@ -32,6 +33,7 @@ class AppBarWithBack extends StatelessWidget
     this.textColor = Colors.black,
     this.elevation = 0,
     this.centerTitle = true,
+    this.bottomBorder = false,
   });
 
   @override
@@ -56,7 +58,13 @@ class AppBarWithBack extends StatelessWidget
         ),
       ),
       centerTitle: centerTitle,
-      bottom: bottom,
+      bottom: bottom ?? (bottomBorder ? PreferredSize(
+        preferredSize: Size.fromHeight(1),
+        child: Container(
+          height: 1,
+          color: Colors.grey[300],
+        ),
+      ) : null),
     );
   }
 }
