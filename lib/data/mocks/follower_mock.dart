@@ -1,23 +1,39 @@
-import 'package:jt291_flutter_mobile/data/models/users/follower_model.dart';
-import 'user_mock.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/pagination_model.dart';
 
-final followerMock = [
-  FollowerModel(
-    followerId: 'usr_67890',
-    createdAt: DateTime.parse('2025-10-30T08:12:00Z'),
-    isFriend: true,
-    user: userMock[1],
-  ),
-  FollowerModel(
-    followerId: 'usr_54321',
-    createdAt: DateTime.parse('2025-11-01T12:45:00Z'),
-    isFriend: false,
-    user: userMock[2],
-  ),
-  FollowerModel(
-    followerId: 'usr_12345',
-    createdAt: DateTime.parse('2025-11-06T10:00:00Z'),
-    isFriend: false,
-    user: userMock[0],
-  ),
-];
+final followerMock = UserListResponse(
+  userId: "darlene_bears_id",
+  username: "Darlene Bears",
+  avatarUrl: "https://example.com/avatar_darlene.png",
+  followingCount: 360,
+  followersCount: 160000,
+  friendsCount: 20,
+  data: [
+    const UserSummaryModel(
+      id: "user4_id",
+      username: "John Doe",
+      avatarUrl: "https://example.com/avatar4.png",
+      gender: "male",
+      shortBio: "Music enthusiast and coder",
+      isFollowing: false, // chưa follow lại
+    ),
+    const UserSummaryModel(
+      id: "user5_id",
+      username: "Anna Marie",
+      avatarUrl: "https://example.com/avatar5.png",
+      gender: "female",
+      shortBio: "Traveler and food lover",
+      isFollowing: true, // đã follow lại
+    ),
+    const UserSummaryModel(
+      id: "user6_id",
+      username: "Michael Scott",
+      avatarUrl: "https://example.com/avatar6.png",
+      gender: "male",
+      shortBio: "Regional manager, Dunder Mifflin",
+      isFollowing: false,
+    ),
+  ],
+  pagination: const PaginationModel(limit: 20, offset: 0, total: 160000),
+);

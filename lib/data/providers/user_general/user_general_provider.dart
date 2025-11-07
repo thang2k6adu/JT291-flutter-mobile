@@ -1,10 +1,8 @@
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jt291_flutter_mobile/data/models/users/following_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
-import 'package:jt291_flutter_mobile/data/models/users/follower_model.dart';
-import 'package:jt291_flutter_mobile/data/models/users/friend_model.dart';
 
 final userGeneralProvider =
     AsyncNotifierProvider<UserGeneralNotifier, UserModel?>(
@@ -86,7 +84,7 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
   }
 
   /// Lấy danh sách Following
-  Future<List<FollowingModel>> getFollowingList() async {
+  Future<List<UserSummaryModel>> getFollowingList() async {
     try {
       final followingList = await _userService.getFollowingList();
       return followingList;
@@ -97,7 +95,7 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
   }
 
   /// Lấy danh sách Follower
-  Future<List<FollowerModel>> getFollowerList() async {
+  Future<List<UserSummaryModel>> getFollowerList() async {
     try {
       final followerList = await _userService.getFollowerList();
       return followerList;
@@ -108,7 +106,7 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
   }
 
   /// Lấy danh sách Friend
-  Future<List<FriendModel>> getFriendList() async {
+  Future<List<UserSummaryModel>> getFriendList() async {
     try {
       final friendList = await _userService.getFriendList();
       return friendList;

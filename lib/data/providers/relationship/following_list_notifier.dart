@@ -1,22 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jt291_flutter_mobile/data/models/users/following_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 
 final followingListProvider =
-    AsyncNotifierProvider<FollowingListNotifier, List<FollowingModel>>(
+    AsyncNotifierProvider<FollowingListNotifier, List<UserSummaryModel>>(
   () => FollowingListNotifier(),
 );
 
-class FollowingListNotifier extends AsyncNotifier<List<FollowingModel>> {
+class FollowingListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
   late final UserGeneralService _service;
 
   @override
-  Future<List<FollowingModel>> build() async {
+  Future<List<UserSummaryModel>> build() async {
     _service = ref.read(userGeneralServiceProvider);
     return fetchFollowing();
   }
 
-  Future<List<FollowingModel>> fetchFollowing() async {
+  Future<List<UserSummaryModel>> fetchFollowing() async {
     state = const AsyncLoading();
     try {
       final list = await _service.getFollowingList();

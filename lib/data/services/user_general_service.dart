@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jt291_flutter_mobile/data/models/users/following_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/following_mock.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
-import 'package:jt291_flutter_mobile/data/models/users/follower_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/follower_mock.dart';
 import 'package:jt291_flutter_mobile/data/mocks/friend_mock.dart';
-import 'package:jt291_flutter_mobile/data/models/users/friend_model.dart';
 
 class UserGeneralService {
   final ApiService _apiService = ApiService();
@@ -97,13 +95,13 @@ class UserGeneralService {
   }
 
   /// get Following list
-  FutureOr<List<FollowingModel>> getFollowingList() async {
+  FutureOr<List<UserSummaryModel>> getFollowingList() async {
     try {
       // Fake API call với mock data
       await Future.delayed(
         const Duration(milliseconds: 500),
       ); // simulate network delay
-      return followingMock;
+      return followingMock.data ?? [];
 
       // Khi có API thật, bỏ comment này
       // final response = await _apiService.get('/v1/users/following');
@@ -117,36 +115,36 @@ class UserGeneralService {
   }
 
   /// get Follower list
-  FutureOr<List<FollowerModel>> getFollowerList() async {
+  FutureOr<List<UserSummaryModel>> getFollowerList() async {
     try {
       await Future.delayed(
         const Duration(milliseconds: 500),
       ); // simulate network delay
-      return followerMock;
+      return followerMock.data ?? [];
       // final response = await _apiService.get('/v1/users/followers');
       // return (response['data'] as List)
       //     .map((e) => FollowerModel.fromJson(e))
       //     .toList();
     } catch (e) {
       print("getFollowerList failed: $e");
-      return followerMock;
+      return [];
     }
   }
 
   /// get Friend list
-  FutureOr<List<FriendModel>> getFriendList() async {
+  FutureOr<List<UserSummaryModel>> getFriendList() async {
     try {
       await Future.delayed(
         const Duration(milliseconds: 500),
       ); // simulate network delay
-      return friendMock;
+      return friendMock.data ?? [];
       // final response = await _apiService.get('/v1/users/friends');
       // return (response['data'] as List)
       //     .map((e) => FriendModel.fromJson(e))
       //     .toList();
     } catch (e) {
       print("getFriendList failed: $e");
-      return friendMock;
+      return [];
     }
   }
 }
