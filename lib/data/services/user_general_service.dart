@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/users/pagination_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/profile_view_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_stats_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/relationship_mock.dart';
+import 'package:jt291_flutter_mobile/data/mocks/profile_view_mock.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 
 PaginationModel buildPagination(Map<String, dynamic>? json) {
@@ -150,6 +152,12 @@ class UserGeneralService {
 
       // // Trả về dữ liệu hoàn chỉnh
       // return UserListResponse(
+      //   userId: response['user_id'],
+      //   username: response['username'],
+      //   avatarUrl: response['avatar_url'],
+      //   followingCount: response['following_count'],
+      //   followersCount: response['followers_count'],
+      //   friendsCount: response['friends_count'],
       //   data:
       //       (response['data'] as List<dynamic>?)
       //           ?.map((e) => UserSummaryModel.fromJson(e))
@@ -205,6 +213,12 @@ class UserGeneralService {
 
       // // Trả về dữ liệu hoàn chỉnh
       // return UserListResponse(
+      //   userId: response['user_id'],
+      //   username: response['username'],
+      //   avatarUrl: response['avatar_url'],
+      //   followingCount: response['following_count'],
+      //   followersCount: response['followers_count'],
+      //   friendsCount: response['friends_count'],
       //   data:
       //       (response['data'] as List<dynamic>?)
       //           ?.map((e) => UserSummaryModel.fromJson(e))
@@ -256,10 +270,16 @@ class UserGeneralService {
       //   queryParameters: {'page': page, 'limit': limit, 'search': search},
       // );
       // Xây pagination (tự tính hasNext)
-      // final pagination = buildPagination(response['pagination']);
+        // final pagination = buildPagination(response['pagination']);
 
       // // Trả về dữ liệu hoàn chỉnh
       // return UserListResponse(
+      //   userId: response['user_id'],
+      //   username: response['username'],
+      //   avatarUrl: response['avatar_url'],
+      //   followingCount: response['following_count'],
+      //   followersCount: response['followers_count'],
+      //   friendCount: response['friends_count'],
       //   data:
       //       (response['data'] as List<dynamic>?)
       //           ?.map((e) => UserSummaryModel.fromJson(e))
@@ -443,6 +463,36 @@ class UserGeneralService {
     } catch (e) {
       print('searchFriend failed: $e');
       return const UserListResponse(data: []);
+    }
+  }
+
+  /// GET /users/{user_id}/profile-views?page=2&limit=10
+  FutureOr<ProfileViewModel?> getProfileViews(String userId, {int page = 1, int limit = 10}) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      var allData = profileViewMock.views ?? [];
+      final start = (page - 1) * limit;
+      final end = (start + limit).clamp(0, allData.length);
+      final pagedData = allData.sublist(start, end);
+
+      return profileViewMock.copyWith(views: pagedData, pagination: PaginationModel(
+        offset: page,
+        limit: limit,
+        total: allData.length,
+        hasNext: end < allData.length,
+      ));
+
+      // final response = await _apiService.get(
+      //   '/v1/users/$userId/profile-views',
+      //   queryParameters: {'page': page, 'limit': limit},
+      // );
+      // final pagination = buildPagination(response['pagination']);
+      // return ProfileViewModel.fromJson(response['data'], pagination: pagination);
+      // );
+    } catch (e) {
+      print('getProfileViews failed: $e');
+      return null;
     }
   }
 }

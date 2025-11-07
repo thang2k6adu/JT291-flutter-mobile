@@ -6,7 +6,7 @@ part 'pagination_model.g.dart';
 @freezed
 abstract class PaginationModel with _$PaginationModel {
   const factory PaginationModel({
-    int? limit,
+    int? limit, // số lượng item trên mỗi trang
     int? offset,
     int? total,
     bool? hasNext,
