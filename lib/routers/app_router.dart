@@ -10,7 +10,7 @@ import 'package:jt291_flutter_mobile/features/main/screens/main_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/edit_user.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/my_album.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/profile_screen.dart';
-import 'package:jt291_flutter_mobile/features/profile/screens/profile_view.dart';
+import 'package:jt291_flutter_mobile/features/profile/screens/profile_view_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_me_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/edit_nickname.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/edit_bio.dart';
@@ -81,7 +81,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: RouteConstants.userProfileView,
-            builder: ((context, state) => ProfileView()),
+            builder: ((context, state) => ProfileViewScreen()),
           ),
         ],
       ),

@@ -53,6 +53,7 @@ dependencies:
   flutter_svg: ^2.2.1
   vector_math: ^2.1.2
   carousel_slider: ^5.0.0
+  timeago: ^3.2.0
 
 
 dependency_overrides:
