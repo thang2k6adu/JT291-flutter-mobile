@@ -11,6 +11,7 @@ import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/user_general/user_stats_provider.dart';
 import 'package:jt291_flutter_mobile/components/ui/vertical_section.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -56,17 +57,20 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userGeneralAsync = ref.watch(userGeneralProvider);
+    final userStatsAsync = ref.watch(userStatsProvider);
+
+
     return userGeneralAsync.when(
       data: (user) => Scaffold(
         backgroundColor: Colors.white,
         appBar: ProfileAppBar(title: user?.nickname ?? ''),
         body: SingleChildScrollView(
           child: Column(
-            children: [
+            children:  [
               ProfileHeader(
                 avatarUrl: user?.avatarUrl,
-                followingCount: user?.followingCount ?? 0,
-                followersCount: user?.followersCount ?? 0,
+                followingCount: userStatsAsync.value?.followingCount ?? 0,
+                followersCount: userStatsAsync.value?.followersCount ?? 0,
                 viewsCount: user?.viewsCount ?? 0,
                 onAvatarTap: () {
                   pushScreen(context, RouteConstants.userMe);

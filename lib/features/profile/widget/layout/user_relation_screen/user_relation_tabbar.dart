@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_relation_screen.dart';
 import 'package:jt291_flutter_mobile/core/utils/string_utils.dart';
+import 'package:jt291_flutter_mobile/core/utils/number_utils.dart';
 class UserRelationTabBar extends StatelessWidget implements PreferredSizeWidget {
   final int followingUsersCount;
   final int followersUsersCount;
@@ -21,9 +22,9 @@ class UserRelationTabBar extends StatelessWidget implements PreferredSizeWidget 
         fontWeight: FontWeight.w600,
       ),
       tabs: [
-        Tab(text: '${UserTab.following.name.capitalize()} ($followingUsersCount)'),
-        Tab(text: '${UserTab.followers.name.capitalize()} ($followersUsersCount)'),
-        Tab(text: '${UserTab.friends.name.capitalize()} ($friendsUsersCount)'),
+        Tab(text: '${UserTab.following.name.capitalize()} ${convertToCompactFormNumber(followingUsersCount)}'),
+        Tab(text: '${UserTab.followers.name.capitalize()} ${convertToCompactFormNumber(followersUsersCount)}'),
+        Tab(text: '${UserTab.friends.name.capitalize()} ${convertToCompactFormNumber(friendsUsersCount)}'),
       ],
     );
   }

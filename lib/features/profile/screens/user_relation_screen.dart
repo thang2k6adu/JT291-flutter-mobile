@@ -10,6 +10,7 @@ import 'package:jt291_flutter_mobile/data/providers/relationship/friend_list_pro
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
 import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
 import 'package:jt291_flutter_mobile/core/utils/string_utils.dart';
+import 'package:jt291_flutter_mobile/data/providers/user_general/user_stats_provider.dart';
 
 enum UserTab { following, followers, friends }
 
@@ -111,6 +112,8 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
     final followerState = ref.watch(followerListProvider);
     final friendState = ref.watch(friendListProvider);
     final searchQuery = ref.watch(searchQueryProvider);
+    
+    final userStatsAsync = ref.watch(userStatsProvider);
 
     final followingNotifier = ref.read(followingListProvider.notifier);
     final followerNotifier = ref.read(followerListProvider.notifier);
@@ -123,9 +126,9 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
         appBar: UserRelationAppBar(
           title: 'Darlene Bears',
           bottom: UserRelationTabBar(
-            followingUsersCount: followingState.value?.length ?? 0,
-            followersUsersCount: followerState.value?.length ?? 0,
-            friendsUsersCount: friendState.value?.length ?? 0,
+            followingUsersCount: userStatsAsync.value?.followingCount ?? 0,
+            followersUsersCount: userStatsAsync.value?.followersCount ?? 0,
+            friendsUsersCount: userStatsAsync.value?.friendsCount ?? 0,
           ),
         ),
         body: Column(

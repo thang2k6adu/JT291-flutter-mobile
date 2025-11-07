@@ -29,7 +29,7 @@ class UserListSection extends StatelessWidget {
     if (tabTitle == UserTab.following.name.capitalize()) {
       return isFollowing ? UserButtonType.following : UserButtonType.follow;
     } else if (tabTitle == UserTab.followers.name.capitalize()) {
-      return isFollowing ? UserButtonType.friends : UserButtonType.followBack;
+      return isFollowing ? UserButtonType.unfollow : UserButtonType.followBack;
     } else if (tabTitle == UserTab.friends.name.capitalize()) {
       return isFollowing ? UserButtonType.friends : UserButtonType.followBack;
     }

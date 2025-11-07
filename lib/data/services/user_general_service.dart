@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/users/pagination_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
-import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_stats_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/relationship_mock.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 
@@ -238,7 +238,7 @@ class UserGeneralService {
             )
             .toList();
       }
-        final start = (page - 1) * limit;
+      final start = (page - 1) * limit;
       final end = (start + limit).clamp(0, allData.length);
       final pagedData = allData.sublist(start, end);
 
@@ -332,20 +332,16 @@ class UserGeneralService {
   }
 
   /// Lấy thống kê bạn bè/follow
-  FutureOr<Map<String, int>> getUserStats(String userId) async {
+  FutureOr<UserStatsModel?> getUserStats(String userId) async {
     try {
       await Future.delayed(const Duration(milliseconds: 300));
-      return {
-        "following_count": 24,
-        "followers_count": 18,
-        "friends_count": 12,
-      };
+      return userStatsMock;
 
       // final response = await _apiService.get('/v1/users/$userId/stats');
       // return Map<String, int>.from(response['data']);
     } catch (e) {
       print("getUserStats failed: $e");
-      return {"following_count": 0, "followers_count": 0, "friends_count": 0};
+      return null;
     }
   }
 

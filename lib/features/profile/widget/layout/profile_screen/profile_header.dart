@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jt291_flutter_mobile/core/utils/number_utils.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/stat_item.dart';
 import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
@@ -51,11 +52,11 @@ class ProfileHeader extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   StatItem(
-                    count: followingCount.toString(),
+                    count: convertToCompactFormNumber(followingCount),
                     label: 'Following',
                   ),
                   StatItem(
-                    count: followersCount.toString(),
+                    count: convertToCompactFormNumber(followersCount),
                     label: 'Followers',
                   ),
 
@@ -78,7 +79,7 @@ class ProfileHeader extends StatelessWidget {
                               shape: BoxShape.circle,
                             ),
                             child: Text(
-                              '$viewsCount',
+                              convertToCompactFormNumber(viewsCount),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 10,

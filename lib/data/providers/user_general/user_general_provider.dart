@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_stats_model.dart';
 
 
 final userGeneralProvider =
@@ -134,4 +135,5 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
       return null;
     }
   }
+
 }
