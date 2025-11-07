@@ -11,6 +11,7 @@ _UserStatsModel _$UserStatsModelFromJson(Map<String, dynamic> json) =>
       followingCount: (json['following_count'] as num?)?.toInt(),
       followersCount: (json['followers_count'] as num?)?.toInt(),
       friendsCount: (json['friends_count'] as num?)?.toInt(),
+      isPending: json['isPending'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$UserStatsModelToJson(_UserStatsModel instance) =>
@@ -18,4 +19,5 @@ Map<String, dynamic> _$UserStatsModelToJson(_UserStatsModel instance) =>
       'following_count': instance.followingCount,
       'followers_count': instance.followersCount,
       'friends_count': instance.friendsCount,
+      'isPending': instance.isPending,
     };

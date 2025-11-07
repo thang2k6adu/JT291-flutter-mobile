@@ -14,6 +14,7 @@ _UserSummaryModel _$UserSummaryModelFromJson(Map<String, dynamic> json) =>
       gender: json['gender'] as String?,
       shortBio: json['short_bio'] as String?,
       isFollowing: json['is_following'] as bool?,
+      isPending: json['isPending'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$UserSummaryModelToJson(_UserSummaryModel instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$UserSummaryModelToJson(_UserSummaryModel instance) =>
       'gender': instance.gender,
       'short_bio': instance.shortBio,
       'is_following': instance.isFollowing,
+      'isPending': instance.isPending,
     };

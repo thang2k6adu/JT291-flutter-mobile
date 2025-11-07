@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserSummaryModel {
 
- String? get id; String? get username;@JsonKey(name: 'avatar_url') String? get avatarUrl; String? get gender;@JsonKey(name: 'short_bio') String? get shortBio;@JsonKey(name: 'is_following') bool? get isFollowing;
+ String? get id; String? get username;@JsonKey(name: 'avatar_url') String? get avatarUrl; String? get gender;@JsonKey(name: 'short_bio') String? get shortBio;@JsonKey(name: 'is_following') bool? get isFollowing; bool get isPending;
 /// Create a copy of UserSummaryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserSummaryModelCopyWith<UserSummaryModel> get copyWith => _$UserSummaryModelCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserSummaryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.shortBio, shortBio) || other.shortBio == shortBio)&&(identical(other.isFollowing, isFollowing) || other.isFollowing == isFollowing));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserSummaryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.shortBio, shortBio) || other.shortBio == shortBio)&&(identical(other.isFollowing, isFollowing) || other.isFollowing == isFollowing)&&(identical(other.isPending, isPending) || other.isPending == isPending));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,avatarUrl,gender,shortBio,isFollowing);
+int get hashCode => Object.hash(runtimeType,id,username,avatarUrl,gender,shortBio,isFollowing,isPending);
 
 @override
 String toString() {
-  return 'UserSummaryModel(id: $id, username: $username, avatarUrl: $avatarUrl, gender: $gender, shortBio: $shortBio, isFollowing: $isFollowing)';
+  return 'UserSummaryModel(id: $id, username: $username, avatarUrl: $avatarUrl, gender: $gender, shortBio: $shortBio, isFollowing: $isFollowing, isPending: $isPending)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserSummaryModelCopyWith<$Res>  {
   factory $UserSummaryModelCopyWith(UserSummaryModel value, $Res Function(UserSummaryModel) _then) = _$UserSummaryModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl, String? gender,@JsonKey(name: 'short_bio') String? shortBio,@JsonKey(name: 'is_following') bool? isFollowing
+ String? id, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl, String? gender,@JsonKey(name: 'short_bio') String? shortBio,@JsonKey(name: 'is_following') bool? isFollowing, bool isPending
 });
 
 
@@ -65,7 +65,7 @@ class _$UserSummaryModelCopyWithImpl<$Res>
 
 /// Create a copy of UserSummaryModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? gender = freezed,Object? shortBio = freezed,Object? isFollowing = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? gender = freezed,Object? shortBio = freezed,Object? isFollowing = freezed,Object? isPending = null,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -73,7 +73,8 @@ as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // igno
 as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
 as String?,shortBio: freezed == shortBio ? _self.shortBio : shortBio // ignore: cast_nullable_to_non_nullable
 as String?,isFollowing: freezed == isFollowing ? _self.isFollowing : isFollowing // ignore: cast_nullable_to_non_nullable
-as bool?,
+as bool?,isPending: null == isPending ? _self.isPending : isPending // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -158,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl,  String? gender, @JsonKey(name: 'short_bio')  String? shortBio, @JsonKey(name: 'is_following')  bool? isFollowing)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl,  String? gender, @JsonKey(name: 'short_bio')  String? shortBio, @JsonKey(name: 'is_following')  bool? isFollowing,  bool isPending)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserSummaryModel() when $default != null:
-return $default(_that.id,_that.username,_that.avatarUrl,_that.gender,_that.shortBio,_that.isFollowing);case _:
+return $default(_that.id,_that.username,_that.avatarUrl,_that.gender,_that.shortBio,_that.isFollowing,_that.isPending);case _:
   return orElse();
 
 }
@@ -179,10 +180,10 @@ return $default(_that.id,_that.username,_that.avatarUrl,_that.gender,_that.short
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl,  String? gender, @JsonKey(name: 'short_bio')  String? shortBio, @JsonKey(name: 'is_following')  bool? isFollowing)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl,  String? gender, @JsonKey(name: 'short_bio')  String? shortBio, @JsonKey(name: 'is_following')  bool? isFollowing,  bool isPending)  $default,) {final _that = this;
 switch (_that) {
 case _UserSummaryModel():
-return $default(_that.id,_that.username,_that.avatarUrl,_that.gender,_that.shortBio,_that.isFollowing);case _:
+return $default(_that.id,_that.username,_that.avatarUrl,_that.gender,_that.shortBio,_that.isFollowing,_that.isPending);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +200,10 @@ return $default(_that.id,_that.username,_that.avatarUrl,_that.gender,_that.short
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl,  String? gender, @JsonKey(name: 'short_bio')  String? shortBio, @JsonKey(name: 'is_following')  bool? isFollowing)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl,  String? gender, @JsonKey(name: 'short_bio')  String? shortBio, @JsonKey(name: 'is_following')  bool? isFollowing,  bool isPending)?  $default,) {final _that = this;
 switch (_that) {
 case _UserSummaryModel() when $default != null:
-return $default(_that.id,_that.username,_that.avatarUrl,_that.gender,_that.shortBio,_that.isFollowing);case _:
+return $default(_that.id,_that.username,_that.avatarUrl,_that.gender,_that.shortBio,_that.isFollowing,_that.isPending);case _:
   return null;
 
 }
@@ -214,7 +215,7 @@ return $default(_that.id,_that.username,_that.avatarUrl,_that.gender,_that.short
 @JsonSerializable()
 
 class _UserSummaryModel implements UserSummaryModel {
-  const _UserSummaryModel({this.id, this.username, @JsonKey(name: 'avatar_url') this.avatarUrl, this.gender, @JsonKey(name: 'short_bio') this.shortBio, @JsonKey(name: 'is_following') this.isFollowing});
+  const _UserSummaryModel({this.id, this.username, @JsonKey(name: 'avatar_url') this.avatarUrl, this.gender, @JsonKey(name: 'short_bio') this.shortBio, @JsonKey(name: 'is_following') this.isFollowing, this.isPending = false});
   factory _UserSummaryModel.fromJson(Map<String, dynamic> json) => _$UserSummaryModelFromJson(json);
 
 @override final  String? id;
@@ -223,6 +224,7 @@ class _UserSummaryModel implements UserSummaryModel {
 @override final  String? gender;
 @override@JsonKey(name: 'short_bio') final  String? shortBio;
 @override@JsonKey(name: 'is_following') final  bool? isFollowing;
+@override@JsonKey() final  bool isPending;
 
 /// Create a copy of UserSummaryModel
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +239,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserSummaryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.shortBio, shortBio) || other.shortBio == shortBio)&&(identical(other.isFollowing, isFollowing) || other.isFollowing == isFollowing));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserSummaryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.shortBio, shortBio) || other.shortBio == shortBio)&&(identical(other.isFollowing, isFollowing) || other.isFollowing == isFollowing)&&(identical(other.isPending, isPending) || other.isPending == isPending));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,avatarUrl,gender,shortBio,isFollowing);
+int get hashCode => Object.hash(runtimeType,id,username,avatarUrl,gender,shortBio,isFollowing,isPending);
 
 @override
 String toString() {
-  return 'UserSummaryModel(id: $id, username: $username, avatarUrl: $avatarUrl, gender: $gender, shortBio: $shortBio, isFollowing: $isFollowing)';
+  return 'UserSummaryModel(id: $id, username: $username, avatarUrl: $avatarUrl, gender: $gender, shortBio: $shortBio, isFollowing: $isFollowing, isPending: $isPending)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$UserSummaryModelCopyWith<$Res> implements $UserSummaryMod
   factory _$UserSummaryModelCopyWith(_UserSummaryModel value, $Res Function(_UserSummaryModel) _then) = __$UserSummaryModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl, String? gender,@JsonKey(name: 'short_bio') String? shortBio,@JsonKey(name: 'is_following') bool? isFollowing
+ String? id, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl, String? gender,@JsonKey(name: 'short_bio') String? shortBio,@JsonKey(name: 'is_following') bool? isFollowing, bool isPending
 });
 
 
@@ -274,7 +276,7 @@ class __$UserSummaryModelCopyWithImpl<$Res>
 
 /// Create a copy of UserSummaryModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? gender = freezed,Object? shortBio = freezed,Object? isFollowing = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? gender = freezed,Object? shortBio = freezed,Object? isFollowing = freezed,Object? isPending = null,}) {
   return _then(_UserSummaryModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -282,7 +284,8 @@ as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // igno
 as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
 as String?,shortBio: freezed == shortBio ? _self.shortBio : shortBio // ignore: cast_nullable_to_non_nullable
 as String?,isFollowing: freezed == isFollowing ? _self.isFollowing : isFollowing // ignore: cast_nullable_to_non_nullable
-as bool?,
+as bool?,isPending: null == isPending ? _self.isPending : isPending // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

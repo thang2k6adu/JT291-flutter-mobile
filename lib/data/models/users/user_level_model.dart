@@ -10,6 +10,7 @@ abstract class UserLevelModel with _$UserLevelModel {
     @JsonKey(name: 'current_exp') @Default(0) int currentExp,
     @JsonKey(name: 'total_exp') @Default(0) int totalExp,
     @JsonKey(name: 'next_level_exp') @Default(50) int nextLevelExp,
+    @Default(false) bool isPending,
   }) = _UserLevelModel;
 
   factory UserLevelModel.fromJson(Map<String, Object?> json) =>

@@ -78,4 +78,70 @@ class FriendListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
   Future<void> loadMoreFriend() async {
     await fetchFriend();
   }
+
+  Future<void> unfriendUser(String userId, String friendId) async {
+    print('unfriendUser: $userId, $friendId');
+    final oldList = state.value ?? [];
+
+    // Set user đang unfriend thành pending = true
+    state = AsyncData(
+      oldList.map((user) {
+        if (user.id == friendId) {
+          return user.copyWith(isPending: true);
+        }
+        return user;
+      }).toList(),
+    );
+
+    final success = await _service.unfriend(userId, friendId);
+
+    // Update trạng thái theo kết quả
+    final updatedList = oldList.map((user) {
+      if (user.id == friendId) {
+        if (success) {
+          // Nếu thành công, đổi trạng thái isFollowing = false và isPending = false
+          return user.copyWith(isFollowing: false, isPending: false);
+        } else {
+          // Nếu thất bại, giữ trạng thái cũ và isPending = false
+          return user.copyWith(isPending: false);
+        }
+      }
+      return user;
+    }).toList();
+
+    state = AsyncData(updatedList);
+  }
+
+  Future<void> followUser(String userId, String friendId) async {
+    print('followUser: $userId, $friendId');
+    final oldList = state.value ?? [];
+
+    // Set user đang follow thành pending = true
+    state = AsyncData(
+      oldList.map((user) {
+        if (user.id == friendId) {
+          return user.copyWith(isPending: true);
+        }
+        return user;
+      }).toList(),
+    );
+
+    final success = await _service.followUser(userId, friendId);
+
+    // Update trạng thái theo kết quả
+    final updatedList = oldList.map((user) {
+      if (user.id == friendId) {
+        if (success) {
+          // Nếu thành công, đổi trạng thái isFollowing = true và isPending = false
+          return user.copyWith(isFollowing: true, isPending: false);
+        } else {
+          // Nếu thất bại, giữ trạng thái cũ và isPending = false
+          return user.copyWith(isPending: false);
+        }
+      }
+      return user;
+    }).toList();
+
+    state = AsyncData(updatedList);
+  }
 }

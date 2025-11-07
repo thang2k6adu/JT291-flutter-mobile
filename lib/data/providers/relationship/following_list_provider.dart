@@ -36,10 +36,13 @@ class FollowingListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
           _isLoading = false;
         }
       }
-    });  
+    });
   }
 
-  Future<List<UserSummaryModel>> fetchFollowing({bool reset = false, String? search}) async {
+  Future<List<UserSummaryModel>> fetchFollowing({
+    bool reset = false,
+    String? search,
+  }) async {
     if (reset) {
       _page = 1;
       _hasNext = true;
@@ -75,6 +78,72 @@ class FollowingListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
     }
   }
 
+  Future<void> unfollowUser(String userId, String followingId) async {
+    print('unfollowUser: $userId, $followingId');
+    final oldList = state.value ?? [];
+
+    // Set user đang unfollow thành pending = true
+    state = AsyncData(
+      oldList.map((user) {
+        if (user.id == followingId) {
+          return user.copyWith(isPending: true);
+        }
+        return user;
+      }).toList(),
+    );
+
+    final success = await _service.unfollowUser(userId, followingId);
+
+    // Update trạng thái theo kết quả
+    final updatedList = oldList.map((user) {
+      if (user.id == followingId) {
+        if (success) {
+          // Nếu thành công, đổi trạng thái isFollowing = false và isPending = false
+          return user.copyWith(isFollowing: false, isPending: false);
+        } else {
+          // Nếu thất bại, giữ trạng thái cũ và isPending = false
+          return user.copyWith(isPending: false);
+        }
+      }
+      return user;
+    }).toList();
+
+    state = AsyncData(updatedList);
+  }
+
+
+  Future<void> followUser(String userId, String followingId) async {
+    print('followUser: $userId, $followingId');
+    final oldList = state.value ?? [];
+
+    // Set user đang follow thành pending = true
+    state = AsyncData(
+      oldList.map((user) {
+        if (user.id == followingId) {
+          return user.copyWith(isPending: true);
+        }
+        return user;
+      }).toList(),
+    );
+
+    final success = await _service.followUser(userId, followingId);
+
+    // Update trạng thái theo kết quả
+    final updatedList = oldList.map((user) {
+      if (user.id == followingId) {
+        if (success) {
+          // Nếu thành công, đổi trạng thái isFollowing = true và isPending = false
+          return user.copyWith(isFollowing: true, isPending: false);
+        } else {
+          // Nếu thất bại, giữ trạng thái cũ và isPending = false
+          return user.copyWith(isPending: false);
+        }
+      }
+      return user;
+    }).toList();
+
+    state = AsyncData(updatedList);
+  }
   Future<void> refreshFollowing() async {
     await fetchFollowing(reset: true);
   }

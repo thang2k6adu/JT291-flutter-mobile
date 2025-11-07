@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/components/ui/action_button.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
-
-enum UserButtonType { friends, following, followBack }
-
+import 'package:jt291_flutter_mobile/features/profile/screens/user_relation_screen.dart';
 class UserItemWidget extends StatelessWidget {
   final UserRelationItem user;
   final UserButtonType buttonType;
@@ -40,6 +38,15 @@ class UserItemWidget extends StatelessWidget {
         buttonBg = const Color(0xFFE65983);
         buttonTextColor = Colors.white;
         break;
+      case UserButtonType.follow:
+        buttonText = 'Follow';
+        buttonBg = const Color(0xFFE65983);
+        buttonTextColor = Colors.white;
+        break;
+      case UserButtonType.unfollow:
+        buttonText = 'Unfollow';
+        buttonBg = const Color(0xFFF5F5F5);
+        buttonTextColor = Colors.black87;
     }
 
     return Container(

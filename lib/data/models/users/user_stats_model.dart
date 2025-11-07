@@ -9,6 +9,7 @@ abstract class UserStatsModel with _$UserStatsModel {
     @JsonKey(name: 'following_count') int? followingCount,
     @JsonKey(name: 'followers_count') int? followersCount,
     @JsonKey(name: 'friends_count') int? friendsCount,
+    @Default(false) bool isPending,
   }) = _UserStatsModel;
 
   factory UserStatsModel.fromJson(Map<String, dynamic> json) =>

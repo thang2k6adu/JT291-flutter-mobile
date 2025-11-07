@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserLevelModel {
 
-@JsonKey(name: 'current_level') int get currentLevel;@JsonKey(name: 'current_exp') int get currentExp;@JsonKey(name: 'total_exp') int get totalExp;@JsonKey(name: 'next_level_exp') int get nextLevelExp;
+@JsonKey(name: 'current_level') int get currentLevel;@JsonKey(name: 'current_exp') int get currentExp;@JsonKey(name: 'total_exp') int get totalExp;@JsonKey(name: 'next_level_exp') int get nextLevelExp; bool get isPending;
 /// Create a copy of UserLevelModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserLevelModelCopyWith<UserLevelModel> get copyWith => _$UserLevelModelCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserLevelModel&&(identical(other.currentLevel, currentLevel) || other.currentLevel == currentLevel)&&(identical(other.currentExp, currentExp) || other.currentExp == currentExp)&&(identical(other.totalExp, totalExp) || other.totalExp == totalExp)&&(identical(other.nextLevelExp, nextLevelExp) || other.nextLevelExp == nextLevelExp));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserLevelModel&&(identical(other.currentLevel, currentLevel) || other.currentLevel == currentLevel)&&(identical(other.currentExp, currentExp) || other.currentExp == currentExp)&&(identical(other.totalExp, totalExp) || other.totalExp == totalExp)&&(identical(other.nextLevelExp, nextLevelExp) || other.nextLevelExp == nextLevelExp)&&(identical(other.isPending, isPending) || other.isPending == isPending));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,currentLevel,currentExp,totalExp,nextLevelExp);
+int get hashCode => Object.hash(runtimeType,currentLevel,currentExp,totalExp,nextLevelExp,isPending);
 
 @override
 String toString() {
-  return 'UserLevelModel(currentLevel: $currentLevel, currentExp: $currentExp, totalExp: $totalExp, nextLevelExp: $nextLevelExp)';
+  return 'UserLevelModel(currentLevel: $currentLevel, currentExp: $currentExp, totalExp: $totalExp, nextLevelExp: $nextLevelExp, isPending: $isPending)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserLevelModelCopyWith<$Res>  {
   factory $UserLevelModelCopyWith(UserLevelModel value, $Res Function(UserLevelModel) _then) = _$UserLevelModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'current_level') int currentLevel,@JsonKey(name: 'current_exp') int currentExp,@JsonKey(name: 'total_exp') int totalExp,@JsonKey(name: 'next_level_exp') int nextLevelExp
+@JsonKey(name: 'current_level') int currentLevel,@JsonKey(name: 'current_exp') int currentExp,@JsonKey(name: 'total_exp') int totalExp,@JsonKey(name: 'next_level_exp') int nextLevelExp, bool isPending
 });
 
 
@@ -65,13 +65,14 @@ class _$UserLevelModelCopyWithImpl<$Res>
 
 /// Create a copy of UserLevelModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? currentLevel = null,Object? currentExp = null,Object? totalExp = null,Object? nextLevelExp = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? currentLevel = null,Object? currentExp = null,Object? totalExp = null,Object? nextLevelExp = null,Object? isPending = null,}) {
   return _then(_self.copyWith(
 currentLevel: null == currentLevel ? _self.currentLevel : currentLevel // ignore: cast_nullable_to_non_nullable
 as int,currentExp: null == currentExp ? _self.currentExp : currentExp // ignore: cast_nullable_to_non_nullable
 as int,totalExp: null == totalExp ? _self.totalExp : totalExp // ignore: cast_nullable_to_non_nullable
 as int,nextLevelExp: null == nextLevelExp ? _self.nextLevelExp : nextLevelExp // ignore: cast_nullable_to_non_nullable
-as int,
+as int,isPending: null == isPending ? _self.isPending : isPending // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'current_level')  int currentLevel, @JsonKey(name: 'current_exp')  int currentExp, @JsonKey(name: 'total_exp')  int totalExp, @JsonKey(name: 'next_level_exp')  int nextLevelExp)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'current_level')  int currentLevel, @JsonKey(name: 'current_exp')  int currentExp, @JsonKey(name: 'total_exp')  int totalExp, @JsonKey(name: 'next_level_exp')  int nextLevelExp,  bool isPending)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserLevelModel() when $default != null:
-return $default(_that.currentLevel,_that.currentExp,_that.totalExp,_that.nextLevelExp);case _:
+return $default(_that.currentLevel,_that.currentExp,_that.totalExp,_that.nextLevelExp,_that.isPending);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.currentLevel,_that.currentExp,_that.totalExp,_that.nextLev
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'current_level')  int currentLevel, @JsonKey(name: 'current_exp')  int currentExp, @JsonKey(name: 'total_exp')  int totalExp, @JsonKey(name: 'next_level_exp')  int nextLevelExp)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'current_level')  int currentLevel, @JsonKey(name: 'current_exp')  int currentExp, @JsonKey(name: 'total_exp')  int totalExp, @JsonKey(name: 'next_level_exp')  int nextLevelExp,  bool isPending)  $default,) {final _that = this;
 switch (_that) {
 case _UserLevelModel():
-return $default(_that.currentLevel,_that.currentExp,_that.totalExp,_that.nextLevelExp);case _:
+return $default(_that.currentLevel,_that.currentExp,_that.totalExp,_that.nextLevelExp,_that.isPending);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.currentLevel,_that.currentExp,_that.totalExp,_that.nextLev
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'current_level')  int currentLevel, @JsonKey(name: 'current_exp')  int currentExp, @JsonKey(name: 'total_exp')  int totalExp, @JsonKey(name: 'next_level_exp')  int nextLevelExp)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'current_level')  int currentLevel, @JsonKey(name: 'current_exp')  int currentExp, @JsonKey(name: 'total_exp')  int totalExp, @JsonKey(name: 'next_level_exp')  int nextLevelExp,  bool isPending)?  $default,) {final _that = this;
 switch (_that) {
 case _UserLevelModel() when $default != null:
-return $default(_that.currentLevel,_that.currentExp,_that.totalExp,_that.nextLevelExp);case _:
+return $default(_that.currentLevel,_that.currentExp,_that.totalExp,_that.nextLevelExp,_that.isPending);case _:
   return null;
 
 }
@@ -212,13 +213,14 @@ return $default(_that.currentLevel,_that.currentExp,_that.totalExp,_that.nextLev
 @JsonSerializable()
 
 class _UserLevelModel implements UserLevelModel {
-  const _UserLevelModel({@JsonKey(name: 'current_level') this.currentLevel = 0, @JsonKey(name: 'current_exp') this.currentExp = 0, @JsonKey(name: 'total_exp') this.totalExp = 0, @JsonKey(name: 'next_level_exp') this.nextLevelExp = 50});
+  const _UserLevelModel({@JsonKey(name: 'current_level') this.currentLevel = 0, @JsonKey(name: 'current_exp') this.currentExp = 0, @JsonKey(name: 'total_exp') this.totalExp = 0, @JsonKey(name: 'next_level_exp') this.nextLevelExp = 50, this.isPending = false});
   factory _UserLevelModel.fromJson(Map<String, dynamic> json) => _$UserLevelModelFromJson(json);
 
 @override@JsonKey(name: 'current_level') final  int currentLevel;
 @override@JsonKey(name: 'current_exp') final  int currentExp;
 @override@JsonKey(name: 'total_exp') final  int totalExp;
 @override@JsonKey(name: 'next_level_exp') final  int nextLevelExp;
+@override@JsonKey() final  bool isPending;
 
 /// Create a copy of UserLevelModel
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +235,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserLevelModel&&(identical(other.currentLevel, currentLevel) || other.currentLevel == currentLevel)&&(identical(other.currentExp, currentExp) || other.currentExp == currentExp)&&(identical(other.totalExp, totalExp) || other.totalExp == totalExp)&&(identical(other.nextLevelExp, nextLevelExp) || other.nextLevelExp == nextLevelExp));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserLevelModel&&(identical(other.currentLevel, currentLevel) || other.currentLevel == currentLevel)&&(identical(other.currentExp, currentExp) || other.currentExp == currentExp)&&(identical(other.totalExp, totalExp) || other.totalExp == totalExp)&&(identical(other.nextLevelExp, nextLevelExp) || other.nextLevelExp == nextLevelExp)&&(identical(other.isPending, isPending) || other.isPending == isPending));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,currentLevel,currentExp,totalExp,nextLevelExp);
+int get hashCode => Object.hash(runtimeType,currentLevel,currentExp,totalExp,nextLevelExp,isPending);
 
 @override
 String toString() {
-  return 'UserLevelModel(currentLevel: $currentLevel, currentExp: $currentExp, totalExp: $totalExp, nextLevelExp: $nextLevelExp)';
+  return 'UserLevelModel(currentLevel: $currentLevel, currentExp: $currentExp, totalExp: $totalExp, nextLevelExp: $nextLevelExp, isPending: $isPending)';
 }
 
 
@@ -253,7 +255,7 @@ abstract mixin class _$UserLevelModelCopyWith<$Res> implements $UserLevelModelCo
   factory _$UserLevelModelCopyWith(_UserLevelModel value, $Res Function(_UserLevelModel) _then) = __$UserLevelModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'current_level') int currentLevel,@JsonKey(name: 'current_exp') int currentExp,@JsonKey(name: 'total_exp') int totalExp,@JsonKey(name: 'next_level_exp') int nextLevelExp
+@JsonKey(name: 'current_level') int currentLevel,@JsonKey(name: 'current_exp') int currentExp,@JsonKey(name: 'total_exp') int totalExp,@JsonKey(name: 'next_level_exp') int nextLevelExp, bool isPending
 });
 
 
@@ -270,13 +272,14 @@ class __$UserLevelModelCopyWithImpl<$Res>
 
 /// Create a copy of UserLevelModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? currentLevel = null,Object? currentExp = null,Object? totalExp = null,Object? nextLevelExp = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? currentLevel = null,Object? currentExp = null,Object? totalExp = null,Object? nextLevelExp = null,Object? isPending = null,}) {
   return _then(_UserLevelModel(
 currentLevel: null == currentLevel ? _self.currentLevel : currentLevel // ignore: cast_nullable_to_non_nullable
 as int,currentExp: null == currentExp ? _self.currentExp : currentExp // ignore: cast_nullable_to_non_nullable
 as int,totalExp: null == totalExp ? _self.totalExp : totalExp // ignore: cast_nullable_to_non_nullable
 as int,nextLevelExp: null == nextLevelExp ? _self.nextLevelExp : nextLevelExp // ignore: cast_nullable_to_non_nullable
-as int,
+as int,isPending: null == isPending ? _self.isPending : isPending // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

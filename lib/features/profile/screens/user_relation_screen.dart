@@ -4,12 +4,16 @@ import 'package:jt291_flutter_mobile/components/ui/app_search_field.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_relation_appbar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_list_section.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_relation_tabbar.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/user_relation_screen/user_item_widget.dart';
 import 'package:jt291_flutter_mobile/data/providers/relationship/following_list_provider.dart';
 import 'package:jt291_flutter_mobile/data/providers/relationship/follower_list_provider.dart';
 import 'package:jt291_flutter_mobile/data/providers/relationship/friend_list_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
 import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
+import 'package:jt291_flutter_mobile/core/utils/string_utils.dart';
+
+enum UserTab { following, followers, friends }
+
+enum UserButtonType { follow, following, followBack, unfollow, friends }
 
 /// Provider lưu từ khóa tìm kiếm
 final searchQueryProvider = StateProvider<String>((ref) => '');
@@ -31,15 +35,35 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
   }
 
   void _handleUserButtonPressed(UserRelationItem user, UserButtonType type) {
+    final followingNotifier = ref.read(followingListProvider.notifier);
+    final followerNotifier = ref.read(followerListProvider.notifier);
+    final friendNotifier = ref.read(friendListProvider.notifier);
+
     switch (type) {
-      case UserButtonType.friends:
-        print('Open friend profile: ${user.nickname} ${user.id}');
-        break;
-      case UserButtonType.following:
-        print('Unfollow user: ${user.nickname} ${user.id}');
+      case UserButtonType.follow:
+        followingNotifier.followUser(user.id, user.id);
+        followerNotifier.followBackUser(user.id, user.id);
+        friendNotifier.followUser(user.id, user.id);
         break;
       case UserButtonType.followBack:
-        print('Follow back user: ${user.nickname} ${user.id}');
+        followerNotifier.followBackUser(user.id, user.id);
+        followingNotifier.followUser(user.id, user.id);
+        friendNotifier.followUser(user.id, user.id);
+        break;
+      case UserButtonType.following:
+        followingNotifier.unfollowUser(user.id, user.id);
+        followerNotifier.unfollowUser(user.id, user.id);
+        friendNotifier.unfriendUser(user.id, user.id);
+        break;
+      case UserButtonType.unfollow:
+        followingNotifier.unfollowUser(user.id, user.id);
+        followerNotifier.unfollowUser(user.id, user.id);
+        friendNotifier.unfriendUser(user.id, user.id);
+        break;
+      case UserButtonType.friends:
+        friendNotifier.unfriendUser(user.id, user.id);
+        followerNotifier.unfollowUser(user.id, user.id);
+        followingNotifier.unfollowUser(user.id, user.id);
         break;
     }
   }
@@ -124,13 +148,12 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
                   followingState.when(
                     data: (list) => buildFilteredUserList(
                       list: list,
-                      scrollController:
-                          followingNotifier.scrollController,
+                      scrollController: followingNotifier.scrollController,
                       onLoadMore: followingNotifier.loadMoreFollowing,
                       isLoading: followingState.isLoading,
                       searchQuery: searchQuery,
                       convertFn: (e) => UserRelationItem.fromFollowingModel(e),
-                      title: 'Following',
+                      title: UserTab.following.name.capitalize(),
                       onPressed: _handleUserButtonPressed,
                     ),
                     loading: () =>
@@ -145,10 +168,9 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
                       list: list,
                       searchQuery: searchQuery,
                       convertFn: (e) => UserRelationItem.fromFollowerModel(e),
-                      title: 'Followers',
+                      title: UserTab.followers.name.capitalize(),
                       onPressed: _handleUserButtonPressed,
-                      scrollController:
-                          followerNotifier.scrollController,
+                      scrollController: followerNotifier.scrollController,
                       onLoadMore: followerNotifier.loadMoreFollower,
                       isLoading: followerState.isLoading,
                     ),
@@ -164,10 +186,9 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
                       list: list,
                       searchQuery: searchQuery,
                       convertFn: (e) => UserRelationItem.fromFriendModel(e),
-                      title: 'Friends',
+                      title: UserTab.friends.name.capitalize(),
                       onPressed: _handleUserButtonPressed,
-                      scrollController:
-                          friendNotifier.scrollController,
+                      scrollController: friendNotifier.scrollController,
                       onLoadMore: friendNotifier.loadMoreFriend,
                       isLoading: friendState.isLoading,
                     ),

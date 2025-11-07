@@ -5,7 +5,7 @@ class UserRelationItem {
   final String nickname;
   final String avatarUrl;
   final String bio;
-  final bool isFriend;
+  final bool isFollowing;
   final String gender;
 
   UserRelationItem({
@@ -13,7 +13,7 @@ class UserRelationItem {
     required this.nickname,
     required this.avatarUrl,
     required this.bio,
-    this.isFriend = false,
+    this.isFollowing = false,
     required this.gender,
   });
 
@@ -23,7 +23,7 @@ class UserRelationItem {
       nickname: following.username ?? '',
       avatarUrl: following.avatarUrl ?? '',
       bio: following.shortBio ?? '',
-      isFriend: false,
+      isFollowing: following.isFollowing ?? false,
       gender: following.gender ?? 'male',
     );
   }
@@ -34,7 +34,7 @@ class UserRelationItem {
       nickname: follower.username ?? '',
       avatarUrl: follower.avatarUrl ?? '',
       bio: follower.shortBio ?? '',
-      isFriend: false,
+      isFollowing: follower.isFollowing ?? false,
       gender: follower.gender ?? 'male',
     );
   }
@@ -45,7 +45,7 @@ class UserRelationItem {
       nickname: friend.username ?? '',
       avatarUrl: friend.avatarUrl ?? '',
       bio: friend.shortBio ?? '',
-      isFriend: true,
+      isFollowing: friend.isFollowing ?? false,
       gender: friend.gender ?? 'male',
     );
   }

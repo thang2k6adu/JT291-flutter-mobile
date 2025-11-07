@@ -12,6 +12,7 @@ abstract class UserSummaryModel with _$UserSummaryModel {
     String? gender,
     @JsonKey(name: 'short_bio') String? shortBio,
     @JsonKey(name: 'is_following') bool? isFollowing,
+    @Default(false) bool isPending,
   }) = _UserSummaryModel;
 
   factory UserSummaryModel.fromJson(Map<String, dynamic> json) =>

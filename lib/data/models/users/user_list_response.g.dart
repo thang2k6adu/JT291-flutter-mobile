@@ -22,6 +22,7 @@ _UserListResponse _$UserListResponseFromJson(Map<String, dynamic> json) =>
           : PaginationModel.fromJson(
               json['pagination'] as Map<String, dynamic>,
             ),
+      isPending: json['isPending'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$UserListResponseToJson(_UserListResponse instance) =>
@@ -34,4 +35,5 @@ Map<String, dynamic> _$UserListResponseToJson(_UserListResponse instance) =>
       'friends_count': instance.friendsCount,
       'data': instance.data,
       'pagination': instance.pagination,
+      'isPending': instance.isPending,
     };

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserListResponse {
 
-@JsonKey(name: 'user_id') String? get userId; String? get username;@JsonKey(name: 'avatar_url') String? get avatarUrl;@JsonKey(name: 'following_count') int? get followingCount;@JsonKey(name: 'followers_count') int? get followersCount;@JsonKey(name: 'friends_count') int? get friendsCount; List<UserSummaryModel>? get data; PaginationModel? get pagination;
+@JsonKey(name: 'user_id') String? get userId; String? get username;@JsonKey(name: 'avatar_url') String? get avatarUrl;@JsonKey(name: 'following_count') int? get followingCount;@JsonKey(name: 'followers_count') int? get followersCount;@JsonKey(name: 'friends_count') int? get friendsCount; List<UserSummaryModel>? get data; PaginationModel? get pagination; bool get isPending;
 /// Create a copy of UserListResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserListResponseCopyWith<UserListResponse> get copyWith => _$UserListResponseCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserListResponse&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.followersCount, followersCount) || other.followersCount == followersCount)&&(identical(other.friendsCount, friendsCount) || other.friendsCount == friendsCount)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.pagination, pagination) || other.pagination == pagination));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserListResponse&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.followersCount, followersCount) || other.followersCount == followersCount)&&(identical(other.friendsCount, friendsCount) || other.friendsCount == friendsCount)&&const DeepCollectionEquality().equals(other.data, data)&&(identical(other.pagination, pagination) || other.pagination == pagination)&&(identical(other.isPending, isPending) || other.isPending == isPending));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,username,avatarUrl,followingCount,followersCount,friendsCount,const DeepCollectionEquality().hash(data),pagination);
+int get hashCode => Object.hash(runtimeType,userId,username,avatarUrl,followingCount,followersCount,friendsCount,const DeepCollectionEquality().hash(data),pagination,isPending);
 
 @override
 String toString() {
-  return 'UserListResponse(userId: $userId, username: $username, avatarUrl: $avatarUrl, followingCount: $followingCount, followersCount: $followersCount, friendsCount: $friendsCount, data: $data, pagination: $pagination)';
+  return 'UserListResponse(userId: $userId, username: $username, avatarUrl: $avatarUrl, followingCount: $followingCount, followersCount: $followersCount, friendsCount: $friendsCount, data: $data, pagination: $pagination, isPending: $isPending)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserListResponseCopyWith<$Res>  {
   factory $UserListResponseCopyWith(UserListResponse value, $Res Function(UserListResponse) _then) = _$UserListResponseCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'user_id') String? userId, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount, List<UserSummaryModel>? data, PaginationModel? pagination
+@JsonKey(name: 'user_id') String? userId, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount, List<UserSummaryModel>? data, PaginationModel? pagination, bool isPending
 });
 
 
@@ -65,7 +65,7 @@ class _$UserListResponseCopyWithImpl<$Res>
 
 /// Create a copy of UserListResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? data = freezed,Object? pagination = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? data = freezed,Object? pagination = freezed,Object? isPending = null,}) {
   return _then(_self.copyWith(
 userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String?,username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -75,7 +75,8 @@ as int?,followersCount: freezed == followersCount ? _self.followersCount : follo
 as int?,friendsCount: freezed == friendsCount ? _self.friendsCount : friendsCount // ignore: cast_nullable_to_non_nullable
 as int?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as List<UserSummaryModel>?,pagination: freezed == pagination ? _self.pagination : pagination // ignore: cast_nullable_to_non_nullable
-as PaginationModel?,
+as PaginationModel?,isPending: null == isPending ? _self.isPending : isPending // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of UserListResponse
@@ -172,10 +173,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserSummaryModel>? data,  PaginationModel? pagination)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserSummaryModel>? data,  PaginationModel? pagination,  bool isPending)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserListResponse() when $default != null:
-return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount,_that.followersCount,_that.friendsCount,_that.data,_that.pagination);case _:
+return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount,_that.followersCount,_that.friendsCount,_that.data,_that.pagination,_that.isPending);case _:
   return orElse();
 
 }
@@ -193,10 +194,10 @@ return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserSummaryModel>? data,  PaginationModel? pagination)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserSummaryModel>? data,  PaginationModel? pagination,  bool isPending)  $default,) {final _that = this;
 switch (_that) {
 case _UserListResponse():
-return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount,_that.followersCount,_that.friendsCount,_that.data,_that.pagination);case _:
+return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount,_that.followersCount,_that.friendsCount,_that.data,_that.pagination,_that.isPending);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -213,10 +214,10 @@ return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserSummaryModel>? data,  PaginationModel? pagination)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserSummaryModel>? data,  PaginationModel? pagination,  bool isPending)?  $default,) {final _that = this;
 switch (_that) {
 case _UserListResponse() when $default != null:
-return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount,_that.followersCount,_that.friendsCount,_that.data,_that.pagination);case _:
+return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount,_that.followersCount,_that.friendsCount,_that.data,_that.pagination,_that.isPending);case _:
   return null;
 
 }
@@ -228,7 +229,7 @@ return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount
 @JsonSerializable()
 
 class _UserListResponse implements UserListResponse {
-  const _UserListResponse({@JsonKey(name: 'user_id') this.userId, this.username, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'following_count') this.followingCount, @JsonKey(name: 'followers_count') this.followersCount, @JsonKey(name: 'friends_count') this.friendsCount, final  List<UserSummaryModel>? data, this.pagination}): _data = data;
+  const _UserListResponse({@JsonKey(name: 'user_id') this.userId, this.username, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'following_count') this.followingCount, @JsonKey(name: 'followers_count') this.followersCount, @JsonKey(name: 'friends_count') this.friendsCount, final  List<UserSummaryModel>? data, this.pagination, this.isPending = false}): _data = data;
   factory _UserListResponse.fromJson(Map<String, dynamic> json) => _$UserListResponseFromJson(json);
 
 @override@JsonKey(name: 'user_id') final  String? userId;
@@ -247,6 +248,7 @@ class _UserListResponse implements UserListResponse {
 }
 
 @override final  PaginationModel? pagination;
+@override@JsonKey() final  bool isPending;
 
 /// Create a copy of UserListResponse
 /// with the given fields replaced by the non-null parameter values.
@@ -261,16 +263,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserListResponse&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.followersCount, followersCount) || other.followersCount == followersCount)&&(identical(other.friendsCount, friendsCount) || other.friendsCount == friendsCount)&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.pagination, pagination) || other.pagination == pagination));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserListResponse&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.username, username) || other.username == username)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.followersCount, followersCount) || other.followersCount == followersCount)&&(identical(other.friendsCount, friendsCount) || other.friendsCount == friendsCount)&&const DeepCollectionEquality().equals(other._data, _data)&&(identical(other.pagination, pagination) || other.pagination == pagination)&&(identical(other.isPending, isPending) || other.isPending == isPending));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,username,avatarUrl,followingCount,followersCount,friendsCount,const DeepCollectionEquality().hash(_data),pagination);
+int get hashCode => Object.hash(runtimeType,userId,username,avatarUrl,followingCount,followersCount,friendsCount,const DeepCollectionEquality().hash(_data),pagination,isPending);
 
 @override
 String toString() {
-  return 'UserListResponse(userId: $userId, username: $username, avatarUrl: $avatarUrl, followingCount: $followingCount, followersCount: $followersCount, friendsCount: $friendsCount, data: $data, pagination: $pagination)';
+  return 'UserListResponse(userId: $userId, username: $username, avatarUrl: $avatarUrl, followingCount: $followingCount, followersCount: $followersCount, friendsCount: $friendsCount, data: $data, pagination: $pagination, isPending: $isPending)';
 }
 
 
@@ -281,7 +283,7 @@ abstract mixin class _$UserListResponseCopyWith<$Res> implements $UserListRespon
   factory _$UserListResponseCopyWith(_UserListResponse value, $Res Function(_UserListResponse) _then) = __$UserListResponseCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'user_id') String? userId, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount, List<UserSummaryModel>? data, PaginationModel? pagination
+@JsonKey(name: 'user_id') String? userId, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount, List<UserSummaryModel>? data, PaginationModel? pagination, bool isPending
 });
 
 
@@ -298,7 +300,7 @@ class __$UserListResponseCopyWithImpl<$Res>
 
 /// Create a copy of UserListResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? data = freezed,Object? pagination = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? data = freezed,Object? pagination = freezed,Object? isPending = null,}) {
   return _then(_UserListResponse(
 userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String?,username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -308,7 +310,8 @@ as int?,followersCount: freezed == followersCount ? _self.followersCount : follo
 as int?,friendsCount: freezed == friendsCount ? _self.friendsCount : friendsCount // ignore: cast_nullable_to_non_nullable
 as int?,data: freezed == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
 as List<UserSummaryModel>?,pagination: freezed == pagination ? _self.pagination : pagination // ignore: cast_nullable_to_non_nullable
-as PaginationModel?,
+as PaginationModel?,isPending: null == isPending ? _self.isPending : isPending // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

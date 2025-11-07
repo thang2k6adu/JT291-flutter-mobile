@@ -10,6 +10,7 @@ abstract class PaginationModel with _$PaginationModel {
     int? offset,
     int? total,
     bool? hasNext,
+    @Default(false) bool isPending,
   }) = _PaginationModel;
 
   factory PaginationModel.fromJson(Map<String, dynamic> json) =>

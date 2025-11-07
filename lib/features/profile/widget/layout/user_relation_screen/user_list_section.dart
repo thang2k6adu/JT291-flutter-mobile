@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jt291_flutter_mobile/core/utils/string_utils.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
+import 'package:jt291_flutter_mobile/features/profile/screens/user_relation_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/user_relation_screen/user_item_widget.dart';
 
 /// Widget hiển thị danh sách user với label tab, hỗ trợ loading indicator.
@@ -22,6 +24,17 @@ class UserListSection extends StatelessWidget {
     required this.isLoading,
     this.onUserButtonPressed,
   });
+
+  UserButtonType getUserButtonType(String tabTitle, bool isFollowing) {
+    if (tabTitle == UserTab.following.name.capitalize()) {
+      return isFollowing ? UserButtonType.following : UserButtonType.follow;
+    } else if (tabTitle == UserTab.followers.name.capitalize()) {
+      return isFollowing ? UserButtonType.friends : UserButtonType.followBack;
+    } else if (tabTitle == UserTab.friends.name.capitalize()) {
+      return isFollowing ? UserButtonType.friends : UserButtonType.followBack;
+    }
+    return UserButtonType.follow;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +69,7 @@ class UserListSection extends StatelessWidget {
                   final user = users[index];
                   return UserItemWidget(
                     user: user,
-                    buttonType: user.isFriend
-                        ? UserButtonType.friends
-                        : title == 'Following'
-                        ? UserButtonType.following
-                        : UserButtonType.followBack,
+                    buttonType: getUserButtonType(title, user.isFollowing),
                     onUserButtonPressed: onUserButtonPressed,
                   );
                 } else {

@@ -21,6 +21,7 @@ abstract class UserModel with _$UserModel {
     @JsonKey(name: 'views_count') int? viewsCount,
     List<String>? interests,
     UserLevelModel? level,
+    @Default(false) bool isPending,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, Object?> json) =>

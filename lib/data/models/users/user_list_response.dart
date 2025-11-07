@@ -16,6 +16,7 @@ abstract class UserListResponse with _$UserListResponse {
     @JsonKey(name: 'friends_count') int? friendsCount,
     List<UserSummaryModel>? data,
     PaginationModel? pagination,
+    @Default(false) bool isPending,
   }) = _UserListResponse;
 
   factory UserListResponse.fromJson(Map<String, dynamic> json) =>

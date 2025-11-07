@@ -31,6 +31,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   level: json['level'] == null
       ? null
       : UserLevelModel.fromJson(json['level'] as Map<String, dynamic>),
+  isPending: json['isPending'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -49,4 +50,5 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'views_count': instance.viewsCount,
       'interests': instance.interests,
       'level': instance.level,
+      'isPending': instance.isPending,
     };
