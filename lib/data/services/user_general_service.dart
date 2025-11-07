@@ -2,12 +2,11 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
-import 'package:jt291_flutter_mobile/data/mocks/following_mock.dart';
+import 'package:jt291_flutter_mobile/data/mocks/relationship_mock.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
-import 'package:jt291_flutter_mobile/data/mocks/follower_mock.dart';
-import 'package:jt291_flutter_mobile/data/mocks/friend_mock.dart';
 
 class UserGeneralService {
   final ApiService _apiService = ApiService();
@@ -145,6 +144,183 @@ class UserGeneralService {
     } catch (e) {
       print("getFriendList failed: $e");
       return [];
+    }
+  }
+
+  FutureOr<bool> followUser(String userId, String targetId) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 300));
+      print('Follow user $targetId');
+      return true;
+
+      // final response = await _apiService.post('/v1/users/$userId/following/$targetId');
+      // return response['success'] == true;
+    } catch (e) {
+      print("followUser failed: $e");
+      return false;
+    }
+  }
+
+  FutureOr<bool> unfollowUser(String userId, String followingId) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 300));
+      print('Unfollow user $followingId');
+      return true;
+
+      // final response = await _apiService.delete('/v1/users/$userId/following/$followingId');
+      // return response['success'] == true;
+    } catch (e) {
+      print("unfollowUser failed: $e");
+      return false;
+    }
+  }
+
+  /// Hủy follower (xóa người đang follow mình)
+  FutureOr<bool> removeFollower(String userId, String followerId) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 300));
+      print('Remove follower $followerId');
+      return true;
+
+      // final response = await _apiService.delete('/v1/users/$userId/followers/$followerId');
+      // return response['success'] == true;
+    } catch (e) {
+      print("removeFollower failed: $e");
+      return false;
+    }
+  }
+
+  /// Hủy kết bạn
+  FutureOr<bool> unfriend(String userId, String friendId) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 300));
+      print('Unfriend $friendId');
+      return true;
+
+      // final response = await _apiService.delete('/v1/users/$userId/friends/$friendId');
+      // return response['success'] == true;
+    } catch (e) {
+      print("unfriend failed: $e");
+      return false;
+    }
+  }
+
+  /// Lấy thống kê bạn bè/follow
+  FutureOr<Map<String, int>> getUserStats(String userId) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 300));
+      return {
+        "following_count": 24,
+        "followers_count": 18,
+        "friends_count": 12,
+      };
+
+      // final response = await _apiService.get('/v1/users/$userId/stats');
+      // return Map<String, int>.from(response['data']);
+    } catch (e) {
+      print("getUserStats failed: $e");
+      return {"following_count": 0, "followers_count": 0, "friends_count": 0};
+    }
+  }
+
+  /// GET /users/{user_id}/following?search=<query>
+  FutureOr<UserListResponse?> searchFollowing(
+    String userId, {
+    String? search,
+  }) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 400)); // simulate delay
+
+      var data = followingMock.data ?? [];
+
+      // Filter theo search khi dùng mock
+      if (search != null && search.isNotEmpty) {
+        data = data
+            .where(
+              (u) =>
+                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
+                  false,
+            )
+            .toList();
+      }
+
+      return followingMock.copyWith(data: data);
+
+      // Khi có API thật:
+      // final response = await _apiService.get(
+      //   '/v1/users/$userId/following',
+      //   queryParameters: {'search': search},
+      // );
+      // return UserListResponse.fromJson(response);
+    } catch (e) {
+      print('searchFollowing failed: $e');
+      return const UserListResponse(data: []);
+    }
+  }
+
+  /// GET /users/{user_id}/followers?search=<query>
+  FutureOr<UserListResponse?> searchFollower(
+    String userId, {
+    String? search,
+  }) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      var data = followerMock.data ?? [];
+      if (search != null && search.isNotEmpty) {
+        data = data
+            .where(
+              (u) =>
+                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
+                  false,
+            )
+            .toList();
+      }
+
+      return followerMock.copyWith(data: data);
+
+      // Khi có API thật:
+      // final response = await _apiService.get(
+      //   '/v1/users/$userId/followers',
+      //   queryParameters: {'search': search},
+      // );
+      // return UserListResponse.fromJson(response);
+    } catch (e) {
+      print('searchFollower failed: $e');
+      return const UserListResponse(data: []);
+    }
+  }
+
+  /// GET /users/{user_id}/friends?search=<query>
+  FutureOr<UserListResponse?> searchFriend(
+    String userId, {
+    String? search,
+  }) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 400));
+
+      var data = friendMock.data ?? [];
+      if (search != null && search.isNotEmpty) {
+        data = data
+            .where(
+              (u) =>
+                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
+                  false,
+            )
+            .toList();
+      }
+
+      return friendMock.copyWith(data: data);
+
+      // Khi có API thật:
+      // final response = await _apiService.get(
+      //   '/v1/users/$userId/friends',
+      //   queryParameters: {'search': search},
+      // );
+      // return UserListResponse.fromJson(response);
+    } catch (e) {
+      print('searchFriend failed: $e');
+      return const UserListResponse(data: []);
     }
   }
 }
