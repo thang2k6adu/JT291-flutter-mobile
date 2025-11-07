@@ -1,6 +1,4 @@
-import 'package:jt291_flutter_mobile/data/models/users/following_model.dart';
-import 'package:jt291_flutter_mobile/data/models/users/follower_model.dart';
-import 'package:jt291_flutter_mobile/data/models/users/friend_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
 
 class UserRelationItem {
   final String id;
@@ -19,39 +17,36 @@ class UserRelationItem {
     required this.gender,
   });
 
-  factory UserRelationItem.fromFollowingModel(FollowingModel following) {
-    final user = following.user!;
+  factory UserRelationItem.fromFollowingModel(UserSummaryModel following) {
     return UserRelationItem(
-      id: user.unionId, // hoặc user.id tuỳ backend
-      nickname: user.nickname ?? '',
-      avatarUrl: user.avatarUrl ?? '',
-      bio: user.bio ?? '',
-      isFriend: following.isFriend ?? false,
-      gender: user.gender ?? 'male',
+      id: following.id ?? '',
+      nickname: following.username ?? '',
+      avatarUrl: following.avatarUrl ?? '',
+      bio: following.shortBio ?? '',
+      isFriend: false,
+      gender: following.gender ?? 'male',
     );
   }
 
-  factory UserRelationItem.fromFollowerModel(FollowerModel follower) {
-    final user = follower.user!;
+  factory UserRelationItem.fromFollowerModel(UserSummaryModel follower) {
     return UserRelationItem(
-      id: user.unionId,
-      nickname: user.nickname ?? '',
-      avatarUrl: user.avatarUrl ?? '',
-      bio: user.bio ?? '',
-      isFriend: follower.isFriend ?? false,
-      gender: user.gender ?? 'male',
+      id: follower.id ?? '',
+      nickname: follower.username ?? '',
+      avatarUrl: follower.avatarUrl ?? '',
+      bio: follower.shortBio ?? '',
+      isFriend: false,
+      gender: follower.gender ?? 'male',
     );
   }
 
-  factory UserRelationItem.fromFriendModel(FriendModel friend) {
-    final user = friend.user!;
+  factory UserRelationItem.fromFriendModel(UserSummaryModel friend) {
     return UserRelationItem(
-      id: user.unionId,
-      nickname: user.nickname ?? '',
-      avatarUrl: user.avatarUrl ?? '',
-      bio: user.bio ?? '',
+      id: friend.id ?? '',
+      nickname: friend.username ?? '',
+      avatarUrl: friend.avatarUrl ?? '',
+      bio: friend.shortBio ?? '',
       isFriend: true,
-      gender: user.gender ?? 'male',
+      gender: friend.gender ?? 'male',
     );
   }
 }

@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jt291_flutter_mobile/data/models/users/following_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
-import 'package:jt291_flutter_mobile/data/models/users/follower_model.dart';
-import 'package:jt291_flutter_mobile/data/models/users/friend_model.dart';
+
 
 final userGeneralProvider =
     AsyncNotifierProvider<UserGeneralNotifier, UserModel?>(
@@ -86,35 +85,53 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
   }
 
   /// Lấy danh sách Following
-  Future<List<FollowingModel>> getFollowingList() async {
+  Future<UserListResponse?> getFollowingList({
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      final followingList = await _userService.getFollowingList();
+      final followingList = await _userService.getFollowingList(
+        page: page,
+        limit: limit,
+      );
       return followingList;
     } catch (e, st) {
       state = AsyncError(e, st);
-      return [];
+      return null;
     }
   }
 
   /// Lấy danh sách Follower
-  Future<List<FollowerModel>> getFollowerList() async {
+  Future<UserListResponse?> getFollowerList({
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      final followerList = await _userService.getFollowerList();
+      final followerList = await _userService.getFollowerList(
+        page: page,
+        limit: limit,
+      );
       return followerList;
     } catch (e, st) {
       state = AsyncError(e, st);
-      return [];
+      return null;
     }
   }
 
   /// Lấy danh sách Friend
-  Future<List<FriendModel>> getFriendList() async {
+  Future<UserListResponse?> getFriendList({
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      final friendList = await _userService.getFriendList();
+      final friendList = await _userService.getFriendList(
+        page: page,
+        limit: limit,
+      );
       return friendList;
     } catch (e, st) {
       state = AsyncError(e, st);
-      return [];
+      return null;
     }
   }
 }
