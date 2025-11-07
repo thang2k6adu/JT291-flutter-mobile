@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jt291_flutter_mobile/core/utils/number_utils.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/stat_item.dart';
-import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
+import 'package:jt291_flutter_mobile/core/utils/number_utils.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -10,7 +9,9 @@ class ProfileHeader extends StatelessWidget {
   final int followersCount;
   final int viewsCount;
   final VoidCallback? onAvatarTap;
-  final VoidCallback? onStatsTap;
+  final VoidCallback? onFollowingTap; // Gesture riêng cho Following
+  final VoidCallback? onFollowersTap; // Gesture riêng cho Followers
+  final VoidCallback? onViewsTap; // Gesture riêng cho Views
 
   const ProfileHeader({
     super.key,
@@ -19,7 +20,9 @@ class ProfileHeader extends StatelessWidget {
     required this.followersCount,
     required this.viewsCount,
     this.onAvatarTap,
-    this.onStatsTap,
+    this.onFollowingTap,
+    this.onFollowersTap,
+    this.onViewsTap,
   });
 
   @override
@@ -46,22 +49,31 @@ class ProfileHeader extends StatelessWidget {
           const SizedBox(width: 16),
           // Stats
           Expanded(
-            child: GestureDetector(
-              onTap: onStatsTap,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  StatItem(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                // Following
+                GestureDetector(
+                  onTap: onFollowingTap,
+                  child: StatItem(
                     count: convertToCompactFormNumber(followingCount),
                     label: 'Following',
                   ),
-                  StatItem(
+                ),
+
+                // Followers
+                GestureDetector(
+                  onTap: onFollowersTap,
+                  child: StatItem(
                     count: convertToCompactFormNumber(followersCount),
                     label: 'Followers',
                   ),
+                ),
 
-                  // Views with optional badge
-                  Stack(
+                // Views with optional badge
+                GestureDetector(
+                  onTap: onViewsTap,
+                  child: Stack(
                     clipBehavior: Clip.none,
                     children: [
                       StatItem(
@@ -79,7 +91,7 @@ class ProfileHeader extends StatelessWidget {
                               shape: BoxShape.circle,
                             ),
                             child: Text(
-                              convertToCompactFormNumber(viewsCount),
+                              viewsCount > 99 ? '99+' : viewsCount.toString(),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 10,
@@ -90,8 +102,8 @@ class ProfileHeader extends StatelessWidget {
                         ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

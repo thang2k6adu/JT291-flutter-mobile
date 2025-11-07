@@ -82,4 +82,5 @@ final userStatsMock = UserStatsModel(
   followingCount: 360,
   followersCount: 160000,
   friendsCount: 20,
+  viewsCount: 100000,
 );

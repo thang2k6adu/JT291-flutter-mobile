@@ -71,12 +71,18 @@ class ProfileScreen extends ConsumerWidget {
                 avatarUrl: user?.avatarUrl,
                 followingCount: userStatsAsync.value?.followingCount ?? 0,
                 followersCount: userStatsAsync.value?.followersCount ?? 0,
-                viewsCount: user?.viewsCount ?? 0,
+                viewsCount: userStatsAsync.value?.viewsCount  ?? 0,
                 onAvatarTap: () {
                   pushScreen(context, RouteConstants.userMe);
                 },
-                onStatsTap: () {
+                onFollowingTap: () {
                   pushScreen(context, RouteConstants.userRelationships);
+                },
+                onFollowersTap: () {
+                  pushScreen(context, RouteConstants.userRelationships);
+                },
+                onViewsTap: () {
+                  pushScreen(context, RouteConstants.userProfileView);
                 },
               ),
               VerticalSection(child: WalletCard(balance: '100')),

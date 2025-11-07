@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserStatsModel {
 
-@JsonKey(name: 'following_count') int? get followingCount;@JsonKey(name: 'followers_count') int? get followersCount;@JsonKey(name: 'friends_count') int? get friendsCount; bool get isPending;
+@JsonKey(name: 'following_count') int? get followingCount;@JsonKey(name: 'followers_count') int? get followersCount;@JsonKey(name: 'friends_count') int? get friendsCount;@JsonKey(name: 'views_count') int? get viewsCount; bool get isPending;
 /// Create a copy of UserStatsModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserStatsModelCopyWith<UserStatsModel> get copyWith => _$UserStatsModelCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserStatsModel&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.followersCount, followersCount) || other.followersCount == followersCount)&&(identical(other.friendsCount, friendsCount) || other.friendsCount == friendsCount)&&(identical(other.isPending, isPending) || other.isPending == isPending));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserStatsModel&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.followersCount, followersCount) || other.followersCount == followersCount)&&(identical(other.friendsCount, friendsCount) || other.friendsCount == friendsCount)&&(identical(other.viewsCount, viewsCount) || other.viewsCount == viewsCount)&&(identical(other.isPending, isPending) || other.isPending == isPending));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,followingCount,followersCount,friendsCount,isPending);
+int get hashCode => Object.hash(runtimeType,followingCount,followersCount,friendsCount,viewsCount,isPending);
 
 @override
 String toString() {
-  return 'UserStatsModel(followingCount: $followingCount, followersCount: $followersCount, friendsCount: $friendsCount, isPending: $isPending)';
+  return 'UserStatsModel(followingCount: $followingCount, followersCount: $followersCount, friendsCount: $friendsCount, viewsCount: $viewsCount, isPending: $isPending)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserStatsModelCopyWith<$Res>  {
   factory $UserStatsModelCopyWith(UserStatsModel value, $Res Function(UserStatsModel) _then) = _$UserStatsModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount, bool isPending
+@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount,@JsonKey(name: 'views_count') int? viewsCount, bool isPending
 });
 
 
@@ -65,11 +65,12 @@ class _$UserStatsModelCopyWithImpl<$Res>
 
 /// Create a copy of UserStatsModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? isPending = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? viewsCount = freezed,Object? isPending = null,}) {
   return _then(_self.copyWith(
 followingCount: freezed == followingCount ? _self.followingCount : followingCount // ignore: cast_nullable_to_non_nullable
 as int?,followersCount: freezed == followersCount ? _self.followersCount : followersCount // ignore: cast_nullable_to_non_nullable
 as int?,friendsCount: freezed == friendsCount ? _self.friendsCount : friendsCount // ignore: cast_nullable_to_non_nullable
+as int?,viewsCount: freezed == viewsCount ? _self.viewsCount : viewsCount // ignore: cast_nullable_to_non_nullable
 as int?,isPending: null == isPending ? _self.isPending : isPending // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  bool isPending)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount, @JsonKey(name: 'views_count')  int? viewsCount,  bool isPending)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserStatsModel() when $default != null:
-return $default(_that.followingCount,_that.followersCount,_that.friendsCount,_that.isPending);case _:
+return $default(_that.followingCount,_that.followersCount,_that.friendsCount,_that.viewsCount,_that.isPending);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.followingCount,_that.followersCount,_that.friendsCount,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  bool isPending)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount, @JsonKey(name: 'views_count')  int? viewsCount,  bool isPending)  $default,) {final _that = this;
 switch (_that) {
 case _UserStatsModel():
-return $default(_that.followingCount,_that.followersCount,_that.friendsCount,_that.isPending);case _:
+return $default(_that.followingCount,_that.followersCount,_that.friendsCount,_that.viewsCount,_that.isPending);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.followingCount,_that.followersCount,_that.friendsCount,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  bool isPending)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount, @JsonKey(name: 'views_count')  int? viewsCount,  bool isPending)?  $default,) {final _that = this;
 switch (_that) {
 case _UserStatsModel() when $default != null:
-return $default(_that.followingCount,_that.followersCount,_that.friendsCount,_that.isPending);case _:
+return $default(_that.followingCount,_that.followersCount,_that.friendsCount,_that.viewsCount,_that.isPending);case _:
   return null;
 
 }
@@ -212,12 +213,13 @@ return $default(_that.followingCount,_that.followersCount,_that.friendsCount,_th
 @JsonSerializable()
 
 class _UserStatsModel implements UserStatsModel {
-  const _UserStatsModel({@JsonKey(name: 'following_count') this.followingCount, @JsonKey(name: 'followers_count') this.followersCount, @JsonKey(name: 'friends_count') this.friendsCount, this.isPending = false});
+  const _UserStatsModel({@JsonKey(name: 'following_count') this.followingCount, @JsonKey(name: 'followers_count') this.followersCount, @JsonKey(name: 'friends_count') this.friendsCount, @JsonKey(name: 'views_count') this.viewsCount, this.isPending = false});
   factory _UserStatsModel.fromJson(Map<String, dynamic> json) => _$UserStatsModelFromJson(json);
 
 @override@JsonKey(name: 'following_count') final  int? followingCount;
 @override@JsonKey(name: 'followers_count') final  int? followersCount;
 @override@JsonKey(name: 'friends_count') final  int? friendsCount;
+@override@JsonKey(name: 'views_count') final  int? viewsCount;
 @override@JsonKey() final  bool isPending;
 
 /// Create a copy of UserStatsModel
@@ -233,16 +235,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserStatsModel&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.followersCount, followersCount) || other.followersCount == followersCount)&&(identical(other.friendsCount, friendsCount) || other.friendsCount == friendsCount)&&(identical(other.isPending, isPending) || other.isPending == isPending));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserStatsModel&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.followersCount, followersCount) || other.followersCount == followersCount)&&(identical(other.friendsCount, friendsCount) || other.friendsCount == friendsCount)&&(identical(other.viewsCount, viewsCount) || other.viewsCount == viewsCount)&&(identical(other.isPending, isPending) || other.isPending == isPending));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,followingCount,followersCount,friendsCount,isPending);
+int get hashCode => Object.hash(runtimeType,followingCount,followersCount,friendsCount,viewsCount,isPending);
 
 @override
 String toString() {
-  return 'UserStatsModel(followingCount: $followingCount, followersCount: $followersCount, friendsCount: $friendsCount, isPending: $isPending)';
+  return 'UserStatsModel(followingCount: $followingCount, followersCount: $followersCount, friendsCount: $friendsCount, viewsCount: $viewsCount, isPending: $isPending)';
 }
 
 
@@ -253,7 +255,7 @@ abstract mixin class _$UserStatsModelCopyWith<$Res> implements $UserStatsModelCo
   factory _$UserStatsModelCopyWith(_UserStatsModel value, $Res Function(_UserStatsModel) _then) = __$UserStatsModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount, bool isPending
+@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount,@JsonKey(name: 'views_count') int? viewsCount, bool isPending
 });
 
 
@@ -270,11 +272,12 @@ class __$UserStatsModelCopyWithImpl<$Res>
 
 /// Create a copy of UserStatsModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? isPending = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? viewsCount = freezed,Object? isPending = null,}) {
   return _then(_UserStatsModel(
 followingCount: freezed == followingCount ? _self.followingCount : followingCount // ignore: cast_nullable_to_non_nullable
 as int?,followersCount: freezed == followersCount ? _self.followersCount : followersCount // ignore: cast_nullable_to_non_nullable
 as int?,friendsCount: freezed == friendsCount ? _self.friendsCount : friendsCount // ignore: cast_nullable_to_non_nullable
+as int?,viewsCount: freezed == viewsCount ? _self.viewsCount : viewsCount // ignore: cast_nullable_to_non_nullable
 as int?,isPending: null == isPending ? _self.isPending : isPending // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
