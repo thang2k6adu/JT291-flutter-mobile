@@ -106,15 +106,26 @@ class UserGeneralService {
   }
 
   /// get Following list
+  /// GET /v1/users/123/followers?page=2&limit=10&search=john
   FutureOr<UserListResponse?> getFollowingList({
     int page = 1,
     int limit = 10,
+    String? search,
   }) async {
     try {
       // Mock data
       await Future.delayed(const Duration(milliseconds: 500));
 
-      final allData = followingMock.data ?? [];
+      var allData = followingMock.data ?? [];
+      if (search != null && search.isNotEmpty) {
+        allData = allData
+            .where(
+              (u) =>
+                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
+                  false,
+            )
+            .toList();
+      }
       final start = (page - 1) * limit;
       final end = (start + limit).clamp(0, allData.length);
       final pagedData = allData.sublist(start, end);
@@ -132,7 +143,7 @@ class UserGeneralService {
 
       // final response = await _apiService.get(
       //   '/v1/users/following',
-      //   queryParameters: {'page': page, 'limit': limit},
+      //   queryParameters: {'page': page, 'limit': limit, 'search': search},
       // );
       // Xây pagination (tự tính hasNext)
       // final pagination = buildPagination(response['pagination']);
@@ -156,11 +167,21 @@ class UserGeneralService {
   FutureOr<UserListResponse?> getFollowerList({
     int page = 1,
     int limit = 10,
+    String? search,
   }) async {
     try {
       await Future.delayed(const Duration(milliseconds: 500));
 
-      final allData = followerMock.data ?? [];
+      var allData = followerMock.data ?? [];
+      if (search != null && search.isNotEmpty) {
+        allData = allData
+            .where(
+              (u) =>
+                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
+                  false,
+            )
+            .toList();
+      }
       final start = (page - 1) * limit;
       final end = (start + limit).clamp(0, allData.length);
       final pagedData = allData.sublist(start, end);
@@ -177,7 +198,7 @@ class UserGeneralService {
       );
       // final response = await _apiService.get(
       //   '/v1/users/followers',
-      //   queryParameters: {'page': page, 'limit': limit},
+      //   queryParameters: {'page': page, 'limit': limit, 'search': search},
       // );
       // Xây pagination (tự tính hasNext)
       // final pagination = buildPagination(response['pagination']);
@@ -201,13 +222,23 @@ class UserGeneralService {
   FutureOr<UserListResponse?> getFriendList({
     int page = 1,
     int limit = 10,
+    String? search,
   }) async {
     try {
       await Future.delayed(
         const Duration(milliseconds: 500),
       ); // simulate network delay
-      final allData = friendMock.data ?? [];
-      final start = (page - 1) * limit;
+      var allData = friendMock.data ?? [];
+      if (search != null && search.isNotEmpty) {
+        allData = allData
+            .where(
+              (u) =>
+                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
+                  false,
+            )
+            .toList();
+      }
+        final start = (page - 1) * limit;
       final end = (start + limit).clamp(0, allData.length);
       final pagedData = allData.sublist(start, end);
 
@@ -222,7 +253,7 @@ class UserGeneralService {
       );
       // final response = await _apiService.get(
       //   '/v1/users/friends',
-      //   queryParameters: {'page': page, 'limit': limit},
+      //   queryParameters: {'page': page, 'limit': limit, 'search': search},
       // );
       // Xây pagination (tự tính hasNext)
       // final pagination = buildPagination(response['pagination']);

@@ -110,7 +110,11 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
               controller: searchController,
               hintText: 'Search users',
               onChanged: (value) {
+                // TODO: add debounce
                 ref.read(searchQueryProvider.notifier).state = value;
+                followingNotifier.fetchFollowing(reset: true, search: value);
+                followerNotifier.fetchFollower(reset: true, search: value);
+                friendNotifier.fetchFriend(reset: true, search: value);
               },
             ),
             Expanded(

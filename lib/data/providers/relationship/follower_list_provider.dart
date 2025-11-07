@@ -12,6 +12,7 @@ class FollowerListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
   final scrollController = ScrollController();
   late final UserGeneralService _service;
   bool _isLoading = false;
+  String? _search;
 
   int _page = 1;
   bool _hasNext = true;
@@ -23,7 +24,7 @@ class FollowerListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
     _listenScroll();
     ref.onDispose(scrollController.dispose);
 
-    return fetchFollower(reset: true);
+    return fetchFollower(reset: true, search: _search);
   }
 
 void _listenScroll() {
@@ -39,11 +40,12 @@ void _listenScroll() {
   });
 }
   /// Fetch follower list (có hỗ trợ reset & load more)
-  Future<List<UserSummaryModel>> fetchFollower({bool reset = false}) async {
+  Future<List<UserSummaryModel>> fetchFollower({bool reset = false, String? search}) async {
     print('fetchFollower: $reset');
     if (reset) {
       _page = 1;
       _hasNext = true;
+      _search = search;
       state = const AsyncLoading();
     } else if (!_hasNext) {
       // Nếu không còn trang kế -> return luôn data hiện có
@@ -54,6 +56,7 @@ void _listenScroll() {
       final response = await _service.getFollowerList(
         page: _page,
         limit: _limit,
+        search: _search,
       );
 
       final newData = response?.data ?? <UserSummaryModel>[];

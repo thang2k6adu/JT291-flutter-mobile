@@ -15,6 +15,7 @@ class FollowingListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
   bool _hasNext = true;
   static const int _limit = 10;
   bool _isLoading = false;
+  String? _search;
 
   @override
   Future<List<UserSummaryModel>> build() async {
@@ -22,7 +23,7 @@ class FollowingListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
     _listenScroll();
     ref.onDispose(scrollController.dispose);
 
-    return fetchFollowing(reset: true);
+    return fetchFollowing(reset: true, search: _search);
   }
 
   void _listenScroll() {
@@ -38,10 +39,11 @@ class FollowingListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
     });  
   }
 
-  Future<List<UserSummaryModel>> fetchFollowing({bool reset = false}) async {
+  Future<List<UserSummaryModel>> fetchFollowing({bool reset = false, String? search}) async {
     if (reset) {
       _page = 1;
       _hasNext = true;
+      _search = search;
       state = const AsyncLoading();
     } else if (!_hasNext) {
       return state.value ?? [];
@@ -51,6 +53,7 @@ class FollowingListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
       final response = await _service.getFollowingList(
         page: _page,
         limit: _limit,
+        search: _search,
       );
 
       final newData = response?.data ?? [];
