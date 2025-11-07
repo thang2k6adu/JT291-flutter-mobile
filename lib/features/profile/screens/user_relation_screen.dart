@@ -9,9 +9,26 @@ import 'package:jt291_flutter_mobile/data/providers/relationship/following_list_
 import 'package:jt291_flutter_mobile/data/providers/relationship/follower_list_notifier.dart';
 import 'package:jt291_flutter_mobile/data/providers/relationship/friend_list_notifier.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
+import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
 
-class UserRelationScreen extends ConsumerWidget {
+/// Provider lưu từ khóa tìm kiếm
+final searchQueryProvider = StateProvider<String>((ref) => '');
+
+class UserRelationScreen extends ConsumerStatefulWidget {
   const UserRelationScreen({super.key});
+
+  @override
+  ConsumerState<UserRelationScreen> createState() => _UserRelationScreenState();
+}
+
+class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
+  final TextEditingController searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   void _handleUserButtonPressed(UserRelationItem user, UserButtonType type) {
     switch (type) {
@@ -27,18 +44,48 @@ class UserRelationScreen extends ConsumerWidget {
     }
   }
 
+
+  /// Hàm helper: build UI danh sách đã lọc
+  Widget buildFilteredUserList<T>({
+    required List<T> list,
+    required String searchQuery,
+    required UserRelationItem Function(T) convertFn,
+    required String title,
+    required void Function(UserRelationItem, UserButtonType) onPressed,
+  }) {
+    // Lọc theo query — nếu query rỗng thì giữ nguyên list
+    final filtered = searchQuery.isEmpty
+        ? list
+        : list
+            .where((e) => convertFn(e)
+                .nickname
+                .toLowerCase()
+                .contains(searchQuery.toLowerCase()))
+            .toList();
+
+    // Hiển thị kết quả
+    if (filtered.isEmpty && searchQuery.isNotEmpty) {
+      return const NoMatchingResults();
+    }
+
+    return UserListSection(
+      title: title,
+      users: filtered.map(convertFn).toList(),
+      onUserButtonPressed: onPressed,
+    );
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final followingState = ref.watch(followingListProvider);
     final followerState = ref.watch(followerListProvider);
     final friendState = ref.watch(friendListProvider);
-
-    final TextEditingController searchController = TextEditingController();
+    final searchQuery = ref.watch(searchQueryProvider);
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+        backgroundColor: Colors.white,
         appBar: UserRelationAppBar(
           title: 'Darlene Bears',
           bottom: UserRelationTabBar(
@@ -52,43 +99,51 @@ class UserRelationScreen extends ConsumerWidget {
             AppSearchField(
               controller: searchController,
               hintText: 'Search users',
+              onChanged: (value) {
+                ref.read(searchQueryProvider.notifier).state = value;
+              },
             ),
             Expanded(
               child: TabBarView(
                 children: [
+                  // FOLLOWING TAB
                   followingState.when(
-                    data: (list) => UserListSection(
+                    data: (list) => buildFilteredUserList(
+                      list: list,
+                      searchQuery: searchQuery,
+                      convertFn: (e) => UserRelationItem.fromFollowingModel(e),
                       title: 'Following',
-                      users: list
-                          .map((e) => UserRelationItem.fromFollowingModel(e))
-                          .toList(),
-                      onUserButtonPressed: _handleUserButtonPressed,
+                      onPressed: _handleUserButtonPressed,
                     ),
                     loading: () =>
                         const Center(child: CircularProgressIndicator()),
                     error: (e, st) =>
                         Center(child: Text('Error loading Following: $e')),
                   ),
+
+                  // FOLLOWER TAB
                   followerState.when(
-                    data: (list) => UserListSection(
+                    data: (list) => buildFilteredUserList(
+                      list: list,
+                      searchQuery: searchQuery,
+                      convertFn: (e) => UserRelationItem.fromFollowerModel(e),
                       title: 'Followers',
-                      users: list
-                          .map((e) => UserRelationItem.fromFollowerModel(e))
-                          .toList(),
-                      onUserButtonPressed: _handleUserButtonPressed,
+                      onPressed: _handleUserButtonPressed,
                     ),
                     loading: () =>
                         const Center(child: CircularProgressIndicator()),
                     error: (e, st) =>
                         Center(child: Text('Error loading Followers: $e')),
                   ),
+
+                  // FRIEND TAB
                   friendState.when(
-                    data: (list) => UserListSection(
+                    data: (list) => buildFilteredUserList(
+                      list: list,
+                      searchQuery: searchQuery,
+                      convertFn: (e) => UserRelationItem.fromFriendModel(e),
                       title: 'Friends',
-                      users: list
-                          .map((e) => UserRelationItem.fromFriendModel(e))
-                          .toList(),
-                      onUserButtonPressed: _handleUserButtonPressed,
+                      onPressed: _handleUserButtonPressed,
                     ),
                     loading: () =>
                         const Center(child: CircularProgressIndicator()),
