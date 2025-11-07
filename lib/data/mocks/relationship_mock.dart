@@ -13,33 +13,18 @@ final followingMock = UserListResponse(
   followingCount: 360,
   followersCount: 160000,
   friendsCount: 20,
-  data: [
-    const UserSummaryModel(
-      id: "user1_id",
-      username: "Leo Herwitz",
-      avatarUrl: "https://example.com/avatar1.png",
-      gender: "female",
-      shortBio: "Striving for excellence, embracing life...",
-      isFollowing: true,
+  data: List.generate(
+    20,
+    (i) => UserSummaryModel(
+      id: "following_${i + 1}",
+      username: "Following User ${i + 1}",
+      avatarUrl: "https://example.com/following_${i + 1}.png",
+      gender: i.isEven ? "male" : "female",
+      shortBio: "Bio of following user ${i + 1}",
+      isFollowing: i % 3 != 0,
     ),
-    const UserSummaryModel(
-      id: "user2_id",
-      username: "Marley Schleifer",
-      avatarUrl: "https://example.com/avatar2.png",
-      gender: "male",
-      shortBio: "Lover of technology and coffee",
-      isFollowing: true,
-    ),
-    const UserSummaryModel(
-      id: "user3_id",
-      username: "Carmen Sandiego",
-      avatarUrl: "https://example.com/avatar3.png",
-      gender: "female",
-      shortBio: "Adventurer and world traveler",
-      isFollowing: false,
-    ),
-  ],
-  pagination: const PaginationModel(limit: 20, offset: 0, total: 360),
+  ),
+  pagination: const PaginationModel(limit: 10, offset: 0, total: 360),
 );
 
 /// ===============================
@@ -52,33 +37,18 @@ final followerMock = UserListResponse(
   followingCount: 360,
   followersCount: 160000,
   friendsCount: 20,
-  data: [
-    const UserSummaryModel(
-      id: "user4_id",
-      username: "John Doe",
-      avatarUrl: "https://example.com/avatar4.png",
-      gender: "male",
-      shortBio: "Music enthusiast and coder",
-      isFollowing: false, // chưa follow lại
+  data: List.generate(
+    20,
+    (i) => UserSummaryModel(
+      id: "follower_${i + 1}",
+      username: "Follower User ${i + 1}",
+      avatarUrl: "https://example.com/follower_${i + 1}.png",
+      gender: i.isEven ? "female" : "male",
+      shortBio: "Follower user ${i + 1} loves photography & travel.",
+      isFollowing: i % 2 == 0,
     ),
-    const UserSummaryModel(
-      id: "user5_id",
-      username: "Anna Marie",
-      avatarUrl: "https://example.com/avatar5.png",
-      gender: "female",
-      shortBio: "Traveler and food lover",
-      isFollowing: true, // đã follow lại
-    ),
-    const UserSummaryModel(
-      id: "user6_id",
-      username: "Michael Scott",
-      avatarUrl: "https://example.com/avatar6.png",
-      gender: "male",
-      shortBio: "Regional manager, Dunder Mifflin",
-      isFollowing: false,
-    ),
-  ],
-  pagination: const PaginationModel(limit: 20, offset: 0, total: 160000),
+  ),
+  pagination: const PaginationModel(limit: 10, offset: 0, total: 160000),
 );
 
 /// ===============================
@@ -91,33 +61,18 @@ final friendMock = UserListResponse(
   followingCount: 360,
   followersCount: 160000,
   friendsCount: 20,
-  data: [
-    const UserSummaryModel(
-      id: "friend1_id",
-      username: "Olivia Benson",
-      avatarUrl: "https://example.com/avatar_friend1.png",
-      gender: "female",
-      shortBio: "Detective and justice seeker",
+  data: List.generate(
+    20,
+    (i) => UserSummaryModel(
+      id: "friend_${i + 1}",
+      username: "Friend User ${i + 1}",
+      avatarUrl: "https://example.com/friend_${i + 1}.png",
+      gender: i.isEven ? "female" : "male",
+      shortBio: "Friend ${i + 1} enjoys hiking, music, and coding.",
       isFollowing: true,
     ),
-    const UserSummaryModel(
-      id: "friend2_id",
-      username: "Harvey Specter",
-      avatarUrl: "https://example.com/avatar_friend2.png",
-      gender: "male",
-      shortBio: "Closer. Winner. Lawyer.",
-      isFollowing: true,
-    ),
-    const UserSummaryModel(
-      id: "friend3_id",
-      username: "Rachel Zane",
-      avatarUrl: "https://example.com/avatar_friend3.png",
-      gender: "female",
-      shortBio: "Paralegal turned lawyer.",
-      isFollowing: true,
-    ),
-  ],
-  pagination: const PaginationModel(limit: 20, offset: 0, total: 20),
+  ),
+  pagination: const PaginationModel(limit: 10, offset: 0, total: 20),
 );
 
 /// ===============================

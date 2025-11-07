@@ -1,22 +1,41 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 
 final friendListProvider =
     AsyncNotifierProvider<FriendListNotifier, List<UserSummaryModel>>(
-  () => FriendListNotifier(),
-);
+      FriendListNotifier.new,
+    );
 
 class FriendListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
+  final scrollController = ScrollController();
   late final UserGeneralService _service;
   int _page = 1;
   bool _hasNext = true;
   static const int _limit = 10;
+  bool _isLoading = false;
 
   @override
   Future<List<UserSummaryModel>> build() async {
     _service = ref.read(userGeneralServiceProvider);
+    _listenScroll();
+    ref.onDispose(scrollController.dispose);
+
     return fetchFriend(reset: true);
+  }
+
+  void _listenScroll() {
+    scrollController.addListener(() async {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 200) {
+        if (_hasNext && !_isLoading) {
+          _isLoading = true;
+          await loadMoreFriend();
+          _isLoading = false;
+        }
+      }
+    });
   }
 
   Future<List<UserSummaryModel>> fetchFriend({bool reset = false}) async {
