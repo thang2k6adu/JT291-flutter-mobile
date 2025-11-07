@@ -9,6 +9,7 @@ abstract class PaginationModel with _$PaginationModel {
     int? limit,
     int? offset,
     int? total,
+    bool? hasNext,
   }) = _PaginationModel;
 
   factory PaginationModel.fromJson(Map<String, dynamic> json) =>

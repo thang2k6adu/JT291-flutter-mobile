@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PaginationModel {
 
- int? get limit; int? get offset; int? get total;
+ int? get limit; int? get offset; int? get total; bool? get hasNext;
 /// Create a copy of PaginationModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PaginationModelCopyWith<PaginationModel> get copyWith => _$PaginationModelCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaginationModel&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.total, total) || other.total == total));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaginationModel&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.total, total) || other.total == total)&&(identical(other.hasNext, hasNext) || other.hasNext == hasNext));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,limit,offset,total);
+int get hashCode => Object.hash(runtimeType,limit,offset,total,hasNext);
 
 @override
 String toString() {
-  return 'PaginationModel(limit: $limit, offset: $offset, total: $total)';
+  return 'PaginationModel(limit: $limit, offset: $offset, total: $total, hasNext: $hasNext)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PaginationModelCopyWith<$Res>  {
   factory $PaginationModelCopyWith(PaginationModel value, $Res Function(PaginationModel) _then) = _$PaginationModelCopyWithImpl;
 @useResult
 $Res call({
- int? limit, int? offset, int? total
+ int? limit, int? offset, int? total, bool? hasNext
 });
 
 
@@ -65,12 +65,13 @@ class _$PaginationModelCopyWithImpl<$Res>
 
 /// Create a copy of PaginationModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? limit = freezed,Object? offset = freezed,Object? total = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? limit = freezed,Object? offset = freezed,Object? total = freezed,Object? hasNext = freezed,}) {
   return _then(_self.copyWith(
 limit: freezed == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
 as int?,offset: freezed == offset ? _self.offset : offset // ignore: cast_nullable_to_non_nullable
 as int?,total: freezed == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
-as int?,
+as int?,hasNext: freezed == hasNext ? _self.hasNext : hasNext // ignore: cast_nullable_to_non_nullable
+as bool?,
   ));
 }
 
@@ -155,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? limit,  int? offset,  int? total)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? limit,  int? offset,  int? total,  bool? hasNext)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PaginationModel() when $default != null:
-return $default(_that.limit,_that.offset,_that.total);case _:
+return $default(_that.limit,_that.offset,_that.total,_that.hasNext);case _:
   return orElse();
 
 }
@@ -176,10 +177,10 @@ return $default(_that.limit,_that.offset,_that.total);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? limit,  int? offset,  int? total)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? limit,  int? offset,  int? total,  bool? hasNext)  $default,) {final _that = this;
 switch (_that) {
 case _PaginationModel():
-return $default(_that.limit,_that.offset,_that.total);case _:
+return $default(_that.limit,_that.offset,_that.total,_that.hasNext);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +197,10 @@ return $default(_that.limit,_that.offset,_that.total);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? limit,  int? offset,  int? total)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? limit,  int? offset,  int? total,  bool? hasNext)?  $default,) {final _that = this;
 switch (_that) {
 case _PaginationModel() when $default != null:
-return $default(_that.limit,_that.offset,_that.total);case _:
+return $default(_that.limit,_that.offset,_that.total,_that.hasNext);case _:
   return null;
 
 }
@@ -211,12 +212,13 @@ return $default(_that.limit,_that.offset,_that.total);case _:
 @JsonSerializable()
 
 class _PaginationModel implements PaginationModel {
-  const _PaginationModel({this.limit, this.offset, this.total});
+  const _PaginationModel({this.limit, this.offset, this.total, this.hasNext});
   factory _PaginationModel.fromJson(Map<String, dynamic> json) => _$PaginationModelFromJson(json);
 
 @override final  int? limit;
 @override final  int? offset;
 @override final  int? total;
+@override final  bool? hasNext;
 
 /// Create a copy of PaginationModel
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +233,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaginationModel&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.total, total) || other.total == total));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaginationModel&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.offset, offset) || other.offset == offset)&&(identical(other.total, total) || other.total == total)&&(identical(other.hasNext, hasNext) || other.hasNext == hasNext));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,limit,offset,total);
+int get hashCode => Object.hash(runtimeType,limit,offset,total,hasNext);
 
 @override
 String toString() {
-  return 'PaginationModel(limit: $limit, offset: $offset, total: $total)';
+  return 'PaginationModel(limit: $limit, offset: $offset, total: $total, hasNext: $hasNext)';
 }
 
 
@@ -251,7 +253,7 @@ abstract mixin class _$PaginationModelCopyWith<$Res> implements $PaginationModel
   factory _$PaginationModelCopyWith(_PaginationModel value, $Res Function(_PaginationModel) _then) = __$PaginationModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? limit, int? offset, int? total
+ int? limit, int? offset, int? total, bool? hasNext
 });
 
 
@@ -268,12 +270,13 @@ class __$PaginationModelCopyWithImpl<$Res>
 
 /// Create a copy of PaginationModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? limit = freezed,Object? offset = freezed,Object? total = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? limit = freezed,Object? offset = freezed,Object? total = freezed,Object? hasNext = freezed,}) {
   return _then(_PaginationModel(
 limit: freezed == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
 as int?,offset: freezed == offset ? _self.offset : offset // ignore: cast_nullable_to_non_nullable
 as int?,total: freezed == total ? _self.total : total // ignore: cast_nullable_to_non_nullable
-as int?,
+as int?,hasNext: freezed == hasNext ? _self.hasNext : hasNext // ignore: cast_nullable_to_non_nullable
+as bool?,
   ));
 }
 

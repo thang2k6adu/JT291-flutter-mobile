@@ -2,11 +2,23 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/data/models/users/pagination_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/relationship_mock.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
+
+PaginationModel buildPagination(Map<String, dynamic>? json) {
+  if (json == null) return const PaginationModel();
+
+  final pagination = PaginationModel.fromJson(json);
+  final hasNext =
+      ((pagination.offset ?? 1) * (pagination.limit ?? 10)) <
+      (pagination.total ?? 0);
+
+  return pagination.copyWith(hasNext: hasNext);
+}
 
 class UserGeneralService {
   final ApiService _apiService = ApiService();
@@ -94,56 +106,139 @@ class UserGeneralService {
   }
 
   /// get Following list
-  FutureOr<List<UserSummaryModel>> getFollowingList() async {
+  FutureOr<UserListResponse?> getFollowingList({
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      // Fake API call với mock data
-      await Future.delayed(
-        const Duration(milliseconds: 500),
-      ); // simulate network delay
-      return followingMock.data ?? [];
+      // Mock data
+      await Future.delayed(const Duration(milliseconds: 500));
 
-      // Khi có API thật, bỏ comment này
-      // final response = await _apiService.get('/v1/users/following');
-      // return (response['data'] as List)
-      //     .map((e) => FollowingModel.fromJson(e))
-      //     .toList();
+      final allData = followingMock.data ?? [];
+      final start = (page - 1) * limit;
+      final end = (start + limit).clamp(0, allData.length);
+      final pagedData = allData.sublist(start, end);
+
+      // Tạo response phân trang mock
+      return UserListResponse(
+        data: pagedData,
+        pagination: PaginationModel(
+          offset: page,
+          limit: limit,
+          total: allData.length,
+          hasNext: end < allData.length,
+        ),
+      );
+
+      // final response = await _apiService.get(
+      //   '/v1/users/following',
+      //   queryParameters: {'page': page, 'limit': limit},
+      // );
+      // Xây pagination (tự tính hasNext)
+      // final pagination = buildPagination(response['pagination']);
+
+      // // Trả về dữ liệu hoàn chỉnh
+      // return UserListResponse(
+      //   data:
+      //       (response['data'] as List<dynamic>?)
+      //           ?.map((e) => UserSummaryModel.fromJson(e))
+      //           .toList() ??
+      //       [],
+      //   pagination: pagination,
+      // );
     } catch (e) {
       print("getFollowingList failed: $e");
-      return [];
+      return const UserListResponse(data: []);
     }
   }
 
   /// get Follower list
-  FutureOr<List<UserSummaryModel>> getFollowerList() async {
+  FutureOr<UserListResponse?> getFollowerList({
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      await Future.delayed(
-        const Duration(milliseconds: 500),
-      ); // simulate network delay
-      return followerMock.data ?? [];
-      // final response = await _apiService.get('/v1/users/followers');
-      // return (response['data'] as List)
-      //     .map((e) => FollowerModel.fromJson(e))
-      //     .toList();
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      final allData = followerMock.data ?? [];
+      final start = (page - 1) * limit;
+      final end = (start + limit).clamp(0, allData.length);
+      final pagedData = allData.sublist(start, end);
+
+      // Tạo response phân trang mock
+      return UserListResponse(
+        data: pagedData,
+        pagination: PaginationModel(
+          offset: page,
+          limit: limit,
+          total: allData.length,
+          hasNext: end < allData.length,
+        ),
+      );
+      // final response = await _apiService.get(
+      //   '/v1/users/followers',
+      //   queryParameters: {'page': page, 'limit': limit},
+      // );
+      // Xây pagination (tự tính hasNext)
+      // final pagination = buildPagination(response['pagination']);
+
+      // // Trả về dữ liệu hoàn chỉnh
+      // return UserListResponse(
+      //   data:
+      //       (response['data'] as List<dynamic>?)
+      //           ?.map((e) => UserSummaryModel.fromJson(e))
+      //           .toList() ??
+      //       [],
+      //   pagination: pagination,
+      // );
     } catch (e) {
       print("getFollowerList failed: $e");
-      return [];
+      return const UserListResponse(data: []);
     }
   }
 
   /// get Friend list
-  FutureOr<List<UserSummaryModel>> getFriendList() async {
+  FutureOr<UserListResponse?> getFriendList({
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
       await Future.delayed(
         const Duration(milliseconds: 500),
       ); // simulate network delay
-      return friendMock.data ?? [];
-      // final response = await _apiService.get('/v1/users/friends');
-      // return (response['data'] as List)
-      //     .map((e) => FriendModel.fromJson(e))
-      //     .toList();
+      final allData = friendMock.data ?? [];
+      final start = (page - 1) * limit;
+      final end = (start + limit).clamp(0, allData.length);
+      final pagedData = allData.sublist(start, end);
+
+      return UserListResponse(
+        data: pagedData,
+        pagination: PaginationModel(
+          offset: page,
+          limit: limit,
+          total: allData.length,
+          hasNext: end < allData.length,
+        ),
+      );
+      // final response = await _apiService.get(
+      //   '/v1/users/friends',
+      //   queryParameters: {'page': page, 'limit': limit},
+      // );
+      // Xây pagination (tự tính hasNext)
+      // final pagination = buildPagination(response['pagination']);
+
+      // // Trả về dữ liệu hoàn chỉnh
+      // return UserListResponse(
+      //   data:
+      //       (response['data'] as List<dynamic>?)
+      //           ?.map((e) => UserSummaryModel.fromJson(e))
+      //           .toList() ??
+      //       [],
+      //   pagination: pagination,
+      // );
     } catch (e) {
       print("getFriendList failed: $e");
-      return [];
+      return const UserListResponse(data: []);
     }
   }
 

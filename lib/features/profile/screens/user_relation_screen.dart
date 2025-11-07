@@ -5,9 +5,9 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relatio
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_list_section.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_relation_tabbar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/user_relation_screen/user_item_widget.dart';
-import 'package:jt291_flutter_mobile/data/providers/relationship/following_list_notifier.dart';
-import 'package:jt291_flutter_mobile/data/providers/relationship/follower_list_notifier.dart';
-import 'package:jt291_flutter_mobile/data/providers/relationship/friend_list_notifier.dart';
+import 'package:jt291_flutter_mobile/data/providers/relationship/following_list_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/relationship/follower_list_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/relationship/friend_list_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
 import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
 

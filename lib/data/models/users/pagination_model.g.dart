@@ -11,6 +11,7 @@ _PaginationModel _$PaginationModelFromJson(Map<String, dynamic> json) =>
       limit: (json['limit'] as num?)?.toInt(),
       offset: (json['offset'] as num?)?.toInt(),
       total: (json['total'] as num?)?.toInt(),
+      hasNext: json['hasNext'] as bool?,
     );
 
 Map<String, dynamic> _$PaginationModelToJson(_PaginationModel instance) =>
@@ -18,4 +19,5 @@ Map<String, dynamic> _$PaginationModelToJson(_PaginationModel instance) =>
       'limit': instance.limit,
       'offset': instance.offset,
       'total': instance.total,
+      'hasNext': instance.hasNext,
     };
