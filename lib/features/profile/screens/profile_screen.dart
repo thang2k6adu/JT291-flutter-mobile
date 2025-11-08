@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
+import 'package:jt291_flutter_mobile/core/utils/number_utils.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/profile_app_bar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/profile_bottom_navbar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/profile_header.dart';
@@ -67,12 +69,12 @@ class ProfileScreen extends ConsumerWidget {
         appBar: ProfileAppBar(title: user?.nickname ?? ''),
         body: SingleChildScrollView(
           child: Column(
-            children:  [
+            children: [
               ProfileHeader(
                 avatarUrl: user?.avatarUrl,
                 followingCount: userStatsAsync.value?.followingCount ?? 0,
                 followersCount: userStatsAsync.value?.followersCount ?? 0,
-                viewsCount: userStatsAsync.value?.viewsCount  ?? 0,
+                viewsCount: userStatsAsync.value?.viewsCount ?? 0,
                 onAvatarTap: () {
                   pushScreen(context, RouteConstants.userMe);
                 },
@@ -86,12 +88,26 @@ class ProfileScreen extends ConsumerWidget {
                   pushScreen(context, RouteConstants.userProfileView);
                 },
               ),
-              VerticalSection(child: WalletCard(balance: walletSummaryAsync.value?.totalDiamondBalance.toString() ?? '0', onTap: () {
-                pushScreen(context, RouteConstants.diamonds);
-              })),
+              VerticalSection(
+                child: WalletCard(
+                  backgroundImage: AssetImage(AppImages.myWallet),
+                  balance: formatNumberWithCommas(
+                    walletSummaryAsync.value?.totalDiamondBalance ?? 0,
+                  ),
+                  onTap: () {
+                    pushScreen(context, RouteConstants.diamonds);
+                  },
+                ),
+              ),
               VerticalSection(child: QuickAccessRow(items: quickAccessItems)),
-              VerticalSection(spacing: 10, child: MenuSection(items: menuSection1)),
-              VerticalSection(spacing: 100, child: MenuSection(items: menuSection2)),
+              VerticalSection(
+                spacing: 10,
+                child: MenuSection(items: menuSection1),
+              ),
+              VerticalSection(
+                spacing: 100,
+                child: MenuSection(items: menuSection2),
+              ),
             ],
           ),
         ),

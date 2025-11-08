@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
+import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
+import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
+import 'package:jt291_flutter_mobile/core/utils/number_utils.dart';
 import 'package:jt291_flutter_mobile/data/mocks/wallet_mock.dart';
-import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/diamon_package_grid.dart';
-import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/balance_section.dart';
+import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/diamond_screen/diamon_package_grid.dart';
+import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/diamond_screen/balance_section.dart';
 import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/components/ui/vertical_section.dart';
+import 'package:jt291_flutter_mobile/data/providers/wallet/wallet_summary_provider.dart';
 
 class DiamondScreen extends ConsumerWidget {
   const DiamondScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final walletSummaryAsync = ref.watch(walletSummaryProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarWithBack(
@@ -20,7 +26,9 @@ class DiamondScreen extends ConsumerWidget {
         bottomBorder: true,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              pushScreen(context, RouteConstants.history);
+            },
             icon: SvgIconSimple.asset(AppIcons.receipt),
           ),
         ],
@@ -34,7 +42,7 @@ class DiamondScreen extends ConsumerWidget {
             VerticalSection(
               spacing: 16,
               child: BalanceSection(
-                totalBalance: '100',
+                totalBalance: formatNumberWithCommas(walletSummaryAsync.value?.totalDiamondBalance ?? 0),
                 features: [
                   {'title': 'Vex conversion', 'subtitle': 'Account balance', 'onTap': () {}},
                   {'title': 'Monthly card', 'subtitle': 'Aboxyz', 'onTap': () {}},

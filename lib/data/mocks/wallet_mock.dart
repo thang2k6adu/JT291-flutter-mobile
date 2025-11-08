@@ -2,7 +2,7 @@ import 'package:jt291_flutter_mobile/data/models/wallet/wallet_summary_model.dar
 import 'package:jt291_flutter_mobile/data/models/wallet/recharge_package_model.dart';
 
 final walletSummaryMock = WalletSummaryModel(
-  totalDiamondBalance: 1200,
+  totalDiamondBalance: 54292.79,
   vexBalance: 5000,
   monthlyCardStatus: "active",
 );

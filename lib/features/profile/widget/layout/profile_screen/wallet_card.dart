@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
 class WalletCard extends StatelessWidget {
   final String title;
   final String balance;
   final String currencyIcon; // ví dụ: 💎 hoặc $
   final VoidCallback? onTap;
+  final ImageProvider? backgroundImage;
 
   const WalletCard({
     super.key,
     this.title = 'My Wallet',
     required this.balance,
-    this.currencyIcon = '💎',
+    this.currencyIcon = AppIcons.diamondPng,
     this.onTap,
+    this.backgroundImage,
   });
 
   @override
@@ -24,13 +27,9 @@ class WalletCard extends StatelessWidget {
           height: 100,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            gradient: const LinearGradient(
-              colors: [
-                Color(0xFFB4A5F3),
-                Color(0xFFF3A5C7),
-                Color(0xFFA5D8F3),
-              ],
-            ),
+            image: backgroundImage != null
+                ? DecorationImage(image: backgroundImage!, fit: BoxFit.cover)
+                : null,
           ),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -50,7 +49,7 @@ class WalletCard extends StatelessWidget {
                 // Wallet info (icon + balance + arrow)
                 Row(
                   children: [
-                    Text(currencyIcon, style: const TextStyle(fontSize: 24)),
+                    Image.asset(currencyIcon, width: 24, height: 24),
                     const SizedBox(width: 8),
                     Text(
                       balance,

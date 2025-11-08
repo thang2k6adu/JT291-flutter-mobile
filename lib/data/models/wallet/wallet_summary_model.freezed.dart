@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WalletSummaryModel {
 
- int get totalDiamondBalance; int get vexBalance; String get monthlyCardStatus;
+ double get totalDiamondBalance; int get vexBalance; String get monthlyCardStatus;
 /// Create a copy of WalletSummaryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $WalletSummaryModelCopyWith<$Res>  {
   factory $WalletSummaryModelCopyWith(WalletSummaryModel value, $Res Function(WalletSummaryModel) _then) = _$WalletSummaryModelCopyWithImpl;
 @useResult
 $Res call({
- int totalDiamondBalance, int vexBalance, String monthlyCardStatus
+ double totalDiamondBalance, int vexBalance, String monthlyCardStatus
 });
 
 
@@ -68,7 +68,7 @@ class _$WalletSummaryModelCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? totalDiamondBalance = null,Object? vexBalance = null,Object? monthlyCardStatus = null,}) {
   return _then(_self.copyWith(
 totalDiamondBalance: null == totalDiamondBalance ? _self.totalDiamondBalance : totalDiamondBalance // ignore: cast_nullable_to_non_nullable
-as int,vexBalance: null == vexBalance ? _self.vexBalance : vexBalance // ignore: cast_nullable_to_non_nullable
+as double,vexBalance: null == vexBalance ? _self.vexBalance : vexBalance // ignore: cast_nullable_to_non_nullable
 as int,monthlyCardStatus: null == monthlyCardStatus ? _self.monthlyCardStatus : monthlyCardStatus // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int totalDiamondBalance,  int vexBalance,  String monthlyCardStatus)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double totalDiamondBalance,  int vexBalance,  String monthlyCardStatus)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WalletSummaryModel() when $default != null:
 return $default(_that.totalDiamondBalance,_that.vexBalance,_that.monthlyCardStatus);case _:
@@ -176,7 +176,7 @@ return $default(_that.totalDiamondBalance,_that.vexBalance,_that.monthlyCardStat
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int totalDiamondBalance,  int vexBalance,  String monthlyCardStatus)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double totalDiamondBalance,  int vexBalance,  String monthlyCardStatus)  $default,) {final _that = this;
 switch (_that) {
 case _WalletSummaryModel():
 return $default(_that.totalDiamondBalance,_that.vexBalance,_that.monthlyCardStatus);case _:
@@ -196,7 +196,7 @@ return $default(_that.totalDiamondBalance,_that.vexBalance,_that.monthlyCardStat
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int totalDiamondBalance,  int vexBalance,  String monthlyCardStatus)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double totalDiamondBalance,  int vexBalance,  String monthlyCardStatus)?  $default,) {final _that = this;
 switch (_that) {
 case _WalletSummaryModel() when $default != null:
 return $default(_that.totalDiamondBalance,_that.vexBalance,_that.monthlyCardStatus);case _:
@@ -214,7 +214,7 @@ class _WalletSummaryModel implements WalletSummaryModel {
   const _WalletSummaryModel({required this.totalDiamondBalance, required this.vexBalance, required this.monthlyCardStatus});
   factory _WalletSummaryModel.fromJson(Map<String, dynamic> json) => _$WalletSummaryModelFromJson(json);
 
-@override final  int totalDiamondBalance;
+@override final  double totalDiamondBalance;
 @override final  int vexBalance;
 @override final  String monthlyCardStatus;
 
@@ -251,7 +251,7 @@ abstract mixin class _$WalletSummaryModelCopyWith<$Res> implements $WalletSummar
   factory _$WalletSummaryModelCopyWith(_WalletSummaryModel value, $Res Function(_WalletSummaryModel) _then) = __$WalletSummaryModelCopyWithImpl;
 @override @useResult
 $Res call({
- int totalDiamondBalance, int vexBalance, String monthlyCardStatus
+ double totalDiamondBalance, int vexBalance, String monthlyCardStatus
 });
 
 
@@ -271,7 +271,7 @@ class __$WalletSummaryModelCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? totalDiamondBalance = null,Object? vexBalance = null,Object? monthlyCardStatus = null,}) {
   return _then(_WalletSummaryModel(
 totalDiamondBalance: null == totalDiamondBalance ? _self.totalDiamondBalance : totalDiamondBalance // ignore: cast_nullable_to_non_nullable
-as int,vexBalance: null == vexBalance ? _self.vexBalance : vexBalance // ignore: cast_nullable_to_non_nullable
+as double,vexBalance: null == vexBalance ? _self.vexBalance : vexBalance // ignore: cast_nullable_to_non_nullable
 as int,monthlyCardStatus: null == monthlyCardStatus ? _self.monthlyCardStatus : monthlyCardStatus // ignore: cast_nullable_to_non_nullable
 as String,
   ));

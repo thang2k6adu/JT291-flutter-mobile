@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jt291_flutter_mobile/core/utils/currency_formatter.dart';
 
 class DiamondPackageCard extends StatelessWidget {
   final String diamondsCount;
@@ -62,7 +63,7 @@ class DiamondPackageCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                price,
+                CurrencyFormatter.format(num.parse(price)),
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,

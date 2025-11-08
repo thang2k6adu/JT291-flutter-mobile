@@ -8,7 +8,7 @@ part of 'wallet_summary_model.dart';
 
 _WalletSummaryModel _$WalletSummaryModelFromJson(Map<String, dynamic> json) =>
     _WalletSummaryModel(
-      totalDiamondBalance: (json['totalDiamondBalance'] as num).toInt(),
+      totalDiamondBalance: (json['totalDiamondBalance'] as num).toDouble(),
       vexBalance: (json['vexBalance'] as num).toInt(),
       monthlyCardStatus: json['monthlyCardStatus'] as String,
     );

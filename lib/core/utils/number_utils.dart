@@ -64,3 +64,29 @@ List<Color> adjustOpacityGradient({
 
   return result;
 }
+
+
+String formatNumberWithCommas(num value, {int decimalDigits = 2}) {
+  // Làm tròn số với decimalDigits chữ số sau dấu phẩy
+  String fixed = value.toStringAsFixed(decimalDigits);
+
+  // Tách phần nguyên và phần thập phân
+  List<String> parts = fixed.split('.');
+  String integerPart = parts[0];
+  String decimalPart = parts.length > 1 ? parts[1] : '';
+
+  // Thêm dấu phẩy phân tách phần nghìn
+  final buffer = StringBuffer();
+  for (int i = 0; i < integerPart.length; i++) {
+    int positionFromEnd = integerPart.length - i;
+    buffer.write(integerPart[i]);
+    if (positionFromEnd > 1 && positionFromEnd % 3 == 1) {
+      buffer.write(',');
+    }
+  }
+
+  // Trả kết quả
+  return decimalPart.isNotEmpty
+      ? '${buffer.toString()}.$decimalPart'
+      : buffer.toString();
+}
