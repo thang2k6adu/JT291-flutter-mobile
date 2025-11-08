@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/transaction_model.dart';
 import 'package:jt291_flutter_mobile/data/providers/wallet/transaction_history_provider.dart';
 import 'package:intl/intl.dart';
@@ -64,10 +65,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           const SizedBox(height: 16),
           Text(
             'No transaction history',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
           ),
         ],
       ),
@@ -83,10 +81,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
           const SizedBox(height: 16),
           Text(
             'Failed to load transactions',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
           ),
           const SizedBox(height: 8),
           TextButton(
@@ -109,11 +104,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         controller: _scrollController,
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: transactions.length + 1,
-        separatorBuilder: (context, index) => const Divider(
-          height: 1,
-          thickness: 1,
-          color: Color(0xFFF0F0F0),
-        ),
+        separatorBuilder: (context, index) =>
+            const Divider(height: 1, thickness: 1, color: Color(0xFFF0F0F0)),
         itemBuilder: (context, index) {
           if (index == transactions.length) {
             return _buildLoadingIndicator();
@@ -138,10 +130,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
 class TransactionItem extends StatelessWidget {
   final TransactionModel transaction;
 
-  const TransactionItem({
-    super.key,
-    required this.transaction,
-  });
+  const TransactionItem({super.key, required this.transaction});
 
   @override
   Widget build(BuildContext context) {
@@ -151,9 +140,11 @@ class TransactionItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Transaction type and status
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Transaction type and status
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,7 +162,8 @@ class TransactionItem extends StatelessWidget {
                             ),
                           ),
                         ),
-                        if (transaction.status != TransactionStatus.completed) ...[
+                        if (transaction.status !=
+                            TransactionStatus.completed) ...[
                           const SizedBox(width: 8),
                           _buildStatusBadge(),
                         ],
@@ -181,7 +173,8 @@ class TransactionItem extends StatelessWidget {
                       const SizedBox(height: 8),
                       _buildUserInfo(),
                     ],
-                    if (transaction.note != null && transaction.note!.isNotEmpty) ...[
+                    if (transaction.note != null &&
+                        transaction.note!.isNotEmpty) ...[
                       const SizedBox(height: 6),
                       Text(
                         transaction.note!,
@@ -196,10 +189,14 @@ class TransactionItem extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
+
+              // Amount badge
               _buildAmountBadge(),
             ],
           ),
           const SizedBox(height: 8),
+
+          // Timestamp and reference code
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -223,17 +220,19 @@ class TransactionItem extends StatelessWidget {
               ],
             ],
           ),
-          if (transaction.balanceAfter != null) ...[
-            const SizedBox(height: 6),
-            Text(
-              'Balance: ${transaction.balanceAfter!.toInt()} 💎',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
+
+          // Balance after transaction
+          // if (transaction.balanceAfter != null) ...[
+          //   const SizedBox(height: 6),
+          //   Text(
+          //     'Balance: ${transaction.balanceAfter!.toInt()} 💎',
+          //     style: TextStyle(
+          //       fontSize: 12,
+          //       color: Colors.grey[600],
+          //       fontWeight: FontWeight.w500,
+          //     ),
+          //   ),
+          // ],
         ],
       ),
     );
@@ -305,11 +304,7 @@ class TransactionItem extends StatelessWidget {
         ),
         if (user.isVerified != null && user.isVerified!) ...[
           const SizedBox(width: 4),
-          const Icon(
-            Icons.verified,
-            size: 14,
-            color: Color(0xFF1DA1F2),
-          ),
+          const Icon(Icons.verified, size: 14, color: Color(0xFF1DA1F2)),
         ],
       ],
     );
@@ -373,16 +368,16 @@ class TransactionItem extends StatelessWidget {
   Widget _buildAmountBadge() {
     final isPositive = transaction.amount > 0;
     final isNegative = transaction.amount < 0;
-    
+
     Color textColor;
     String sign;
-    
+
     if (isPositive) {
       textColor = const Color(0xFF34C759);
       sign = '+';
     } else if (isNegative) {
       textColor = const Color(0xFFFF3B30);
-      sign = '';
+      sign = '-';
     } else {
       textColor = Colors.grey;
       sign = '';
@@ -394,16 +389,13 @@ class TransactionItem extends StatelessWidget {
         Text(
           '$sign${transaction.amount.abs().toInt()}',
           style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
             color: textColor,
           ),
         ),
         const SizedBox(width: 4),
-        const Text(
-          '💎',
-          style: TextStyle(fontSize: 14),
-        ),
+        Image.asset(AppIcons.diamondPng, width: 16, height: 16),
       ],
     );
   }
