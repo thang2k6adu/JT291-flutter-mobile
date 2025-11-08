@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jt291_flutter_mobile/components/layout/CustomAppBar.dart';
-import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 
 class MyAlbumScreen extends ConsumerStatefulWidget {
   const MyAlbumScreen({super.key});

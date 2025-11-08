@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/controllers/draggable_sheet_controller.dart';
 import 'package:jt291_flutter_mobile/features/profile/constants/profile_constants.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/profile_state.dart';

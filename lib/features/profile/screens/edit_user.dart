@@ -7,7 +7,7 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/edit_user/al
 import 'package:jt291_flutter_mobile/components/ui/settings_tile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
-import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 import 'package:jt291_flutter_mobile/components/helper/image_helper.dart';
 
 const Map<String, String> genderItems = {

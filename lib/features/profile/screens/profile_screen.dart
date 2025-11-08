@@ -10,8 +10,8 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_scre
 import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
-import 'package:jt291_flutter_mobile/data/providers/user_general/user_stats_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_stats_provider.dart';
 import 'package:jt291_flutter_mobile/components/ui/vertical_section.dart';
 
 class ProfileScreen extends ConsumerWidget {

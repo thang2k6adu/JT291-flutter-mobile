@@ -10,7 +10,7 @@ import 'package:jt291_flutter_mobile/data/providers/relationship/friend_list_pro
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
 import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
 import 'package:jt291_flutter_mobile/core/utils/string_utils.dart';
-import 'package:jt291_flutter_mobile/data/providers/user_general/user_stats_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_stats_provider.dart';
 
 enum UserTab { following, followers, friends }
 
@@ -28,10 +28,45 @@ class UserRelationScreen extends ConsumerStatefulWidget {
 
 class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
   final TextEditingController searchController = TextEditingController();
+  final ScrollController followingScrollController = ScrollController();
+  final ScrollController followerScrollController = ScrollController();
+  final ScrollController friendScrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _setupScrollListeners();
+  }
+
+  void _setupScrollListeners() {
+    followingScrollController.addListener(() {
+      if (followingScrollController.position.pixels >=
+          followingScrollController.position.maxScrollExtent - 200) {
+        ref.read(followingListProvider.notifier).loadMore();
+      }
+    });
+
+    followerScrollController.addListener(() {
+      if (followerScrollController.position.pixels >=
+          followerScrollController.position.maxScrollExtent - 200) {
+        ref.read(followerListProvider.notifier).loadMore();
+      }
+    });
+
+    friendScrollController.addListener(() {
+      if (friendScrollController.position.pixels >=
+          friendScrollController.position.maxScrollExtent - 200) {
+        ref.read(friendListProvider.notifier).loadMore();
+      }
+    });
+  }
 
   @override
   void dispose() {
     searchController.dispose();
+    followingScrollController.dispose();
+    followerScrollController.dispose();
+    friendScrollController.dispose();
     super.dispose();
   }
 
@@ -77,7 +112,7 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
     required String title,
     required void Function(UserRelationItem, UserButtonType) onPressed,
     required ScrollController scrollController,
-    required VoidCallback onLoadMore,
+    required Future<void> Function() onRefresh,
     required bool isLoading,
   }) {
     // Lọc theo query — nếu query rỗng thì giữ nguyên list
@@ -101,7 +136,7 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
       users: filtered.map(convertFn).toList(),
       onUserButtonPressed: onPressed,
       scrollController: scrollController,
-      onLoadMore: onLoadMore,
+      onRefresh: onRefresh,
       isLoading: isLoading,
     );
   }
@@ -139,9 +174,9 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
               onChanged: (value) {
                 // TODO: add debounce
                 ref.read(searchQueryProvider.notifier).state = value;
-                followingNotifier.fetchFollowing(reset: true, search: value);
-                followerNotifier.fetchFollower(reset: true, search: value);
-                friendNotifier.fetchFriend(reset: true, search: value);
+                followingNotifier.fetchData(reset: true, search: value);
+                followerNotifier.fetchData(reset: true, search: value);
+                friendNotifier.fetchData(reset: true, search: value);
               },
             ),
             Expanded(
@@ -151,9 +186,9 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
                   followingState.when(
                     data: (list) => buildFilteredUserList(
                       list: list,
-                      scrollController: followingNotifier.scrollController,
-                      onLoadMore: followingNotifier.loadMoreFollowing,
-                      isLoading: followingState.isLoading,
+                      scrollController: followingScrollController,
+                      onRefresh: followingNotifier.refresh,
+                      isLoading: followingNotifier.isLoadingMore,
                       searchQuery: searchQuery,
                       convertFn: (e) => UserRelationItem.fromFollowingModel(e),
                       title: UserTab.following.name.capitalize(),
@@ -173,9 +208,9 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
                       convertFn: (e) => UserRelationItem.fromFollowerModel(e),
                       title: UserTab.followers.name.capitalize(),
                       onPressed: _handleUserButtonPressed,
-                      scrollController: followerNotifier.scrollController,
-                      onLoadMore: followerNotifier.loadMoreFollower,
-                      isLoading: followerState.isLoading,
+                      scrollController: followerScrollController,
+                      onRefresh: followerNotifier.refresh,
+                      isLoading: followerNotifier.isLoadingMore,
                     ),
                     loading: () =>
                         const Center(child: CircularProgressIndicator()),
@@ -191,9 +226,9 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
                       convertFn: (e) => UserRelationItem.fromFriendModel(e),
                       title: UserTab.friends.name.capitalize(),
                       onPressed: _handleUserButtonPressed,
-                      scrollController: friendNotifier.scrollController,
-                      onLoadMore: friendNotifier.loadMoreFriend,
-                      isLoading: friendState.isLoading,
+                      scrollController: friendScrollController,
+                      onRefresh: friendNotifier.refresh,
+                      isLoading: friendNotifier.isLoadingMore,
                     ),
                     loading: () =>
                         const Center(child: CircularProgressIndicator()),

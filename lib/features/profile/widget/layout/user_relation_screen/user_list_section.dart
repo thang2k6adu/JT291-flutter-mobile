@@ -5,22 +5,22 @@ import 'package:jt291_flutter_mobile/features/profile/screens/user_relation_scre
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/user_relation_screen/user_item_widget.dart';
 
 /// Widget hiển thị danh sách user với label tab, hỗ trợ loading indicator.
-/// Tất cả dữ liệu, scrollController, loadMore, isLoading đều truyền từ ngoài.
+/// Tất cả dữ liệu, scrollController, onRefresh, isLoading đều truyền từ ngoài.
 class UserListSection extends StatelessWidget {
   final String title;
   final List<UserRelationItem> users;
   final ScrollController scrollController;
-  final VoidCallback onLoadMore;
+  final Future<void> Function() onRefresh;
   final bool isLoading;
   final void Function(UserRelationItem user, UserButtonType type)?
-  onUserButtonPressed;
+      onUserButtonPressed;
 
   const UserListSection({
     super.key,
     required this.title,
     required this.users,
     required this.scrollController,
-    required this.onLoadMore,
+    required this.onRefresh,
     required this.isLoading,
     this.onUserButtonPressed,
   });
@@ -59,7 +59,7 @@ class UserListSection extends StatelessWidget {
 
         Expanded(
           child: RefreshIndicator(
-            onRefresh: () async => onLoadMore(),
+            onRefresh: onRefresh,
             child: ListView.builder(
               controller: scrollController,
               padding: const EdgeInsets.symmetric(horizontal: 20),
