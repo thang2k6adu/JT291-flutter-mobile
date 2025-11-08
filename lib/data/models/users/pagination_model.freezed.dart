@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PaginationModel {
 
- int? get limit; int? get offset; int? get total; bool? get hasNext; bool get isPending;
+ int? get limit;// số lượng item trên mỗi trang
+ int? get offset; int? get total; bool? get hasNext; bool get isPending;
 /// Create a copy of PaginationModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -217,6 +218,7 @@ class _PaginationModel implements PaginationModel {
   factory _PaginationModel.fromJson(Map<String, dynamic> json) => _$PaginationModelFromJson(json);
 
 @override final  int? limit;
+// số lượng item trên mỗi trang
 @override final  int? offset;
 @override final  int? total;
 @override final  bool? hasNext;
