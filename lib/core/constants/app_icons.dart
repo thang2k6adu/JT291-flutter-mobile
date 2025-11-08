@@ -41,4 +41,5 @@ class AppIcons {
   static const String fourDiamondsPng = 'lib/assets/icons/four_diamonds.png';
   static const String fiveDiamondsPng = 'lib/assets/icons/five_diamonds.png';
   static const String bunchDiamondsPng = 'lib/assets/icons/bunch_diamonds.png';
+  static const String manyDiamondsPng = 'lib/assets/icons/many_diamonds.png';
 }

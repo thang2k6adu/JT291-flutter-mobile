@@ -8,7 +8,7 @@ class HistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBarWithBack(title: 'History'),
+      appBar: AppBarWithBack(title: 'History', bottomBorder: true),
     );
   }
 }
