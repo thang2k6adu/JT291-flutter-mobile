@@ -1,5 +1,6 @@
 import 'package:jt291_flutter_mobile/data/models/wallet/wallet_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/recharge_package_model.dart';
+import 'package:jt291_flutter_mobile/data/models/wallet/monthly_card_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/wallet_mock.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 
@@ -28,5 +29,16 @@ class WalletService {
     // TODO: Implement this
     // final response = await _apiService.get('/v1/users/$userId/recharge/packages');
     // return List<RechargePackageModel>.from(response['data']);
+  }
+
+  // GET /users/{user_id}/recharge/monthly-cards
+  Future<List<MonthlyCardModel>> getMonthlyCards(String userId) async {
+    print('getMonthlyCards: $userId');
+    // Mock
+    await Future.delayed(const Duration(milliseconds: 300));
+    return monthlyCardsMock;
+    // TODO: Implement this
+    // final response = await _apiService.get('/v1/users/$userId/recharge/monthly-cards');
+    // return List<MonthlyCardModel>.from(response['data']);
   }
 }

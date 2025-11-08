@@ -5,19 +5,21 @@ import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/core/utils/number_utils.dart';
-import 'package:jt291_flutter_mobile/data/mocks/wallet_mock.dart';
 import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/diamond_screen/diamon_package_grid.dart';
 import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/diamond_screen/balance_section.dart';
 import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/components/ui/vertical_section.dart';
 import 'package:jt291_flutter_mobile/data/providers/wallet/wallet_summary_provider.dart';
 import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/diamond_screen/monthly_card_section.dart';
+import 'package:jt291_flutter_mobile/data/providers/wallet/recharge_packages_provider.dart';
+
 class DiamondScreen extends ConsumerWidget {
   const DiamondScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final walletSummaryAsync = ref.watch(walletSummaryProvider);
+    final rechargePackagesAsync = ref.watch(rechargePackagesProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -58,7 +60,9 @@ class DiamondScreen extends ConsumerWidget {
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
-                        builder: (context) => MonthlyCardSection(),
+                        builder: (context) {
+                          return MonthlyCardSection();
+                        },
                       );
                     },
                   },
@@ -77,7 +81,12 @@ class DiamondScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            DiamondPackagesGrid(packages: rechargePackagesMock),
+            rechargePackagesAsync.when(
+              data: (packages) => DiamondPackagesGrid(packages: packages),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, stackTrace) =>
+                  Center(child: Text(error.toString())),
+            ),
           ],
         ),
       ),
