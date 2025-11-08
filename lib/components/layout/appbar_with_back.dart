@@ -8,6 +8,8 @@ import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 /// - [textColor]: màu chữ và icon (mặc định là đen).
 /// - [elevation]: độ đổ bóng (mặc định = 0).
 /// - [centerTitle]: có căn giữa tiêu đề hay không (mặc định = true).
+/// - [bottomBorder]: có hiển thị border dưới AppBar hay không (mặc định = false).
+/// - [actions]: có hiển thị actions hay không (mặc định = false).
 ///
 /// Ví dụ:
 /// ```dart
@@ -23,6 +25,7 @@ class AppBarWithBack extends StatelessWidget
   final double elevation;
   final bool centerTitle;
   final bool bottomBorder;
+  final List<Widget>? actions;
   
   const AppBarWithBack({
     super.key,
@@ -34,6 +37,7 @@ class AppBarWithBack extends StatelessWidget
     this.elevation = 0,
     this.centerTitle = true,
     this.bottomBorder = false,
+    this.actions,
   });
 
   @override
@@ -65,6 +69,7 @@ class AppBarWithBack extends StatelessWidget
           color: Colors.grey[300],
         ),
       ) : null),
+      actions: actions,
     );
   }
 }

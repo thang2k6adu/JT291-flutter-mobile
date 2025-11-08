@@ -34,4 +34,5 @@ class AppIcons {
   static const String feedback = 'lib/assets/icons/feedback.svg';
   static const String contractUs = 'lib/assets/icons/contract_us.svg';
   static const String searchOff = 'lib/assets/icons/search_off.svg';
+  static const String receipt = 'lib/assets/icons/receipt.svg';
 }

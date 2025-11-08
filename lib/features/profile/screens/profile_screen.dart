@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 import 'package:jt291_flutter_mobile/data/providers/user/user_stats_provider.dart';
 import 'package:jt291_flutter_mobile/components/ui/vertical_section.dart';
+import 'package:jt291_flutter_mobile/data/providers/wallet/wallet_summary_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -58,7 +59,7 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userGeneralAsync = ref.watch(userGeneralProvider);
     final userStatsAsync = ref.watch(userStatsProvider);
-
+    final walletSummaryAsync = ref.watch(walletSummaryProvider);
 
     return userGeneralAsync.when(
       data: (user) => Scaffold(
@@ -85,7 +86,9 @@ class ProfileScreen extends ConsumerWidget {
                   pushScreen(context, RouteConstants.userProfileView);
                 },
               ),
-              VerticalSection(child: WalletCard(balance: '100')),
+              VerticalSection(child: WalletCard(balance: walletSummaryAsync.value?.totalDiamondBalance.toString() ?? '0', onTap: () {
+                pushScreen(context, RouteConstants.diamonds);
+              })),
               VerticalSection(child: QuickAccessRow(items: quickAccessItems)),
               VerticalSection(spacing: 10, child: MenuSection(items: menuSection1)),
               VerticalSection(spacing: 100, child: MenuSection(items: menuSection2)),

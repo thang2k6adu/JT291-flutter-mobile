@@ -16,6 +16,7 @@ import 'package:jt291_flutter_mobile/features/profile/screens/edit_nickname.dart
 import 'package:jt291_flutter_mobile/features/profile/screens/edit_bio.dart';
 import 'package:jt291_flutter_mobile/features/home/screens/home_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_relation_screen.dart';
+import 'package:jt291_flutter_mobile/features/wallet/screens/diamond_screen.dart';
 
 class RouterRefreshNotifier extends ChangeNotifier {
   void refresh() => notifyListeners();
@@ -82,6 +83,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: RouteConstants.userProfileView,
             builder: ((context, state) => ProfileViewScreen()),
+          ),
+          GoRoute(
+            path: RouteConstants.diamonds,
+            builder: ((context, state) => DiamondScreen()),
           ),
         ],
       ),
