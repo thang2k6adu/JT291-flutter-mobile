@@ -27,9 +27,9 @@ class DiamondPackageCard extends StatelessWidget {
           right: 12,
         ),
         decoration: BoxDecoration(
-          color: const Color(0xFFFAFAFA),
+          color: const Color(0xFFFFF1F2).withValues(alpha: 0.7), // 70%
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFEEEEEE), width: 1),
+          // border: Border.all(color: const Color(0xFFEEEEEE), width: 1),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
