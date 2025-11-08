@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/core/base/base_pagination_notifier.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 
 final friendListProvider =
@@ -8,140 +9,66 @@ final friendListProvider =
       FriendListNotifier.new,
     );
 
-class FriendListNotifier extends AsyncNotifier<List<UserSummaryModel>> {
-  final scrollController = ScrollController();
+/// Wrapper để implement PaginatedResponse interface
+class _FriendResponse implements PaginatedResponse<UserSummaryModel> {
+  final UserListResponse? _response;
+
+  _FriendResponse(this._response);
+
+  @override
+  List<UserSummaryModel> get data => _response?.data ?? [];
+
+  @override
+  bool get hasNext => _response?.pagination?.hasNext ?? false;
+}
+
+class FriendListNotifier extends BasePaginatedNotifier<UserSummaryModel>
+    with ListItemUpdateMixin<UserSummaryModel> {
   late final UserGeneralService _service;
-  int _page = 1;
-  bool _hasNext = true;
-  static const int _limit = 10;
-  bool _isLoading = false;
-  String? _search;
 
   @override
   Future<List<UserSummaryModel>> build() async {
     _service = ref.read(userGeneralServiceProvider);
-    _listenScroll();
-    ref.onDispose(scrollController.dispose);
-
-    return fetchFriend(reset: true, search: _search);
+    return super.build();
   }
 
-  void _listenScroll() {
-    scrollController.addListener(() async {
-      if (scrollController.position.pixels >=
-          scrollController.position.maxScrollExtent - 200) {
-        if (_hasNext && !_isLoading) {
-          _isLoading = true;
-          await loadMoreFriend();
-          _isLoading = false;
-        }
-      }
-    });
+  @override
+  Future<PaginatedResponse<UserSummaryModel>> fetchPage({
+    required int page,
+    required int limit,
+    String? search,
+  }) async {
+    final response = await _service.getFriendList(
+      page: page,
+      limit: limit,
+      search: search,
+    );
+    return _FriendResponse(response);
   }
 
-  Future<List<UserSummaryModel>> fetchFriend({bool reset = false, String? search}) async {
-    if (reset) {
-      _page = 1;
-      _hasNext = true;
-      _search = search;
-      state = const AsyncLoading();
-    } else if (!_hasNext) {
-      return state.value ?? [];
-    }
-
-    try {
-      final response = await _service.getFriendList(page: _page, limit: _limit, search: _search);
-
-      final newData = response?.data ?? [];
-      final pagination = response?.pagination;
-
-      _hasNext = pagination?.hasNext ?? false;
-      if (_hasNext) _page++;
-
-      final updatedList = <UserSummaryModel>[
-        if (!reset) ...(state.value ?? []),
-        ...newData,
-      ];
-
-      state = AsyncData(updatedList);
-      return updatedList;
-    } catch (e, st) {
-      state = AsyncError(e, st);
-      return [];
-    }
-  }
-
-  Future<void> refreshFriend() async {
-    await fetchFriend(reset: true);
-  }
-
-  Future<void> loadMoreFriend() async {
-    await fetchFriend();
-  }
-
+  /// Unfriend a user
   Future<void> unfriendUser(String userId, String friendId) async {
-    print('unfriendUser: $userId, $friendId');
-    final oldList = state.value ?? [];
-
-    // Set user đang unfriend thành pending = true
-    state = AsyncData(
-      oldList.map((user) {
-        if (user.id == friendId) {
-          return user.copyWith(isPending: true);
-        }
-        return user;
-      }).toList(),
+    await updateItemAsync(
+      (user) => user.id == friendId,
+      (user) => user.copyWith(isPending: true),
+      () async => await _service.unfriend(userId, friendId),
+      (user, success) => user.copyWith(
+        isFollowing: success ? false : user.isFollowing,
+        isPending: false,
+      ),
     );
-
-    final success = await _service.unfriend(userId, friendId);
-
-    // Update trạng thái theo kết quả
-    final updatedList = oldList.map((user) {
-      if (user.id == friendId) {
-        if (success) {
-          // Nếu thành công, đổi trạng thái isFollowing = false và isPending = false
-          return user.copyWith(isFollowing: false, isPending: false);
-        } else {
-          // Nếu thất bại, giữ trạng thái cũ và isPending = false
-          return user.copyWith(isPending: false);
-        }
-      }
-      return user;
-    }).toList();
-
-    state = AsyncData(updatedList);
   }
 
+  /// Follow a user (after unfriending)
   Future<void> followUser(String userId, String friendId) async {
-    print('followUser: $userId, $friendId');
-    final oldList = state.value ?? [];
-
-    // Set user đang follow thành pending = true
-    state = AsyncData(
-      oldList.map((user) {
-        if (user.id == friendId) {
-          return user.copyWith(isPending: true);
-        }
-        return user;
-      }).toList(),
+    await updateItemAsync(
+      (user) => user.id == friendId,
+      (user) => user.copyWith(isPending: true),
+      () async => await _service.followUser(userId, friendId),
+      (user, success) => user.copyWith(
+        isFollowing: success ? true : user.isFollowing,
+        isPending: false,
+      ),
     );
-
-    final success = await _service.followUser(userId, friendId);
-
-    // Update trạng thái theo kết quả
-    final updatedList = oldList.map((user) {
-      if (user.id == friendId) {
-        if (success) {
-          // Nếu thành công, đổi trạng thái isFollowing = true và isPending = false
-          return user.copyWith(isFollowing: true, isPending: false);
-        } else {
-          // Nếu thất bại, giữ trạng thái cũ và isPending = false
-          return user.copyWith(isPending: false);
-        }
-      }
-      return user;
-    }).toList();
-
-    state = AsyncData(updatedList);
   }
 }

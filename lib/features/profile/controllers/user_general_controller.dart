@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/components.dart';
-import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 
 class UserGeneralController extends AutoDisposeNotifier<void> {
   @override

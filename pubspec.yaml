@@ -54,6 +54,7 @@ dependencies:
   vector_math: ^2.1.2
   carousel_slider: ^5.0.0
   timeago: ^3.2.0
+  intl: ^0.19.0
 
 
 dependency_overrides:
@@ -95,9 +96,8 @@ flutter:
   assets:
     - lib/assets/images/splash/
     - lib/assets/icons/
-    - lib/assets/images/demo1.jpg
-    - lib/assets/images/demo2.jpg
-    - lib/assets/images/demo3.jpg
+    - lib/assets/images/background/
+    - lib/assets/images/
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a

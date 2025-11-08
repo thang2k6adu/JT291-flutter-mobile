@@ -1,0 +1,136 @@
+// base_paginated_notifier.dart
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+/// Response wrapper for paginated API calls
+abstract class PaginatedResponse<T> {
+  List<T> get data;
+  bool get hasNext;
+}
+
+/// Base class cho các list có phân trang, search, load more, refresh
+abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
+  int _page = 1;
+  bool _hasNext = true;
+  bool _isLoadingMore = false;
+  String? _search;
+
+  static const int limit = 10;
+
+  /// Concrete class cần implement: fetch 1 page từ API và trả về response với pagination
+  Future<PaginatedResponse<T>> fetchPage({
+    required int page,
+    required int limit,
+    String? search,
+  });
+
+  @override
+  Future<List<T>> build() async {
+    return fetchData(reset: true, search: _search);
+  }
+
+  /// Fetch dữ liệu (có handle reset, pagination)
+  Future<List<T>> fetchData({bool reset = false, String? search}) async {
+    if (_isLoadingMore && !reset) return state.value ?? [];
+    
+    if (reset) {
+      _page = 1;
+      _hasNext = true;
+      _search = search;
+      state = const AsyncLoading();
+    } else if (!_hasNext) {
+      return state.value ?? [];
+    }
+
+    if (!reset) _isLoadingMore = true;
+
+    try {
+      final response = await fetchPage(
+        page: _page,
+        limit: limit,
+        search: _search,
+      );
+
+      final newData = response.data;
+      _hasNext = response.hasNext;
+      if (_hasNext) _page++;
+
+      // Kết hợp với list hiện tại
+      final updatedList = <T>[
+        if (!reset) ...(state.value ?? []),
+        ...newData,
+      ];
+
+      state = AsyncData(updatedList);
+      return updatedList;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      return [];
+    } finally {
+      _isLoadingMore = false;
+    }
+  }
+
+  /// Load thêm page kế tiếp
+  Future<void> loadMore() async {
+    if (!_hasNext || _isLoadingMore) return;
+    await fetchData();
+  }
+
+  /// Refresh toàn bộ dữ liệu
+  Future<void> refresh() async {
+    await fetchData(reset: true);
+  }
+
+  // --- Getters ---
+  bool get isLoadingMore => _isLoadingMore;
+  bool get hasNext => _hasNext;
+  int get currentPage => _page;
+  String? get searchQuery => _search;
+}
+
+/// Mixin cho các notifier cần update item trong list
+mixin ListItemUpdateMixin<T> on AsyncNotifier<List<T>> {
+  /// Update một item trong list dựa trên id
+  /// [identify] - function để identify item cần update
+  /// [update] - function để update item
+  void updateItem(
+    bool Function(T item) identify,
+    T Function(T item) update,
+  ) {
+    final currentList = state.value ?? [];
+    final updatedList = currentList.map((item) {
+      if (identify(item)) {
+        return update(item);
+      }
+      return item;
+    }).toList();
+    
+    state = AsyncData(updatedList);
+  }
+
+  /// Update item và await cho async operation, sau đó update lại theo kết quả
+  Future<void> updateItemAsync(
+    bool Function(T item) identify,
+    T Function(T item) setPending,
+    Future<bool> Function() operation,
+    T Function(T item, bool success) updateResult,
+  ) async {
+    final oldList = state.value ?? [];
+
+    // Set pending state
+    updateItem(identify, setPending);
+
+    // Perform operation
+    final success = await operation();
+
+    // Update based on result
+    final updatedList = oldList.map((item) {
+      if (identify(item)) {
+        return updateResult(item, success);
+      }
+      return item;
+    }).toList();
+
+    state = AsyncData(updatedList);
+  }
+}

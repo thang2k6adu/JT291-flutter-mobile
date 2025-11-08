@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_stats_model.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
-import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 
 final userStatsProvider =
     AsyncNotifierProvider<UserStatsNotifier, UserStatsModel?>(

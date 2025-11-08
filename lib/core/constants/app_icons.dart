@@ -34,4 +34,12 @@ class AppIcons {
   static const String feedback = 'lib/assets/icons/feedback.svg';
   static const String contractUs = 'lib/assets/icons/contract_us.svg';
   static const String searchOff = 'lib/assets/icons/search_off.svg';
+  static const String receipt = 'lib/assets/icons/receipt.svg';
+  static const String diamondPng = 'lib/assets/icons/diamond.png';
+  static const String twoDiamondsPng = 'lib/assets/icons/two_diamonds.png';
+  static const String threeDiamondsPng = 'lib/assets/icons/three_diamonds.png';
+  static const String fourDiamondsPng = 'lib/assets/icons/four_diamonds.png';
+  static const String fiveDiamondsPng = 'lib/assets/icons/five_diamonds.png';
+  static const String bunchDiamondsPng = 'lib/assets/icons/bunch_diamonds.png';
+  static const String manyDiamondsPng = 'lib/assets/icons/many_diamonds.png';
 }

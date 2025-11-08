@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/features/profile/controllers/draggable_sheet_controller.dart';
 import 'package:jt291_flutter_mobile/features/profile/constants/profile_constants.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/stats_section/avatar_section.dart';
-import 'package:jt291_flutter_mobile/data/providers/user_general/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 
 /// Floating avatar component cho Profile Screen
 class ProfileFloatingAvatar extends ConsumerWidget {
