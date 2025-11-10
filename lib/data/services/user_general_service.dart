@@ -7,6 +7,7 @@ import 'package:jt291_flutter_mobile/data/models/users/profile_view_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_stats_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/relationship_mock.dart';
 import 'package:jt291_flutter_mobile/data/mocks/profile_view_mock.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
@@ -493,6 +494,75 @@ class UserGeneralService {
     } catch (e) {
       print('getProfileViews failed: $e');
       return null;
+    }
+  }
+
+  /// Search users trong toàn hệ thống
+  /// GET /v1/users/search?query=<query>&page=1&limit=10
+  FutureOr<UserListResponse?> searchUsers({
+    required String query,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Mock data - tìm kiếm trong tất cả danh sách
+      List<UserSummaryModel> allData = [
+        ...(followingMock.data ?? []),
+        ...(followerMock.data ?? []),
+        ...(friendMock.data ?? []),
+      ];
+
+      // Loại bỏ duplicates dựa trên id
+      final uniqueUsersMap = <String, UserSummaryModel>{};
+      for (var user in allData) {
+        if (user.id != null) {
+          uniqueUsersMap[user.id!] = user;
+        }
+      }
+      allData = uniqueUsersMap.values.toList();
+
+      // Filter theo search query
+      if (query.isNotEmpty) {
+        allData = allData
+            .where(
+              (u) =>
+                  u.username?.toLowerCase().contains(query.toLowerCase()) ??
+                  false,
+            )
+            .toList();
+      }
+
+      final start = (page - 1) * limit;
+      final end = (start + limit).clamp(0, allData.length);
+      final pagedData = allData.sublist(start, end);
+
+      return UserListResponse(
+        data: pagedData,
+        pagination: PaginationModel(
+          offset: page,
+          limit: limit,
+          total: allData.length,
+          hasNext: end < allData.length,
+        ),
+      );
+
+      // Khi có API thật:
+      // final response = await _apiService.get(
+      //   '/v1/users/search',
+      //   queryParameters: {'query': query, 'page': page, 'limit': limit},
+      // );
+      // final pagination = buildPagination(response['pagination']);
+      // return UserListResponse(
+      //   data: (response['data'] as List<dynamic>?)
+      //       ?.map((e) => UserSummaryModel.fromJson(e))
+      //       .toList() ?? [],
+      //   pagination: pagination,
+      // );
+    } catch (e) {
+      print("searchUsers failed: $e");
+      return const UserListResponse(data: []);
     }
   }
 }

@@ -66,7 +66,15 @@ class ProfileScreen extends ConsumerWidget {
     return userGeneralAsync.when(
       data: (user) => Scaffold(
         backgroundColor: Colors.white,
-        appBar: ProfileAppBar(title: user?.nickname ?? ''),
+        appBar: ProfileAppBar(
+          title: user?.nickname ?? '',
+          scannerOnPressed: () {
+            pushScreen(context, RouteConstants.searchUser);
+          },
+          settingOnPressed: () {
+            pushScreen(context, RouteConstants.userSetting);
+          },
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [

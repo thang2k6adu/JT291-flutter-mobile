@@ -18,7 +18,7 @@ import 'package:jt291_flutter_mobile/features/home/screens/home_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_relation_screen.dart';
 import 'package:jt291_flutter_mobile/features/wallet/screens/diamond_screen.dart';
 import 'package:jt291_flutter_mobile/features/wallet/screens/history_screen.dart';
-
+import 'package:jt291_flutter_mobile/features/profile/screens/search_user_screen.dart';
 class RouterRefreshNotifier extends ChangeNotifier {
   void refresh() => notifyListeners();
 }
@@ -92,6 +92,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: RouteConstants.history,
             builder: ((context, state) => HistoryScreen()),
+          ),
+          GoRoute(
+            path: RouteConstants.searchUser,
+            builder: ((context, state) => SearchUserScreen()),
           ),
         ],
       ),
