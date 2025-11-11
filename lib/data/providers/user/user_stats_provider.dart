@@ -24,8 +24,8 @@ class UserStatsNotifier extends AsyncNotifier<UserStatsModel?> {
     _userService = ref.read(userGeneralServiceProvider);
 
     try {
-      print('getUserStats: ${user.unionId}');
-      final stats = await _userService.getUserStats(user.unionId);
+      print('getUserStats: ${user.id}');
+      final stats = await _userService.getUserStats(user.id);
       return stats; // Trả về stats, đồng thời state sẽ tự thành AsyncData(stats)
     } catch (e, st) {
       state = AsyncError(e, st);

@@ -1,4 +1,4 @@
-import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 
 class UserRelationItem {
   final String id;
@@ -17,35 +17,35 @@ class UserRelationItem {
     required this.gender,
   });
 
-  factory UserRelationItem.fromFollowingModel(UserSummaryModel following) {
+  factory UserRelationItem.fromFollowingModel(UserModel following) {
     return UserRelationItem(
-      id: following.id ?? '',
-      nickname: following.username ?? '',
-      avatarUrl: following.avatarUrl ?? '',
-      bio: following.shortBio ?? '',
-      isFollowing: following.isFollowing ?? false,
+      id: following.id,
+      nickname: following.nickname,
+      avatarUrl: following.avatarUrl,
+      bio: following.bio ?? following.shortBio,
+      isFollowing: following.isFollowing,
       gender: following.gender ?? 'male',
     );
   }
 
-  factory UserRelationItem.fromFollowerModel(UserSummaryModel follower) {
+  factory UserRelationItem.fromFollowerModel(UserModel follower) {
     return UserRelationItem(
-      id: follower.id ?? '',
-      nickname: follower.username ?? '',
-      avatarUrl: follower.avatarUrl ?? '',
-      bio: follower.shortBio ?? '',
-      isFollowing: follower.isFollowing ?? false,
+      id: follower.id,
+      nickname: follower.nickname,
+      avatarUrl: follower.avatarUrl,
+      bio: follower.bio ?? follower.shortBio,
+      isFollowing: follower.isFollowing,
       gender: follower.gender ?? 'male',
     );
   }
 
-  factory UserRelationItem.fromFriendModel(UserSummaryModel friend) {
+  factory UserRelationItem.fromFriendModel(UserModel friend) {
     return UserRelationItem(
-      id: friend.id ?? '',
-      nickname: friend.username ?? '',
-      avatarUrl: friend.avatarUrl ?? '',
-      bio: friend.shortBio ?? '',
-      isFollowing: friend.isFollowing ?? false,
+      id: friend.id,
+      nickname: friend.nickname,
+      avatarUrl: friend.avatarUrl,
+      bio: friend.bio ?? friend.shortBio,
+      isFollowing: friend.isFollowing,
       gender: friend.gender ?? 'male',
     );
   }

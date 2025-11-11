@@ -4,24 +4,61 @@ import 'package:jt291_flutter_mobile/data/models/users/user_level_model.dart';
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
 
+/// Unified User Model - works for both current user and other users
+/// Can handle both full profile data and summary data from lists
 @freezed
 abstract class UserModel with _$UserModel {
   const factory UserModel({
-    @JsonKey(name: 'is_deleted') @Default(false) bool isDeleted,
-    @JsonKey(name: 'union_id') required String unionId,
-    @JsonKey(name: 'is_blocked') @Default(false) bool isBlocked,
-    required nickname,
-    String? gender,
+    // ========================================
+    // Basic Info (always present)
+    // ========================================
+    required String id,
+    String? uid,
+    @JsonKey(name: 'union_id') String? unionId,
+    required String nickname,
+    String? username,
+    
+    // ========================================
+    // Profile Info
+    // ========================================
+    @Default('') @JsonKey(name: 'avatar_url') String avatarUrl,
     String? bio,
+    @Default('') @JsonKey(name: 'short_bio') String shortBio,
+    String? gender,
     @JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,
-    @JsonKey(name: 'profile_urls') @Default([]) List<String> profileUrls,
-    @JsonKey(name: 'avatar_url') String? avatarUrl,
+    
+    // ========================================
+    // Additional Profile Data (full profile only)
+    // ========================================
+    @Default([]) @JsonKey(name: 'profile_urls') List<String> profileUrls,
+    @Default([]) List<String>? interests,
+    
+    // ========================================
+    // Stats & Counts
+    // ========================================
     @JsonKey(name: 'following_count') int? followingCount,
     @JsonKey(name: 'followers_count') int? followersCount,
     @JsonKey(name: 'views_count') int? viewsCount,
-    List<String>? interests,
-    UserLevelModel? level,
+    
+    // ========================================
+    // Relationship Status (for other users)
+    // ========================================
+    @Default(false) @JsonKey(name: 'is_following') bool isFollowing,
+    @Default('not_following') @JsonKey(name: 'follow_status') String followStatus,
+    @Default(0) @JsonKey(name: 'mutual_followers_count') int mutualFollowersCount,
+    
+    // ========================================
+    // Status & Flags
+    // ========================================
+    @Default(false) bool verified,
+    @Default(false) @JsonKey(name: 'is_deleted') bool isDeleted,
+    @Default(false) @JsonKey(name: 'is_blocked') bool isBlocked,
     @Default(false) bool isPending,
+    
+    // ========================================
+    // Level System (full profile only)
+    // ========================================
+    UserLevelModel? level,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, Object?> json) =>

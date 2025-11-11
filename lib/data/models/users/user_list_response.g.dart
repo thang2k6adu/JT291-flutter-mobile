@@ -14,9 +14,11 @@ _UserListResponse _$UserListResponseFromJson(Map<String, dynamic> json) =>
       followingCount: (json['following_count'] as num?)?.toInt(),
       followersCount: (json['followers_count'] as num?)?.toInt(),
       friendsCount: (json['friends_count'] as num?)?.toInt(),
-      data: (json['data'] as List<dynamic>?)
-          ?.map((e) => UserSummaryModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      data:
+          (json['data'] as List<dynamic>?)
+              ?.map((e) => UserModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       pagination: json['pagination'] == null
           ? null
           : PaginationModel.fromJson(

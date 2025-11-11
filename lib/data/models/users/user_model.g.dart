@@ -7,12 +7,15 @@ part of 'user_model.dart';
 // **************************************************************************
 
 _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
-  isDeleted: json['is_deleted'] as bool? ?? false,
-  unionId: json['union_id'] as String,
-  isBlocked: json['is_blocked'] as bool? ?? false,
-  nickname: json['nickname'],
-  gender: json['gender'] as String?,
+  id: json['id'] as String,
+  uid: json['uid'] as String?,
+  unionId: json['union_id'] as String?,
+  nickname: json['nickname'] as String,
+  username: json['username'] as String?,
+  avatarUrl: json['avatar_url'] as String? ?? '',
   bio: json['bio'] as String?,
+  shortBio: json['short_bio'] as String? ?? '',
+  gender: json['gender'] as String?,
   dateOfBirth: json['date_of_birth'] == null
       ? null
       : DateTime.parse(json['date_of_birth'] as String),
@@ -21,34 +24,47 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
           ?.map((e) => e as String)
           .toList() ??
       const [],
-  avatarUrl: json['avatar_url'] as String?,
+  interests:
+      (json['interests'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const [],
   followingCount: (json['following_count'] as num?)?.toInt(),
   followersCount: (json['followers_count'] as num?)?.toInt(),
   viewsCount: (json['views_count'] as num?)?.toInt(),
-  interests: (json['interests'] as List<dynamic>?)
-      ?.map((e) => e as String)
-      .toList(),
+  isFollowing: json['is_following'] as bool? ?? false,
+  followStatus: json['follow_status'] as String? ?? 'not_following',
+  mutualFollowersCount: (json['mutual_followers_count'] as num?)?.toInt() ?? 0,
+  verified: json['verified'] as bool? ?? false,
+  isDeleted: json['is_deleted'] as bool? ?? false,
+  isBlocked: json['is_blocked'] as bool? ?? false,
+  isPending: json['isPending'] as bool? ?? false,
   level: json['level'] == null
       ? null
       : UserLevelModel.fromJson(json['level'] as Map<String, dynamic>),
-  isPending: json['isPending'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{
-      'is_deleted': instance.isDeleted,
+      'id': instance.id,
+      'uid': instance.uid,
       'union_id': instance.unionId,
-      'is_blocked': instance.isBlocked,
       'nickname': instance.nickname,
-      'gender': instance.gender,
+      'username': instance.username,
+      'avatar_url': instance.avatarUrl,
       'bio': instance.bio,
+      'short_bio': instance.shortBio,
+      'gender': instance.gender,
       'date_of_birth': instance.dateOfBirth?.toIso8601String(),
       'profile_urls': instance.profileUrls,
-      'avatar_url': instance.avatarUrl,
+      'interests': instance.interests,
       'following_count': instance.followingCount,
       'followers_count': instance.followersCount,
       'views_count': instance.viewsCount,
-      'interests': instance.interests,
-      'level': instance.level,
+      'is_following': instance.isFollowing,
+      'follow_status': instance.followStatus,
+      'mutual_followers_count': instance.mutualFollowersCount,
+      'verified': instance.verified,
+      'is_deleted': instance.isDeleted,
+      'is_blocked': instance.isBlocked,
       'isPending': instance.isPending,
+      'level': instance.level,
     };

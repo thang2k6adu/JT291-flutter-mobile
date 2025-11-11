@@ -1,39 +1,39 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/base/base_pagination_notifier.dart';
-import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 
 final followingListProvider =
-    AsyncNotifierProvider<FollowingListNotifier, List<UserSummaryModel>>(
+    AsyncNotifierProvider<FollowingListNotifier, List<UserModel>>(
       FollowingListNotifier.new,
     );
 
 /// Wrapper để implement PaginatedResponse interface
-class _FollowingResponse implements PaginatedResponse<UserSummaryModel> {
+class _FollowingResponse implements PaginatedResponse<UserModel> {
   final UserListResponse? _response;
 
   _FollowingResponse(this._response);
 
   @override
-  List<UserSummaryModel> get data => _response?.data ?? [];
+  List<UserModel> get data => _response?.data ?? [];
 
   @override
   bool get hasNext => _response?.pagination?.hasNext ?? false;
 }
 
-class FollowingListNotifier extends BasePaginatedNotifier<UserSummaryModel>
-    with ListItemUpdateMixin<UserSummaryModel> {
+class FollowingListNotifier extends BasePaginatedNotifier<UserModel>
+    with ListItemUpdateMixin<UserModel> {
   late final UserGeneralService _service;
 
   @override
-  Future<List<UserSummaryModel>> build() async {
+  Future<List<UserModel>> build() async {
     _service = ref.read(userGeneralServiceProvider);
     return super.build();
   }
 
   @override
-  Future<PaginatedResponse<UserSummaryModel>> fetchPage({
+  Future<PaginatedResponse<UserModel>> fetchPage({
     required int page,
     required int limit,
     String? search,

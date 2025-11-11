@@ -1,8 +1,10 @@
+import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/pagination_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/wallet_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/recharge_package_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/monthly_card_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/transaction_model.dart';
+import 'package:jt291_flutter_mobile/data/mocks/mock_api_response.dart';
 
 final walletSummaryMock = WalletSummaryModel(
   totalDiamondBalance: 54292.79,
@@ -169,3 +171,70 @@ final mockTransactionHistoryResponse = TransactionHistoryResponse(
   data: mockTransactions,
   pagination: mockPagination,
 );
+
+/// ===============================
+/// 🎯 API RESPONSE WRAPPERS
+/// ===============================
+
+/// Mock API Response for Wallet Summary
+final mockWalletSummaryApiResponse = mockSuccessResponse<WalletSummaryModel>(
+  walletSummaryMock,
+  message: 'Wallet summary fetched successfully',
+);
+
+/// Mock API Response for Recharge Packages (List)
+final mockRechargePackagesApiResponse = mockSuccessResponse<List<RechargePackageModel>>(
+  rechargePackagesMock,
+  message: 'Recharge packages fetched successfully',
+);
+
+/// Mock API Response for Monthly Cards (List)
+final mockMonthlyCardsApiResponse = mockSuccessResponse<List<MonthlyCardModel>>(
+  monthlyCardsMock,
+  message: 'Monthly cards fetched successfully',
+);
+
+/// Mock API Response for Transaction History (Paginated)
+ApiResponse<PaginatedData<TransactionModel>> mockTransactionHistoryApiResponse({
+  int page = 1,
+  int limit = 10,
+}) {
+  final start = (page - 1) * limit;
+  final end = (start + limit).clamp(0, mockTransactions.length);
+  final pagedTransactions = mockTransactions.sublist(start, end);
+
+  return mockPaginatedResponse<TransactionModel>(
+    items: pagedTransactions,
+    currentPage: page,
+    itemsPerPage: limit,
+    totalItems: mockTransactions.length,
+    message: 'Transaction history fetched successfully',
+  );
+}
+
+/// Mock API Response for Purchase Package (Success)
+ApiResponse<Map<String, dynamic>> mockPurchasePackageApiResponse(int packageId) {
+  return mockSuccessResponse<Map<String, dynamic>>(
+    {
+      'package_id': packageId,
+      'transaction_id': 'txn_${DateTime.now().millisecondsSinceEpoch}',
+      'status': 'completed',
+      'timestamp': DateTime.now().toIso8601String(),
+    },
+    message: 'Package purchased successfully',
+  );
+}
+
+/// Mock API Response for Subscribe Monthly Card (Success)
+ApiResponse<Map<String, dynamic>> mockSubscribeMonthlyCardApiResponse(int cardId) {
+  return mockSuccessResponse<Map<String, dynamic>>(
+    {
+      'card_id': cardId,
+      'subscription_id': 'sub_${DateTime.now().millisecondsSinceEpoch}',
+      'status': 'active',
+      'start_date': DateTime.now().toIso8601String(),
+      'end_date': DateTime.now().add(const Duration(days: 30)).toIso8601String(),
+    },
+    message: 'Monthly card subscribed successfully',
+  );
+}

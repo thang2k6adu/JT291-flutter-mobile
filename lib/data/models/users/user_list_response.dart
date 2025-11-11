@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'user_summary_model.dart';
+import 'user_model.dart';
 import 'pagination_model.dart';
 
 part 'user_list_response.freezed.dart';
@@ -14,7 +14,7 @@ abstract class UserListResponse with _$UserListResponse {
     @JsonKey(name: 'following_count') int? followingCount,
     @JsonKey(name: 'followers_count') int? followersCount,
     @JsonKey(name: 'friends_count') int? friendsCount,
-    List<UserSummaryModel>? data,
+    @Default([]) List<UserModel> data,
     PaginationModel? pagination,
     @Default(false) bool isPending,
   }) = _UserListResponse;

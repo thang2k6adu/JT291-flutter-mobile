@@ -9,7 +9,6 @@ import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_level_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_relationship_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_stats_model.dart';
-import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/relationship_mock.dart';
 import 'package:jt291_flutter_mobile/data/mocks/profile_view_mock.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
@@ -70,31 +69,25 @@ class UserGeneralService {
       
       final foundUser = allUsers.firstWhere(
         (u) => u.id == userId,
-        orElse: () => allUsers.isNotEmpty ? allUsers.first : const UserSummaryModel(
-          id: 'unknown',
+        orElse: () => allUsers.isNotEmpty ? allUsers.first : UserModel(
+          id: userId,
+          nickname: 'Unknown User',
           username: 'unknown_user',
           avatarUrl: 'https://i.pravatar.cc/150?u=unknown',
+          bio: 'This is a mock user profile',
           shortBio: 'This is a mock user profile',
           gender: 'male',
           isFollowing: false,
         ),
       );
       
-      // Convert sang UserModel với đầy đủ thông tin
-      return UserModel(
-        unionId: foundUser.id ?? userId,
-        nickname: foundUser.username ?? 'User $userId',
-        bio: foundUser.shortBio ?? 'This is a bio for ${foundUser.username}',
-        gender: foundUser.gender,
-        avatarUrl: foundUser.avatarUrl,
+      // Return user with full profile data
+      return foundUser.copyWith(
         profileUrls: [
-          foundUser.avatarUrl ?? 'https://i.pravatar.cc/150?u=$userId',
+          foundUser.avatarUrl,
           'https://picsum.photos/400/600?random=$userId',
           'https://picsum.photos/400/600?random=${userId}2',
         ],
-        followingCount: (foundUser.id?.hashCode.abs() ?? 0) % 500 + 50,
-        followersCount: (foundUser.id?.hashCode.abs() ?? 0) % 1000 + 100,
-        viewsCount: (foundUser.id?.hashCode.abs() ?? 0) % 5000 + 500,
         interests: ['Music', 'Travel', 'Photography', 'Food'],
         dateOfBirth: DateTime(1995, 3, 15),
         level: const UserLevelModel(
@@ -425,15 +418,15 @@ class UserGeneralService {
     try {
       await Future.delayed(const Duration(milliseconds: 400)); // simulate delay
 
-      var data = followingMock.data ?? [];
+      var data = followingMock.data;
 
       // Filter theo search khi dùng mock
       if (search != null && search.isNotEmpty) {
         data = data
             .where(
               (u) =>
-                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
-                  false,
+                  u.nickname.toLowerCase().contains(search.toLowerCase()) ||
+                  (u.username?.toLowerCase().contains(search.toLowerCase()) ?? false),
             )
             .toList();
       }
@@ -460,13 +453,13 @@ class UserGeneralService {
     try {
       await Future.delayed(const Duration(milliseconds: 400));
 
-      var data = followerMock.data ?? [];
+      var data = followerMock.data;
       if (search != null && search.isNotEmpty) {
         data = data
             .where(
               (u) =>
-                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
-                  false,
+                  u.nickname.toLowerCase().contains(search.toLowerCase()) ||
+                  (u.username?.toLowerCase().contains(search.toLowerCase()) ?? false),
             )
             .toList();
       }
@@ -493,13 +486,13 @@ class UserGeneralService {
     try {
       await Future.delayed(const Duration(milliseconds: 400));
 
-      var data = friendMock.data ?? [];
+      var data = friendMock.data;
       if (search != null && search.isNotEmpty) {
         data = data
             .where(
               (u) =>
-                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
-                  false,
+                  u.nickname.toLowerCase().contains(search.toLowerCase()) ||
+                  (u.username?.toLowerCase().contains(search.toLowerCase()) ?? false),
             )
             .toList();
       }
@@ -603,18 +596,16 @@ class UserGeneralService {
       await Future.delayed(const Duration(milliseconds: 500));
 
       // Mock data - tìm kiếm trong tất cả danh sách
-      List<UserSummaryModel> allData = [
-        ...(followingMock.data ?? []),
-        ...(followerMock.data ?? []),
-        ...(friendMock.data ?? []),
+      List<UserModel> allData = [
+        ...(followingMock.data),
+        ...(followerMock.data),
+        ...(friendMock.data),
       ];
 
       // Loại bỏ duplicates dựa trên id
-      final uniqueUsersMap = <String, UserSummaryModel>{};
+      final uniqueUsersMap = <String, UserModel>{};
       for (var user in allData) {
-        if (user.id != null) {
-          uniqueUsersMap[user.id!] = user;
-        }
+        uniqueUsersMap[user.id] = user;
       }
       allData = uniqueUsersMap.values.toList();
 
@@ -623,8 +614,8 @@ class UserGeneralService {
         allData = allData
             .where(
               (u) =>
-                  u.username?.toLowerCase().contains(query.toLowerCase()) ??
-                  false,
+                  u.nickname.toLowerCase().contains(query.toLowerCase()) ||
+                  (u.username?.toLowerCase().contains(query.toLowerCase()) ?? false),
             )
             .toList();
       }

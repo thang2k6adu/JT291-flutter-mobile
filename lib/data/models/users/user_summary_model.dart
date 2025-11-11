@@ -7,11 +7,17 @@ part 'user_summary_model.g.dart';
 abstract class UserSummaryModel with _$UserSummaryModel {
   const factory UserSummaryModel({
     String? id,
+    String? uid,
     String? username,
-    @JsonKey(name: 'avatar_url') String? avatarUrl,
+    String? nickname,
+    @Default('') @JsonKey(name: 'avatar_url') String avatarUrl,
+    String? bio,
     String? gender,
-    @JsonKey(name: 'short_bio') String? shortBio,
-    @JsonKey(name: 'is_following') bool? isFollowing,
+    @Default('') @JsonKey(name: 'short_bio') String shortBio,
+    @Default(false) @JsonKey(name: 'is_following') bool isFollowing,
+    @Default('not_following') @JsonKey(name: 'follow_status') String followStatus,
+    @Default(false) bool verified,
+    @Default(0) @JsonKey(name: 'mutual_followers_count') int mutualFollowersCount,
     @Default(false) bool isPending,
   }) = _UserSummaryModel;
 

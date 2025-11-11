@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserListResponse {
 
-@JsonKey(name: 'user_id') String? get userId; String? get username;@JsonKey(name: 'avatar_url') String? get avatarUrl;@JsonKey(name: 'following_count') int? get followingCount;@JsonKey(name: 'followers_count') int? get followersCount;@JsonKey(name: 'friends_count') int? get friendsCount; List<UserSummaryModel>? get data; PaginationModel? get pagination; bool get isPending;
+@JsonKey(name: 'user_id') String? get userId; String? get username;@JsonKey(name: 'avatar_url') String? get avatarUrl;@JsonKey(name: 'following_count') int? get followingCount;@JsonKey(name: 'followers_count') int? get followersCount;@JsonKey(name: 'friends_count') int? get friendsCount; List<UserModel> get data; PaginationModel? get pagination; bool get isPending;
 /// Create a copy of UserListResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $UserListResponseCopyWith<$Res>  {
   factory $UserListResponseCopyWith(UserListResponse value, $Res Function(UserListResponse) _then) = _$UserListResponseCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'user_id') String? userId, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount, List<UserSummaryModel>? data, PaginationModel? pagination, bool isPending
+@JsonKey(name: 'user_id') String? userId, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount, List<UserModel> data, PaginationModel? pagination, bool isPending
 });
 
 
@@ -65,7 +65,7 @@ class _$UserListResponseCopyWithImpl<$Res>
 
 /// Create a copy of UserListResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? data = freezed,Object? pagination = freezed,Object? isPending = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? data = null,Object? pagination = freezed,Object? isPending = null,}) {
   return _then(_self.copyWith(
 userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String?,username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -73,8 +73,8 @@ as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // igno
 as String?,followingCount: freezed == followingCount ? _self.followingCount : followingCount // ignore: cast_nullable_to_non_nullable
 as int?,followersCount: freezed == followersCount ? _self.followersCount : followersCount // ignore: cast_nullable_to_non_nullable
 as int?,friendsCount: freezed == friendsCount ? _self.friendsCount : friendsCount // ignore: cast_nullable_to_non_nullable
-as int?,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as List<UserSummaryModel>?,pagination: freezed == pagination ? _self.pagination : pagination // ignore: cast_nullable_to_non_nullable
+as int?,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as List<UserModel>,pagination: freezed == pagination ? _self.pagination : pagination // ignore: cast_nullable_to_non_nullable
 as PaginationModel?,isPending: null == isPending ? _self.isPending : isPending // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -173,7 +173,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserSummaryModel>? data,  PaginationModel? pagination,  bool isPending)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserModel> data,  PaginationModel? pagination,  bool isPending)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserListResponse() when $default != null:
 return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount,_that.followersCount,_that.friendsCount,_that.data,_that.pagination,_that.isPending);case _:
@@ -194,7 +194,7 @@ return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserSummaryModel>? data,  PaginationModel? pagination,  bool isPending)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserModel> data,  PaginationModel? pagination,  bool isPending)  $default,) {final _that = this;
 switch (_that) {
 case _UserListResponse():
 return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount,_that.followersCount,_that.friendsCount,_that.data,_that.pagination,_that.isPending);case _:
@@ -214,7 +214,7 @@ return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserSummaryModel>? data,  PaginationModel? pagination,  bool isPending)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'user_id')  String? userId,  String? username, @JsonKey(name: 'avatar_url')  String? avatarUrl, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'friends_count')  int? friendsCount,  List<UserModel> data,  PaginationModel? pagination,  bool isPending)?  $default,) {final _that = this;
 switch (_that) {
 case _UserListResponse() when $default != null:
 return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount,_that.followersCount,_that.friendsCount,_that.data,_that.pagination,_that.isPending);case _:
@@ -229,7 +229,7 @@ return $default(_that.userId,_that.username,_that.avatarUrl,_that.followingCount
 @JsonSerializable()
 
 class _UserListResponse implements UserListResponse {
-  const _UserListResponse({@JsonKey(name: 'user_id') this.userId, this.username, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'following_count') this.followingCount, @JsonKey(name: 'followers_count') this.followersCount, @JsonKey(name: 'friends_count') this.friendsCount, final  List<UserSummaryModel>? data, this.pagination, this.isPending = false}): _data = data;
+  const _UserListResponse({@JsonKey(name: 'user_id') this.userId, this.username, @JsonKey(name: 'avatar_url') this.avatarUrl, @JsonKey(name: 'following_count') this.followingCount, @JsonKey(name: 'followers_count') this.followersCount, @JsonKey(name: 'friends_count') this.friendsCount, final  List<UserModel> data = const [], this.pagination, this.isPending = false}): _data = data;
   factory _UserListResponse.fromJson(Map<String, dynamic> json) => _$UserListResponseFromJson(json);
 
 @override@JsonKey(name: 'user_id') final  String? userId;
@@ -238,13 +238,11 @@ class _UserListResponse implements UserListResponse {
 @override@JsonKey(name: 'following_count') final  int? followingCount;
 @override@JsonKey(name: 'followers_count') final  int? followersCount;
 @override@JsonKey(name: 'friends_count') final  int? friendsCount;
- final  List<UserSummaryModel>? _data;
-@override List<UserSummaryModel>? get data {
-  final value = _data;
-  if (value == null) return null;
+ final  List<UserModel> _data;
+@override@JsonKey() List<UserModel> get data {
   if (_data is EqualUnmodifiableListView) return _data;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
+  return EqualUnmodifiableListView(_data);
 }
 
 @override final  PaginationModel? pagination;
@@ -283,7 +281,7 @@ abstract mixin class _$UserListResponseCopyWith<$Res> implements $UserListRespon
   factory _$UserListResponseCopyWith(_UserListResponse value, $Res Function(_UserListResponse) _then) = __$UserListResponseCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'user_id') String? userId, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount, List<UserSummaryModel>? data, PaginationModel? pagination, bool isPending
+@JsonKey(name: 'user_id') String? userId, String? username,@JsonKey(name: 'avatar_url') String? avatarUrl,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'friends_count') int? friendsCount, List<UserModel> data, PaginationModel? pagination, bool isPending
 });
 
 
@@ -300,7 +298,7 @@ class __$UserListResponseCopyWithImpl<$Res>
 
 /// Create a copy of UserListResponse
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? data = freezed,Object? pagination = freezed,Object? isPending = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = freezed,Object? username = freezed,Object? avatarUrl = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? friendsCount = freezed,Object? data = null,Object? pagination = freezed,Object? isPending = null,}) {
   return _then(_UserListResponse(
 userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String?,username: freezed == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -308,8 +306,8 @@ as String?,avatarUrl: freezed == avatarUrl ? _self.avatarUrl : avatarUrl // igno
 as String?,followingCount: freezed == followingCount ? _self.followingCount : followingCount // ignore: cast_nullable_to_non_nullable
 as int?,followersCount: freezed == followersCount ? _self.followersCount : followersCount // ignore: cast_nullable_to_non_nullable
 as int?,friendsCount: freezed == friendsCount ? _self.friendsCount : friendsCount // ignore: cast_nullable_to_non_nullable
-as int?,data: freezed == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
-as List<UserSummaryModel>?,pagination: freezed == pagination ? _self.pagination : pagination // ignore: cast_nullable_to_non_nullable
+as int?,data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
+as List<UserModel>,pagination: freezed == pagination ? _self.pagination : pagination // ignore: cast_nullable_to_non_nullable
 as PaginationModel?,isPending: null == isPending ? _self.isPending : isPending // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
