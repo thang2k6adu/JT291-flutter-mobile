@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/base/base_pagination_notifier.dart';
-import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 
@@ -9,32 +8,6 @@ final searchUserProvider =
     AsyncNotifierProvider<SearchUserNotifier, List<UserModel>>(
       SearchUserNotifier.new,
     );
-
-/// Wrapper để convert ApiResponse<PaginatedData<T>> sang PaginatedResponse interface
-class _ApiPaginatedResponse implements PaginatedResponse<UserModel> {
-  final ApiResponse<PaginatedData<UserModel>> _response;
-
-  const _ApiPaginatedResponse(this._response);
-
-  @override
-  List<UserModel> get data {
-    // Nếu có error hoặc data null, return empty list
-    if (_response.error || _response.data == null) {
-      return [];
-    }
-    return _response.data!.items;
-  }
-
-  @override
-  bool get hasNext {
-    // Nếu có error hoặc data null, return false
-    if (_response.error || _response.data == null) {
-      return false;
-    }
-    final meta = _response.data!.meta;
-    return meta.currentPage < meta.totalPages;
-  }
-}
 
 /// Notifier xử lý search users với pagination, follow/unfollow
 class SearchUserNotifier extends BasePaginatedNotifier<UserModel>
@@ -59,12 +32,15 @@ class SearchUserNotifier extends BasePaginatedNotifier<UserModel>
       limit: limit,
     );
     
+    // Wrap bằng ApiPaginatedResponse chuẩn từ base class
+    final response = ApiPaginatedResponse(apiResponse);
+    
     // Log error nếu có
-    if (apiResponse.error) {
-      print('Search users error: ${apiResponse.message}');
+    if (response.hasError) {
+      print('Search users error: ${response.errorMessage}');
     }
     
-    return _ApiPaginatedResponse(apiResponse);
+    return response;
   }
 
   /// Follow một user

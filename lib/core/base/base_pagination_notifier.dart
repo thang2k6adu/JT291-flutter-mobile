@@ -1,10 +1,42 @@
 // base_paginated_notifier.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 
 /// Response wrapper for paginated API calls
 abstract class PaginatedResponse<T> {
   List<T> get data;
   bool get hasNext;
+}
+
+/// Standard implementation of PaginatedResponse that wraps ApiResponse<PaginatedData<T>>
+/// This is the standard response format from backend API
+class ApiPaginatedResponse<T> implements PaginatedResponse<T> {
+  final ApiResponse<PaginatedData<T>> _response;
+
+  const ApiPaginatedResponse(this._response);
+
+  @override
+  List<T> get data {
+    // Nếu có error hoặc data null, return empty list
+    if (_response.error || _response.data == null) {
+      return [];
+    }
+    return _response.data!.items;
+  }
+
+  @override
+  bool get hasNext {
+    // Nếu có error hoặc data null, return false
+    if (_response.error || _response.data == null) {
+      return false;
+    }
+    final meta = _response.data!.meta;
+    return meta.currentPage < meta.totalPages;
+  }
+
+  /// Expose error info for logging/debugging
+  bool get hasError => _response.error;
+  String? get errorMessage => _response.error ? _response.message : null;
 }
 
 /// Base class cho các list có phân trang, search, load more, refresh
