@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/pagination_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/profile_view_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
@@ -11,6 +12,7 @@ import 'package:jt291_flutter_mobile/data/models/users/user_relationship_model.d
 import 'package:jt291_flutter_mobile/data/models/users/user_stats_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/relationship_mock.dart';
 import 'package:jt291_flutter_mobile/data/mocks/profile_view_mock.dart';
+import 'package:jt291_flutter_mobile/data/mocks/search_user_mock.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 
 PaginationModel buildPagination(Map<String, dynamic>? json) {
@@ -587,7 +589,8 @@ class UserGeneralService {
 
   /// Search users trong toàn hệ thống
   /// GET /v1/users/search?query=<query>&page=1&limit=10
-  FutureOr<UserListResponse?> searchUsers({
+  /// Returns ApiResponse<PaginatedData<UserModel>> directly from backend
+  FutureOr<ApiResponse<PaginatedData<UserModel>>> searchUsers({
     required String query,
     int page = 1,
     int limit = 10,
@@ -595,60 +598,44 @@ class UserGeneralService {
     try {
       await Future.delayed(const Duration(milliseconds: 500));
 
-      // Mock data - tìm kiếm trong tất cả danh sách
-      List<UserModel> allData = [
-        ...(followingMock.data),
-        ...(followerMock.data),
-        ...(friendMock.data),
-      ];
-
-      // Loại bỏ duplicates dựa trên id
-      final uniqueUsersMap = <String, UserModel>{};
-      for (var user in allData) {
-        uniqueUsersMap[user.id] = user;
-      }
-      allData = uniqueUsersMap.values.toList();
-
-      // Filter theo search query
-      if (query.isNotEmpty) {
-        allData = allData
-            .where(
-              (u) =>
-                  u.nickname.toLowerCase().contains(query.toLowerCase()) ||
-                  (u.username?.toLowerCase().contains(query.toLowerCase()) ?? false),
-            )
-            .toList();
-      }
-
-      final start = (page - 1) * limit;
-      final end = (start + limit).clamp(0, allData.length);
-      final pagedData = allData.sublist(start, end);
-
-      return UserListResponse(
-        data: pagedData,
-        pagination: PaginationModel(
-          offset: page,
-          limit: limit,
-          total: allData.length,
-          hasNext: end < allData.length,
-        ),
+      // Return mock API response directly
+      return mockSearchUsersApiResponse(
+        query: query,
+        page: page,
+        limit: limit,
       );
 
-      // Khi có API thật:
+      // Khi có API thật, parse và return ApiResponse:
       // final response = await _apiService.get(
       //   '/v1/users/search',
       //   queryParameters: {'query': query, 'page': page, 'limit': limit},
       // );
-      // final pagination = buildPagination(response['pagination']);
-      // return UserListResponse(
-      //   data: (response['data'] as List<dynamic>?)
-      //       ?.map((e) => UserSummaryModel.fromJson(e))
-      //       .toList() ?? [],
-      //   pagination: pagination,
+      // 
+      // return ApiResponse.fromJson(
+      //   response,
+      //   (data) => PaginatedData.fromJson(
+      //     data as Map<String, dynamic>,
+      //     (item) => UserModel.fromJson(item as Map<String, dynamic>),
+      //   ),
       // );
     } catch (e) {
       print("searchUsers failed: $e");
-      return const UserListResponse(data: []);
+      // Return error response
+      return ApiResponse<PaginatedData<UserModel>>(
+        error: true,
+        code: 500,
+        message: 'Failed to search users: $e',
+        data: PaginatedData<UserModel>(
+          items: const [],
+          meta: PaginationMeta(
+            itemCount: 0,
+            totalItems: 0,
+            itemsPerPage: limit,
+            totalPages: 0,
+            currentPage: page,
+          ),
+        ),
+      );
     }
   }
 }

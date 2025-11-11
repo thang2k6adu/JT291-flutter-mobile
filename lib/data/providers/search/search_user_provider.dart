@@ -1,27 +1,42 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/base/base_pagination_notifier.dart';
+import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
-import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 
+/// Provider để quản lý search users với pagination
 final searchUserProvider =
     AsyncNotifierProvider<SearchUserNotifier, List<UserModel>>(
       SearchUserNotifier.new,
     );
 
-/// Wrapper để implement PaginatedResponse interface
-class _SearchUserResponse implements PaginatedResponse<UserModel> {
-  final UserListResponse? _response;
+/// Wrapper để convert ApiResponse<PaginatedData<T>> sang PaginatedResponse interface
+class _ApiPaginatedResponse implements PaginatedResponse<UserModel> {
+  final ApiResponse<PaginatedData<UserModel>> _response;
 
-  _SearchUserResponse(this._response);
-
-  @override
-  List<UserModel> get data => _response?.data ?? [];
+  const _ApiPaginatedResponse(this._response);
 
   @override
-  bool get hasNext => _response?.pagination?.hasNext ?? false;
+  List<UserModel> get data {
+    // Nếu có error hoặc data null, return empty list
+    if (_response.error || _response.data == null) {
+      return [];
+    }
+    return _response.data!.items;
+  }
+
+  @override
+  bool get hasNext {
+    // Nếu có error hoặc data null, return false
+    if (_response.error || _response.data == null) {
+      return false;
+    }
+    final meta = _response.data!.meta;
+    return meta.currentPage < meta.totalPages;
+  }
 }
 
+/// Notifier xử lý search users với pagination, follow/unfollow
 class SearchUserNotifier extends BasePaginatedNotifier<UserModel>
     with ListItemUpdateMixin<UserModel> {
   late final UserGeneralService _service;
@@ -38,35 +53,43 @@ class SearchUserNotifier extends BasePaginatedNotifier<UserModel>
     required int limit,
     String? search,
   }) async {
-    final response = await _service.searchUsers(
+    final apiResponse = await _service.searchUsers(
       query: search ?? '',
       page: page,
       limit: limit,
     );
-    return _SearchUserResponse(response);
+    
+    // Log error nếu có
+    if (apiResponse.error) {
+      print('Search users error: ${apiResponse.message}');
+    }
+    
+    return _ApiPaginatedResponse(apiResponse);
   }
 
-  /// Follow a user
+  /// Follow một user
   Future<void> followUser(String userId, String targetUserId) async {
     await updateItemAsync(
       (user) => user.id == targetUserId,
       (user) => user.copyWith(isPending: true),
       () async => await _service.followUser(userId, targetUserId),
       (user, success) => user.copyWith(
-        isFollowing: success ? true : user.isFollowing,
+        isFollowing: success,
+        followStatus: success ? 'following' : user.followStatus,
         isPending: false,
       ),
     );
   }
 
-  /// Unfollow a user
+  /// Unfollow một user
   Future<void> unfollowUser(String userId, String targetUserId) async {
     await updateItemAsync(
       (user) => user.id == targetUserId,
       (user) => user.copyWith(isPending: true),
       () async => await _service.unfollowUser(userId, targetUserId),
       (user, success) => user.copyWith(
-        isFollowing: success ? false : user.isFollowing,
+        isFollowing: !success,
+        followStatus: success ? 'not_following' : user.followStatus,
         isPending: false,
       ),
     );
