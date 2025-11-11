@@ -117,9 +117,9 @@ class UserMeScreen extends ConsumerWidget {
             onFollowPressed: () async {
               // Handle follow/unfollow
               if (profileState.relationship!.isFollowing) {
-                await profileNotifier.unfollowUser(currentUserId: 'current_user');
+                await profileNotifier.unfollowUser(currentUserId: userId!);
               } else {
-                await profileNotifier.followUser(currentUserId: 'current_user');
+                await profileNotifier.followUser(currentUserId: userId!);
               }
             },
             onMessagePressed: () {
