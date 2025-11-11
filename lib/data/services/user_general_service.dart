@@ -6,6 +6,8 @@ import 'package:jt291_flutter_mobile/data/models/users/pagination_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/profile_view_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_level_model.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_relationship_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_stats_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/relationship_mock.dart';
@@ -55,8 +57,57 @@ class UserGeneralService {
   /// Lấy thông tin profile của người dùng khác qua [userId]
   FutureOr<UserModel?> getUserProfile(String userId) async {
     try {
-      final response = await _apiService.get('/v1/users/profile/$userId');
-      return UserModel.fromJson(response['data']);
+      // Mock delay
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      // Mock data - tạo profile dựa trên userId
+      // Tìm user trong mock data
+      final allUsers = [
+        ...(followingMock.data ?? []),
+        ...(followerMock.data ?? []),
+        ...(friendMock.data ?? []),
+      ];
+      
+      final foundUser = allUsers.firstWhere(
+        (u) => u.id == userId,
+        orElse: () => allUsers.isNotEmpty ? allUsers.first : const UserSummaryModel(
+          id: 'unknown',
+          username: 'unknown_user',
+          avatarUrl: 'https://i.pravatar.cc/150?u=unknown',
+          shortBio: 'This is a mock user profile',
+          gender: 'male',
+          isFollowing: false,
+        ),
+      );
+      
+      // Convert sang UserModel với đầy đủ thông tin
+      return UserModel(
+        unionId: foundUser.id ?? userId,
+        nickname: foundUser.username ?? 'User $userId',
+        bio: foundUser.shortBio ?? 'This is a bio for ${foundUser.username}',
+        gender: foundUser.gender,
+        avatarUrl: foundUser.avatarUrl,
+        profileUrls: [
+          foundUser.avatarUrl ?? 'https://i.pravatar.cc/150?u=$userId',
+          'https://picsum.photos/400/600?random=$userId',
+          'https://picsum.photos/400/600?random=${userId}2',
+        ],
+        followingCount: (foundUser.id?.hashCode.abs() ?? 0) % 500 + 50,
+        followersCount: (foundUser.id?.hashCode.abs() ?? 0) % 1000 + 100,
+        viewsCount: (foundUser.id?.hashCode.abs() ?? 0) % 5000 + 500,
+        interests: ['Music', 'Travel', 'Photography', 'Food'],
+        dateOfBirth: DateTime(1995, 3, 15),
+        level: const UserLevelModel(
+          currentLevel: 25,
+          currentExp: 750,
+          totalExp: 2500,
+          nextLevelExp: 1000,
+        ),
+      );
+      
+      // Khi có API thật:
+      // final response = await _apiService.get('/v1/users/profile/$userId');
+      // return UserModel.fromJson(response['data']);
     } catch (e) {
       print("getUserProfile failed: $e");
       return null;
@@ -494,6 +545,50 @@ class UserGeneralService {
     } catch (e) {
       print('getProfileViews failed: $e');
       return null;
+    }
+  }
+
+  /// Lấy thông tin relationship giữa current user và target user
+  /// GET /v1/users/relationship/{targetUserId}
+  FutureOr<UserRelationshipModel> getUserRelationship(String targetUserId) async {
+    try {
+      // Mock delay
+      await Future.delayed(const Duration(milliseconds: 300));
+      
+      // Nếu id có chứa "me" hoặc "current" thì là chính mình
+      if (targetUserId.toLowerCase().contains('me') || 
+          targetUserId.toLowerCase().contains('current')) {
+        return const UserRelationshipModel(
+          isMe: true,
+          isFollowing: false,
+          isFollower: false,
+          isFriend: false,
+        );
+      }
+      
+      // Check trong following list
+      final isInFollowing = followingMock.data?.any((u) => u.id == targetUserId) ?? false;
+      
+      // Check trong follower list
+      final isInFollower = followerMock.data?.any((u) => u.id == targetUserId) ?? false;
+      
+      // Check trong friend list
+      final isInFriend = friendMock.data?.any((u) => u.id == targetUserId) ?? false;
+      
+      return UserRelationshipModel(
+        isMe: false,
+        isFollowing: isInFollowing || isInFriend,
+        isFollower: isInFollower || isInFriend,
+        isFriend: isInFriend,
+        isBlocked: false,
+      );
+      
+      // Khi có API thật:
+      // final response = await _apiService.get('/v1/users/relationship/$targetUserId');
+      // return UserRelationshipModel.fromJson(response['data']);
+    } catch (e) {
+      print("getUserRelationship failed: $e");
+      return const UserRelationshipModel();
     }
   }
 

@@ -7,7 +7,12 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 
 /// Draggable Sheet component cho Profile Screen
 class ProfileDraggableSheet extends ConsumerWidget {
-  const  ProfileDraggableSheet({super.key});
+  final String? userId;
+
+  const ProfileDraggableSheet({
+    super.key,
+    this.userId,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,6 +30,7 @@ class ProfileDraggableSheet extends ConsumerWidget {
       builder: (context, scrollController) {
         return ProfileContent(
           scrollController: scrollController,
+          userId: userId,
         );
       },
     );

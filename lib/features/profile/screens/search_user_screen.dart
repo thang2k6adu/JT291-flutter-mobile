@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
 import 'package:jt291_flutter_mobile/components/ui/app_search_field.dart';
 import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
+import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/data/providers/search/search_user_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_relation_screen.dart';
@@ -156,6 +158,10 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
                           user: userRelationItem,
                           buttonType: _getUserButtonType(userRelationItem),
                           onUserButtonPressed: _handleUserButtonPressed,
+                          onTap: () {
+                            // Navigate đến UserMeScreen với userId
+                            pushScreen(context, '${RouteConstants.userMe}?id=${user.id}');
+                          },
                         );
                       } else {
                         // Loading indicator

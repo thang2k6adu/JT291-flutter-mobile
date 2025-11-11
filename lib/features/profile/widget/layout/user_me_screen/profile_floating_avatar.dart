@@ -7,12 +7,21 @@ import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.d
 
 /// Floating avatar component cho Profile Screen
 class ProfileFloatingAvatar extends ConsumerWidget {
-  const ProfileFloatingAvatar({super.key});
+  final String? userId;
+
+  const ProfileFloatingAvatar({
+    super.key,
+    this.userId,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final draggableState = ref.watch(draggableSheetControllerProvider);
-    final userGeneralAsync = ref.watch(userGeneralProvider);
+    
+    // Sử dụng provider phù hợp tùy theo userId
+    final userGeneralAsync = userId == null
+        ? ref.watch(userGeneralProvider)
+        : ref.watch(userProfileByIdProvider(userId));
 
     final position = _getFloatingAvatarPosition(context, draggableState.currentExtent);
 

@@ -3,13 +3,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
-import 'package:jt291_flutter_mobile/data/models/users/user_stats_model.dart';
 
 
 final userGeneralProvider =
     AsyncNotifierProvider<UserGeneralNotifier, UserModel?>(
       () => UserGeneralNotifier(),
     );
+
+/// Provider để lấy thông tin user theo ID (có thể là user hiện tại hoặc user khác)
+/// Nếu userId = null thì lấy thông tin user hiện tại
+final userProfileByIdProvider =
+    FutureProvider.family<UserModel?, String?>((ref, userId) async {
+  final userService = ref.read(userGeneralServiceProvider);
+  
+  if (userId == null || userId.isEmpty) {
+    // Lấy thông tin user hiện tại
+    return await userService.getCurrentUser();
+  } else {
+    // Lấy thông tin user khác theo ID
+    return await userService.getUserProfile(userId);
+  }
+});
 
 class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
   late final UserGeneralService _userService;
@@ -36,7 +50,7 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
       final updatedUser = await _userService.updateCurrentUser(data);
       print('updatedUser: $updatedUser');
       return updatedUser;
-    } catch (e, st) {
+    } catch (e) {
       print('updateProfile failed: $e');
       return false;
     }
@@ -47,8 +61,8 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
     try {
       final user = await _userService.getUserProfile(userId);
       return user;
-    } catch (e, st) {
-      state = AsyncError(e, st);
+    } catch (e, stackTrace) {
+      state = AsyncError(e, stackTrace);
       return null;
     }
   }

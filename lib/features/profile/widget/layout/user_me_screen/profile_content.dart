@@ -8,14 +8,17 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/profile_tab_content.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/sliver_tab_bar.dart';
 import 'package:jt291_flutter_mobile/features/profile/constants/profile_constants.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 
 /// Main content component cho Profile Screen
 class ProfileContent extends ConsumerStatefulWidget {
   final ScrollController scrollController;
+  final String? userId;
 
   const ProfileContent({
     super.key,
     required this.scrollController,
+    this.userId,
   });
 
   @override
@@ -38,6 +41,11 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
   Widget build(BuildContext context) {
     final profileData = ref.watch(profileScreenProvider);
     final draggableState = ref.watch(draggableSheetControllerProvider);
+    
+    // Sử dụng provider phù hợp tùy theo userId
+    final userGeneralAsync = widget.userId == null
+        ? profileData.userGeneralAsync
+        : ref.watch(userProfileByIdProvider(widget.userId));
 
     return CustomScrollView(
       controller: widget.scrollController,
@@ -52,7 +60,7 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
           ),
           sliver: SliverList(
             delegate: SliverChildListDelegate([
-              profileData.userGeneralAsync.when(
+              userGeneralAsync.when(
                 data: (user) => UserHeader.fromUserGeneral(user: user),
                 loading: () => const UserHeaderLoading(),
                 error: (error, stack) => UserHeaderError(error: error),

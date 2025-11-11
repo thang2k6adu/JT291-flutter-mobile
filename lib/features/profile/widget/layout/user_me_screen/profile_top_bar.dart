@@ -3,16 +3,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jt291_flutter_mobile/features/profile/controllers/profile_controller.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/animated_header.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 
 /// Top bar component cho Profile Screen
 class ProfileTopBar extends ConsumerWidget {
-  const ProfileTopBar({super.key});
+  final String? userId;
+
+  const ProfileTopBar({
+    super.key,
+    this.userId,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileData = ref.watch(profileScreenProvider);
+    
+    // Sử dụng provider phù hợp tùy theo userId
+    final userGeneralAsync = userId == null
+        ? profileData.userGeneralAsync
+        : ref.watch(userProfileByIdProvider(userId));
 
-    return profileData.userGeneralAsync.when(
+    return userGeneralAsync.when(
       data: (user) => AnimatedCustomTopBar(
         extent: profileData.draggableState.currentExtent,
         avatarUrl: user?.avatarUrl,

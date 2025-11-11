@@ -6,13 +6,15 @@ class UserItemWidget extends StatelessWidget {
   final UserRelationItem user;
   final UserButtonType buttonType;
   final void Function(UserRelationItem user, UserButtonType type)?
-  onUserButtonPressed;
+      onUserButtonPressed;
+  final VoidCallback? onTap;
 
   const UserItemWidget({
     super.key,
     required this.user,
     required this.buttonType,
     this.onUserButtonPressed,
+    this.onTap,
   });
 
   @override
@@ -49,60 +51,63 @@ class UserItemWidget extends StatelessWidget {
         buttonTextColor = Colors.black87;
     }
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundImage: NetworkImage(user.avatarUrl),
-          ),
-          const SizedBox(width: 12),
-
-          // Info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      user.nickname,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      user.gender == 'female' ? Icons.female : Icons.male,
-                      size: 16,
-                      color: user.gender == 'female'
-                          ? Colors.pink
-                          : Colors.blue,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  user.bio,
-                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 28,
+              backgroundImage: NetworkImage(user.avatarUrl),
             ),
-          ),
+            const SizedBox(width: 12),
 
-          // Button
-          ActionButton(
-            text: buttonText,
-            backgroundColor: buttonBg,
-            textColor: buttonTextColor,
-            onPressed: () => onUserButtonPressed?.call(user, buttonType),
-          ),
-        ],
+            // Info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        user.nickname,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        user.gender == 'female' ? Icons.female : Icons.male,
+                        size: 16,
+                        color: user.gender == 'female'
+                            ? Colors.pink
+                            : Colors.blue,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    user.bio,
+                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+
+            // Button
+            ActionButton(
+              text: buttonText,
+              backgroundColor: buttonBg,
+              textColor: buttonTextColor,
+              onPressed: () => onUserButtonPressed?.call(user, buttonType),
+            ),
+          ],
+        ),
       ),
     );
   }

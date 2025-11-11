@@ -28,9 +28,9 @@ class UserHeader extends StatelessWidget {
   UserHeader.fromUserGeneral({
     super.key,
     required UserModel? user,
-  }) : crownCount = user?.level?.currentLevel?.toString() ?? "0",
-       diamondCount = user?.level?.currentExp?.toString() ?? "0",
-       contribution = "Contributor: ${user?.level?.currentLevel?.toString() ?? "0"}",
+  }) : crownCount = user?.level?.currentLevel.toString() ?? "0",
+       diamondCount = user?.level?.currentExp.toString() ?? "0",
+       contribution = "Contributor: ${user?.level?.currentLevel.toString() ?? "0"}",
        distance = "2.5 Km",
        bio = user?.bio ?? "No bio available",
        user = user;

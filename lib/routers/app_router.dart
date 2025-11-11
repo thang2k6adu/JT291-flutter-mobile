@@ -55,7 +55,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: RouteConstants.userMe,
-            builder: ((context, state) => UserMeScreen()),
+            builder: ((context, state) {
+              // Lấy userId từ query parameters (nếu có)
+              final userId = state.uri.queryParameters['id'];
+              return UserMeScreen(userId: userId);
+            }),
           ),
           GoRoute(
             path: RouteConstants.userSetting,
