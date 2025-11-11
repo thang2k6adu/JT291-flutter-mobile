@@ -61,13 +61,8 @@ class UserGeneralService {
       // Mock delay
       await Future.delayed(const Duration(milliseconds: 500));
       
-      // Mock data - tạo profile dựa trên userId
-      // Tìm user trong mock data
-      final allUsers = [
-        ...(followingMock.data ?? []),
-        ...(followerMock.data ?? []),
-        ...(friendMock.data ?? []),
-      ];
+      // Mock data - tìm user trong search_user_mock data
+      final allUsers = allSearchUsersMockData;
       
       final foundUser = allUsers.firstWhere(
         (u) => u.id == userId,
@@ -562,18 +557,15 @@ class UserGeneralService {
       }
       
       // Check trong following list
-      final isInFollowing = followingMock.data?.any((u) => u.id == targetUserId) ?? false;
-      
-      // Check trong follower list
-      final isInFollower = followerMock.data?.any((u) => u.id == targetUserId) ?? false;
-      
-      // Check trong friend list
-      final isInFriend = friendMock.data?.any((u) => u.id == targetUserId) ?? false;
-      
+      final isInFollowing = allSearchUsersMockData.any((u) => u.id == targetUserId && u.isFollowing);
+
+      final isInFollower = allSearchUsersMockData.any((u) => u.id == targetUserId && u.followStatus == 'follower');
+      final isInFriend = allSearchUsersMockData.any((u) => u.id == targetUserId && u.followStatus == 'friend');
+
       return UserRelationshipModel(
         isMe: false,
-        isFollowing: isInFollowing || isInFriend,
-        isFollower: isInFollower || isInFriend,
+        isFollowing: isInFollowing,
+        isFollower: isInFollower,
         isFriend: isInFriend,
         isBlocked: false,
       );

@@ -6,9 +6,9 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_draggable_sheet.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_floating_avatar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_top_bar.dart';
-import 'package:jt291_flutter_mobile/data/providers/user/user_relationship_provider.dart';
-import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/profile_action_buttons.dart';
+import 'package:jt291_flutter_mobile/features/profile/providers/user_profile_notifier.dart';
+import 'package:jt291_flutter_mobile/features/profile/providers/user_profile_state.dart';
 
 class UserMeScreen extends ConsumerWidget {
   /// ID của user cần xem profile
@@ -16,28 +16,54 @@ class UserMeScreen extends ConsumerWidget {
   /// Nếu có giá trị => hiển thị profile của user khác
   final String? userId;
 
-  UserMeScreen({
+  const UserMeScreen({
     super.key,
     this.userId,
   });
 
-  final List<String> images = [
-    'lib/assets/images/demo1.jpg',
-    'lib/assets/images/demo2.jpg',
-    'lib/assets/images/demo3.jpg',
-  ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Lấy relationship data
-    final relationshipAsync = ref.watch(userRelationshipProvider(userId));
-    final userService = ref.read(userGeneralServiceProvider);
+    // Watch profile state từ notifier
+    final profileState = ref.watch(userProfileProvider(userId));
+    final profileNotifier = ref.read(userProfileProvider(userId).notifier);
 
+    // Show loading state
+    if (profileState.isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    // Show error state
+    if (profileState.error != null) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Error: ${profileState.error}',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => profileNotifier.refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Main UI với data
     return Scaffold(
       body: Stack(
         children: [
-          // Background
-          ProfileBackground(images: images),
+          // Background với profile images
+          ProfileBackground(images: profileState.profileImages),
 
           // Background progress indicator (small line ~2px)
           const ProfileBackgroundIndicator(maxWidth: 60),
@@ -51,56 +77,61 @@ class UserMeScreen extends ConsumerWidget {
           // Top Bar - truyền userId xuống
           ProfileTopBar(userId: userId),
 
-          // Fixed Bottom Action Buttons
-          relationshipAsync.when(
-            data: (relationship) {
-              // Chỉ hiển thị nếu không phải chính mình
-              if (relationship.isMe) {
-                return const SizedBox.shrink();
-              }
-              
-              return Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
-                  child: SafeArea(
-                    top: false,
-                    child: ProfileActionButtons(
-                      relationship: relationship,
-                      onFollowPressed: () async {
-                        if (userId != null) {
-                          await userService.followUser('current_user', userId!);
-                          ref.invalidate(userRelationshipProvider(userId));
-                        }
-                      },
-                      onMessagePressed: () {
-                        print('Message user: $userId');
-                        // TODO: Navigate to message screen
-                      },
-                      onGiftPressed: () {
-                        print('Gift to user: $userId');
-                        // TODO: Open gift dialog
-                      },
-                    ),
-                  ),
-                ),
-              );
-            },
-            loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
-          ),
+          // Fixed Bottom Action Buttons - chỉ hiển thị nếu không phải chính mình
+          if (!profileState.isMe && profileState.relationship != null)
+            _buildActionButtons(
+              context: context,
+              profileState: profileState,
+              profileNotifier: profileNotifier,
+            ),
         ],
+      ),
+    );
+  }
+
+  /// Build action buttons ở bottom
+  Widget _buildActionButtons({
+    required BuildContext context,
+    required UserProfileState profileState,
+    required UserProfileNotifier profileNotifier,
+  }) {
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          top: false,
+          child: ProfileActionButtons(
+            relationship: profileState.relationship!,
+            onFollowPressed: () async {
+              // Handle follow/unfollow
+              if (profileState.relationship!.isFollowing) {
+                await profileNotifier.unfollowUser(currentUserId: 'current_user');
+              } else {
+                await profileNotifier.followUser(currentUserId: 'current_user');
+              }
+            },
+            onMessagePressed: () {
+              print('Message user: $userId');
+              // TODO: Navigate to message screen
+            },
+            onGiftPressed: () {
+              print('Gift to user: $userId');
+              // TODO: Open gift dialog
+            },
+          ),
+        ),
       ),
     );
   }
