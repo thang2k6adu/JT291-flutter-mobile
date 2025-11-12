@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/features/profile/controllers/draggable_sheet_controller.dart';
+import 'package:jt291_flutter_mobile/components/ui/universal_image.dart';
 
 final profileBackgroundIndexProvider = StateProvider<double>((ref) => 0.0);
 
@@ -39,8 +40,8 @@ class ProfileBackground extends ConsumerWidget {
       child: CarouselSlider.builder(
         itemCount: images.length,
         itemBuilder: (context, index, realIndex) {
-          return Image.asset(
-            images[index],
+          return UniversalImage(
+            src: images[index],
             fit: BoxFit.cover,
             width: double.infinity,
             height: backgroundHeight,

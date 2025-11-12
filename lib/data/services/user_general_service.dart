@@ -81,9 +81,9 @@ class UserGeneralService {
       // Return user with full profile data
       return foundUser.copyWith(
         profileUrls: [
-          foundUser.avatarUrl,
           'https://picsum.photos/400/600?random=$userId',
           'https://picsum.photos/400/600?random=${userId}2',
+          'https://picsum.photos/400/600?random=${userId}3',
         ],
         interests: ['Music', 'Travel', 'Photography', 'Food'],
         dateOfBirth: DateTime(1995, 3, 15),

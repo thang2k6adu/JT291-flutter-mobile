@@ -88,19 +88,17 @@ class UserProfileNotifier extends StateNotifier<UserProfileState> {
     if (user == null) return [];
 
     final images = <String>[];
-    
-    // Add avatar nếu có
-    if (user.avatarUrl.isNotEmpty) {
-      images.add(user.avatarUrl);
-    }
+
     
     // Add profile URLs nếu có
     if (user.profileUrls.isNotEmpty) {
       images.addAll(user.profileUrls);
+      print('have profile urls images: $images');
     }
     
     // Nếu không có ảnh nào, thêm placeholder
     if (images.isEmpty) {
+      print('no images, add placeholder image');
       images.add('https://i.pravatar.cc/400?u=${user.id}');
     }
     

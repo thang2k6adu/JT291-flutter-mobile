@@ -10,10 +10,7 @@ import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 import 'package:jt291_flutter_mobile/components/helper/image_helper.dart';
 
-const Map<String, String> genderItems = {
-  'male': 'Male',
-  'female': 'Female',
-};
+const Map<String, String> genderItems = {'male': 'Male', 'female': 'Female'};
 
 class EditUser extends ConsumerWidget {
   @override
@@ -28,11 +25,7 @@ class EditUser extends ConsumerWidget {
             children: [
               const SizedBox(height: 16.0),
               AlbumWidget(
-                images: [
-                  'https://picsum.photos/200/300?random=1',
-                  'https://picsum.photos/200/300?random=2',
-                  'https://picsum.photos/200/300?random=3',
-                ],
+                images: [...(userAsync.value?.profileUrls ?? [])],
                 maxCount: 6,
                 visibleCount: 4,
                 itemSize: 80,
@@ -57,17 +50,27 @@ class EditUser extends ConsumerWidget {
                     SettingsTile(
                       title: 'Profile Picture',
                       trailingMode: TrailingMode.avatar,
-                      imageUrl: user?.avatarUrl ?? 'https://picsum.photos/200/300?random=4',
+                      imageUrl:
+                          user?.avatarUrl ??
+                          'https://picsum.photos/200/300?random=4',
                       onTap: () async {
                         final choice = await _chooseAvatarSource(context);
                         if (choice == null) return;
                         if (choice == _AvatarSource.gallery) {
                           await _pickAndUploadAvatar(context, ref);
                         } else if (choice == _AvatarSource.url) {
-                          final url = await _promptText(context, title: 'Avatar URL', initial: user?.avatarUrl ?? '');
+                          final url = await _promptText(
+                            context,
+                            title: 'Avatar URL',
+                            initial: user?.avatarUrl ?? '',
+                          );
                           if (url == null || url.isEmpty) return;
-                          await ref.read(userGeneralProvider.notifier).updateProfile({'avatar_url': url});
-                          await ref.read(userGeneralProvider.notifier).refreshProfile();
+                          await ref
+                              .read(userGeneralProvider.notifier)
+                              .updateProfile({'avatar_url': url});
+                          await ref
+                              .read(userGeneralProvider.notifier)
+                              .refreshProfile();
                           _snack(context, 'Avatar updated');
                         }
                       },
@@ -76,7 +79,9 @@ class EditUser extends ConsumerWidget {
                       title: 'Nickname',
                       trailingMode: TrailingMode.text,
                       trailingText: user?.nickname ?? '-',
-                      onTap: () => GoRouter.of(context).push(RouteConstants.userEditNickname),
+                      onTap: () => GoRouter.of(
+                        context,
+                      ).push(RouteConstants.userEditNickname),
                     ),
                     SettingsTile(
                       title: 'UserID',
@@ -89,10 +94,17 @@ class EditUser extends ConsumerWidget {
                       trailingMode: TrailingMode.text,
                       trailingText: genderItems[user?.gender ?? ''] ?? '-',
                       onTap: () async {
-                        final gender = await _pickGender(context, initial: user?.gender);
+                        final gender = await _pickGender(
+                          context,
+                          initial: user?.gender,
+                        );
                         if (gender == null) return;
-                        await ref.read(userGeneralProvider.notifier).updateProfile({'gender': gender});
-                        await ref.read(userGeneralProvider.notifier).refreshProfile();
+                        await ref
+                            .read(userGeneralProvider.notifier)
+                            .updateProfile({'gender': gender});
+                        await ref
+                            .read(userGeneralProvider.notifier)
+                            .refreshProfile();
                         _snack(context, 'Gender updated');
                       },
                     ),
@@ -105,13 +117,20 @@ class EditUser extends ConsumerWidget {
                       onTap: () async {
                         final picked = await showDatePicker(
                           context: context,
-                          initialDate: user?.dateOfBirth ?? DateTime(2000, 1, 1),
+                          initialDate:
+                              user?.dateOfBirth ?? DateTime(2000, 1, 1),
                           firstDate: DateTime(1900),
                           lastDate: DateTime.now(),
                         );
                         if (picked == null) return;
-                        await ref.read(userGeneralProvider.notifier).updateProfile({'date_of_birth': picked.toIso8601String()});
-                        await ref.read(userGeneralProvider.notifier).refreshProfile();
+                        await ref
+                            .read(userGeneralProvider.notifier)
+                            .updateProfile({
+                              'date_of_birth': picked.toIso8601String(),
+                            });
+                        await ref
+                            .read(userGeneralProvider.notifier)
+                            .refreshProfile();
                         _snack(context, 'Birthday updated');
                       },
                     ),
@@ -119,7 +138,8 @@ class EditUser extends ConsumerWidget {
                       title: 'Bio',
                       trailingMode: TrailingMode.text,
                       trailingText: user?.bio ?? '-',
-                      onTap: () => GoRouter.of(context).push(RouteConstants.userEditBio),
+                      onTap: () =>
+                          GoRouter.of(context).push(RouteConstants.userEditBio),
                     ),
                   ],
                 ),
@@ -134,25 +154,105 @@ class EditUser extends ConsumerWidget {
 
 enum _AvatarSource { gallery, url }
 
+  Widget _bottomSheetOption(BuildContext context,
+      {required String title, required VoidCallback onTap, bool highlight = false}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 56,
+        alignment: Alignment.center,
+        child: Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: highlight ? FontWeight.w600 : FontWeight.normal,
+            color: highlight ? Colors.black : Colors.black87,
+          ),
+        ),
+      ),
+    );
+  }
+
 Future<_AvatarSource?> _chooseAvatarSource(BuildContext context) async {
   return showModalBottomSheet<_AvatarSource>(
     context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
     builder: (context) {
       return SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: const Text('Choose from gallery'),
-              onTap: () => Navigator.pop(context, _AvatarSource.gallery),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 12),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 6.0),
+                    child: Text(
+                      "Choose a profile picture",
+                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  _bottomSheetOption(
+                    context,
+                    title: 'Take a photo',
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      // TODO: open camera
+                    },
+                    highlight: true,
+                  ),
+                  const Divider(height: 1),
+                  _bottomSheetOption(
+                    context,
+                    title: 'Choose a photo from the gallery',
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      // TODO: open gallery
+                    },
+                  ),
+                ],
+              ),
             ),
-            const Divider(height: 1),
-            ListTile(
-              leading: const Icon(Icons.link_outlined),
-              title: const Text('Enter image URL'),
-              onTap: () => Navigator.pop(context, _AvatarSource.url),
+            const SizedBox(height: 8),
+
+            // Cancel button separated (rounded)
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+              ),
+              child: ListTile(
+                title: const Center(
+                  child: Text(
+                    'Hủy',
+                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                onTap: () => Navigator.of(context).pop(),
+              ),
             ),
+
+            // Bottom safe area padding
+            SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
+            // ListTile(
+            //   leading: const Icon(Icons.photo_library_outlined),
+            //   title: const Text('Choose from gallery'),
+            //   onTap: () => Navigator.pop(context, _AvatarSource.gallery),
+            // ),
+            // const Divider(height: 1),
+            // ListTile(
+            //   leading: const Icon(Icons.link_outlined),
+            //   title: const Text('Enter image URL'),
+            //   onTap: () => Navigator.pop(context, _AvatarSource.url),
+            // ),
           ],
         ),
       );
@@ -167,18 +267,23 @@ Future<void> _pickAndUploadAvatar(BuildContext context, WidgetRef ref) async {
     if (files.isEmpty) return;
 
     // Optional: crop square for avatar
-    final cropped = await helper.cropImages(file: files.first, cropStyle: CropStyle.circle);
+    final cropped = await helper.cropImages(
+      file: files.first,
+      cropStyle: CropStyle.circle,
+    );
     final useFile = cropped ?? files.first;
 
-    final urls = await ref.read(userGeneralProvider.notifier).uploadAttachments([
-      File(useFile.path),
-    ]);
+    final urls = await ref.read(userGeneralProvider.notifier).uploadAttachments(
+      [File(useFile.path)],
+    );
     if (urls.isEmpty) {
       _snack(context, 'Upload failed');
       return;
     }
 
-    await ref.read(userGeneralProvider.notifier).updateProfile({'avatar_url': urls.first});
+    await ref.read(userGeneralProvider.notifier).updateProfile({
+      'avatar_url': urls.first,
+    });
     await ref.read(userGeneralProvider.notifier).refreshProfile();
     _snack(context, 'Avatar updated');
   } catch (e) {
@@ -186,7 +291,11 @@ Future<void> _pickAndUploadAvatar(BuildContext context, WidgetRef ref) async {
   }
 }
 
-Future<String?> _promptText(BuildContext context, {required String title, String initial = ''}) async {
+Future<String?> _promptText(
+  BuildContext context, {
+  required String title,
+  String initial = '',
+}) async {
   final controller = TextEditingController(text: initial);
   return showDialog<String>(
     context: context,
@@ -195,8 +304,14 @@ Future<String?> _promptText(BuildContext context, {required String title, String
         title: Text(title),
         content: TextField(controller: controller, autofocus: true),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.pop(context, controller.text.trim()), child: const Text('Save')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, controller.text.trim()),
+            child: const Text('Save'),
+          ),
         ],
       );
     },
@@ -229,7 +344,5 @@ String _fmtDate(DateTime d) {
 }
 
 void _snack(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(message)),
-  );
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
 }

@@ -9,7 +9,8 @@ class AnimatedCustomTopBar extends StatelessWidget {
   final String? avatarUrl;
   final String? nickname;
   final String? uid;
-
+  final bool isMe;
+  
   const AnimatedCustomTopBar({
     super.key,
     required this.extent,
@@ -18,6 +19,7 @@ class AnimatedCustomTopBar extends StatelessWidget {
     this.avatarUrl,
     this.nickname,
     this.uid,
+    this.isMe = false,
   });
 
   @override
@@ -55,7 +57,7 @@ class AnimatedCustomTopBar extends StatelessWidget {
                    const Spacer(),
                 const Spacer(),
                 // Menu button (always visible)
-                _buildMenuButton(context),
+                isMe ? _buildMenuButton(context) : const SizedBox.shrink(),
               ],
             ),
           ),

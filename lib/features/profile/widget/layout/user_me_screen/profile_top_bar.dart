@@ -18,8 +18,9 @@ class ProfileTopBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileData = ref.watch(profileScreenProvider);
     
-    // Sử dụng provider phù hợp tùy theo userId
-    final userGeneralAsync = userId == null
+    final isMe = userId == null;
+
+    final userGeneralAsync = isMe
         ? profileData.userGeneralAsync
         : ref.watch(userProfileByIdProvider(userId));
 
@@ -29,6 +30,7 @@ class ProfileTopBar extends ConsumerWidget {
         avatarUrl: user?.avatarUrl,
         nickname: user?.nickname,
         uid: user?.unionId,
+        isMe: isMe,
         onBackPressed: () => GoRouter.of(context).pop(),
       ),
       loading: () => AnimatedCustomTopBar(
