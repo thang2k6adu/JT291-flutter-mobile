@@ -9,6 +9,8 @@ import 'package:go_router/go_router.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 import 'package:jt291_flutter_mobile/components/helper/image_helper.dart';
+import 'package:jt291_flutter_mobile/components/ui/bottom_sheet_picker.dart';
+import 'package:jt291_flutter_mobile/core/utils/string_utils.dart';
 
 const Map<String, String> genderItems = {'male': 'Male', 'female': 'Female'};
 
@@ -174,91 +176,15 @@ enum _AvatarSource { gallery, url }
   }
 
 Future<_AvatarSource?> _chooseAvatarSource(BuildContext context) async {
-  return showModalBottomSheet<_AvatarSource>(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) {
-      return SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 12),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 6.0),
-                    child: Text(
-                      "Choose a profile picture",
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
-                    ),
-                  ),
-                  const Divider(height: 1),
-                  _bottomSheetOption(
-                    context,
-                    title: 'Take a photo',
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      // TODO: open camera
-                    },
-                    highlight: true,
-                  ),
-                  const Divider(height: 1),
-                  _bottomSheetOption(
-                    context,
-                    title: 'Choose a photo from the gallery',
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      // TODO: open gallery
-                    },
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            // Cancel button separated (rounded)
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-              ),
-              child: ListTile(
-                title: const Center(
-                  child: Text(
-                    'Hủy',
-                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.w600),
-                  ),
-                ),
-                onTap: () => Navigator.of(context).pop(),
-              ),
-            ),
-
-            // Bottom safe area padding
-            SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
-            // ListTile(
-            //   leading: const Icon(Icons.photo_library_outlined),
-            //   title: const Text('Choose from gallery'),
-            //   onTap: () => Navigator.pop(context, _AvatarSource.gallery),
-            // ),
-            // const Divider(height: 1),
-            // ListTile(
-            //   leading: const Icon(Icons.link_outlined),
-            //   title: const Text('Enter image URL'),
-            //   onTap: () => Navigator.pop(context, _AvatarSource.url),
-            // ),
-          ],
-        ),
-      );
-    },
-  );
+  return BottomSheetPicker.show<_AvatarSource>(
+    context,
+    title: 'Choose a profile picture',
+    options: [
+      BottomSheetOption(label: 'Take a photo', value: _AvatarSource.url),
+      BottomSheetOption(label: 'Choose a photo from the gallery', value: _AvatarSource.gallery),
+    ],);
 }
+
 
 Future<void> _pickAndUploadAvatar(BuildContext context, WidgetRef ref) async {
   final helper = ImageHelper();
@@ -319,23 +245,10 @@ Future<String?> _promptText(
 }
 
 Future<String?> _pickGender(BuildContext context, {String? initial}) async {
-  return showModalBottomSheet<String>(
-    context: context,
-    builder: (context) {
-      return SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (final g in genderItems.keys)
-              ListTile(
-                title: Text(genderItems[g] ?? '-'),
-                trailing: initial == g ? const Icon(Icons.check) : null,
-                onTap: () => Navigator.pop(context, g),
-              ),
-          ],
-        ),
-      );
-    },
+  return BottomSheetPicker.show<String>(
+    context,
+    title: 'Select Gender',
+    options: genderItems.keys.map((e) => BottomSheetOption(label: e.capitalize(), value: e)).toList(),
   );
 }
 
