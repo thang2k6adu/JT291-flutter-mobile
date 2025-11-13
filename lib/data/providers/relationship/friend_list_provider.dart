@@ -3,6 +3,7 @@ import 'package:jt291_flutter_mobile/core/base/base_pagination_notifier.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_stats_provider.dart';
 
 final friendListProvider =
     AsyncNotifierProvider<FriendListNotifier, List<UserModel>>(
@@ -52,10 +53,16 @@ class FriendListNotifier extends BasePaginatedNotifier<UserModel>
       (user) => user.id == friendId,
       (user) => user.copyWith(isPending: true),
       () async => await _service.unfriend(userId, friendId),
-      (user, success) => user.copyWith(
-        isFollowing: success ? false : user.isFollowing,
-        isPending: false,
-      ),
+      (user, success) {
+        if (success) {
+          // update stats
+          ref.read(userStatsProvider.notifier).decrementFriends();
+        }
+        return user.copyWith(
+          isFollowing: success ? false : user.isFollowing,
+          isPending: false,
+        );
+      },
     );
   }
 
@@ -65,10 +72,16 @@ class FriendListNotifier extends BasePaginatedNotifier<UserModel>
       (user) => user.id == friendId,
       (user) => user.copyWith(isPending: true),
       () async => await _service.followUser(userId, friendId),
-      (user, success) => user.copyWith(
-        isFollowing: success ? true : user.isFollowing,
-        isPending: false,
-      ),
+      (user, success) {
+        if (success) {
+          // update stats
+          ref.read(userStatsProvider.notifier).incrementFriends();
+        }
+        return user.copyWith(
+          isFollowing: success ? true : user.isFollowing,
+          isPending: false,
+        );
+      },
     );
   }
 }

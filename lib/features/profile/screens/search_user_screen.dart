@@ -154,7 +154,10 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
 
                 // Hiển thị danh sách kết quả
                 return RefreshIndicator(
-                  onRefresh: () => searchNotifier.refresh(),
+                  onRefresh: () async {
+                    await searchNotifier.refresh();
+                    _checkLoadMoreIfListNotFull();
+                  },
                   child: ListView.builder(
                     controller: _scrollController,
                     padding: const EdgeInsets.symmetric(horizontal: 20),

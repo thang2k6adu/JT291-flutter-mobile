@@ -60,45 +60,49 @@ class UserGeneralService {
   FutureOr<UserModel?> getUserProfile(String userId) async {
     try {
       // Mock delay
-      await Future.delayed(const Duration(milliseconds: 500));
+      // await Future.delayed(const Duration(milliseconds: 500));
 
-      // Mock data - tìm user trong search_user_mock data
-      final allUsers = allSearchUsersMockData;
+      // // Mock data - tìm user trong search_user_mock data
+      // final allUsers = allSearchUsersMockData;
 
-      final foundUser = allUsers.firstWhere(
-        (u) => u.id == userId,
-        orElse: () => allUsers.isNotEmpty
-            ? allUsers.first
-            : UserModel(
-                id: userId,
-                nickname: 'Unknown User',
-                avatar: 'https://i.pravatar.cc/150?u=unknown',
-                bio: 'This is a mock user profile',
-                gender: 'male',
-                isFollowing: false,
-              ),
-      );
+      // final foundUser = allUsers.firstWhere(
+      //   (u) => u.id == userId,
+      //   orElse: () => allUsers.isNotEmpty
+      //       ? allUsers.first
+      //       : UserModel(
+      //           id: userId,
+      //           nickname: 'Unknown User',
+      //           avatar: 'https://i.pravatar.cc/150?u=unknown',
+      //           bio: 'This is a mock user profile',
+      //           gender: 'male',
+      //           isFollowing: false,
+      //         ),
+      // );
 
-      // Return user with full profile data
-      return foundUser.copyWith(
-        profileUrls: [
-          'https://picsum.photos/400/600?random=$userId',
-          'https://picsum.photos/400/600?random=${userId}2',
-          'https://picsum.photos/400/600?random=${userId}3',
-        ],
-        interests: ['Music', 'Travel', 'Photography', 'Food'],
-        birthday: DateTime(1995, 3, 15),
-        level: const UserLevelModel(
-          currentLevel: 25,
-          currentExp: 750,
-          totalExp: 2500,
-          nextLevelExp: 1000,
-        ),
-      );
+      // // Return user with full profile data
+      // return foundUser.copyWith(
+      //   profileUrls: [
+      //     'https://picsum.photos/400/600?random=$userId',
+      //     'https://picsum.photos/400/600?random=${userId}2',
+      //     'https://picsum.photos/400/600?random=${userId}3',
+      //   ],
+      //   interests: ['Music', 'Travel', 'Photography', 'Food'],
+      //   birthday: DateTime(1995, 3, 15),
+      //   level: const UserLevelModel(
+      //     currentLevel: 25,
+      //     currentExp: 750,
+      //     totalExp: 2500,
+      //     nextLevelExp: 1000,
+      //   ),
+      // );
 
       // Khi có API thật:
-      // final response = await _apiService.get('/v1/users/profile/$userId');
-      // return UserModel.fromJson(response['data']);
+      final response = await _apiService.get(
+        'http://10.0.2.2:3000/users/profile/$mockUserId',
+      );
+
+      print('getUserProfile response: $response');
+      return UserModel.fromJson(response['data']);
     } catch (e) {
       print("getUserProfile failed: $e");
       return null;
@@ -152,66 +156,59 @@ class UserGeneralService {
 
   /// get Following list
   /// GET /v1/users/123/followers?page=2&limit=10&search=john
-  FutureOr<UserListResponse?> getFollowingList({
+  FutureOr<ApiResponse<PaginatedData<UserModel>>?> getFollowingList({
     int page = 1,
     int limit = 10,
     String? search,
   }) async {
     try {
       // Mock data
-      await Future.delayed(const Duration(milliseconds: 500));
+      // await Future.delayed(const Duration(milliseconds: 500));
 
-      var allData = followingMock.data ?? [];
-      if (search != null && search.isNotEmpty) {
-        allData = allData
-            .where(
-              (u) =>
-                  u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
-                      false),
-            )
-            .toList();
-      }
-      final start = (page - 1) * limit;
-      final end = (start + limit).clamp(0, allData.length);
-      final pagedData = allData.sublist(start, end);
+      // var allData = followingMock.data ?? [];
+      // if (search != null && search.isNotEmpty) {
+      //   allData = allData
+      //       .where(
+      //         (u) =>
+      //             u.nickname.toLowerCase().contains(search.toLowerCase()) ||
+      //             (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
+      //                 false),
+      //       )
+      //       .toList();
+      // }
+      // final start = (page - 1) * limit;
+      // final end = (start + limit).clamp(0, allData.length);
+      // final pagedData = allData.sublist(start, end);
 
-      // Tạo response phân trang mock
-      return UserListResponse(
-        data: pagedData,
-        pagination: PaginationModel(
-          offset: page,
-          limit: limit,
-          total: allData.length,
-          hasNext: end < allData.length,
-        ),
+      // // Tạo response phân trang mock
+      // return UserListResponse(
+      //   data: pagedData,
+      //   pagination: PaginationModel(
+      //     offset: page,
+      //     limit: limit,
+      //     total: allData.length,
+      //     hasNext: end < allData.length,
+      //   ),
+      // );
+
+      final response = await _apiService.get(
+        'http://10.0.2.2:3000/users/$mockUserId/connections',
+        queryParameters: {'page': page, 'limit': limit, 'search': search, 'type': 'following'},
       );
 
-      // final response = await _apiService.get(
-      //   '/v1/users/following',
-      //   queryParameters: {'page': page, 'limit': limit, 'search': search},
-      // );
-      // Xây pagination (tự tính hasNext)
-      // final pagination = buildPagination(response['pagination']);
-
-      // // Trả về dữ liệu hoàn chỉnh
-      // return UserListResponse(
-      //   userId: response['user_id'],
-      //   username: response['username'],
-      //   avatarUrl: response['avatar_url'],
-      //   followingCount: response['following_count'],
-      //   followersCount: response['followers_count'],
-      //   friendsCount: response['friends_count'],
-      //   data:
-      //       (response['data'] as List<dynamic>?)
-      //           ?.map((e) => UserSummaryModel.fromJson(e))
-      //           .toList() ??
-      //       [],
-      //   pagination: pagination,
-      // );
+      print('getFollowingList response: $response');
+      return ApiResponse.fromJson(
+        response,
+        (data) => PaginatedData.fromJson(
+          data as Map<String, dynamic>,
+          (item) => UserModel.fromJson(item as Map<String, dynamic>),
+          dataKey: 'users',
+          metaKey: 'meta',
+        ),
+      );
     } catch (e) {
       print("getFollowingList failed: $e");
-      return const UserListResponse(data: []);
+      return null;
     }
   }
 
@@ -404,11 +401,15 @@ class UserGeneralService {
   /// Lấy thống kê bạn bè/follow
   FutureOr<UserStatsModel?> getUserStats(String userId) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 300));
-      return userStatsMock;
+      // await Future.delayed(const Duration(milliseconds: 300));
+      // return userStatsMock;
 
-      // final response = await _apiService.get('/v1/users/$userId/stats');
-      // return Map<String, int>.from(response['data']);
+      final response = await _apiService.get(
+        'http://10.0.2.2:3000/users/$mockUserId/stats',
+      );
+
+      print('getUserStats response: $response');
+      return UserStatsModel.fromJson(response['data']);
     } catch (e) {
       print("getUserStats failed: $e");
       return null;

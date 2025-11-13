@@ -7,6 +7,7 @@ class UserRelationItem {
   final String bio;
   final bool isFollowing;
   final String gender;
+  final bool isPending;
 
   UserRelationItem({
     required this.id,
@@ -15,6 +16,7 @@ class UserRelationItem {
     required this.bio,
     this.isFollowing = false,
     required this.gender,
+    this.isPending = false,
   });
 
   factory UserRelationItem.fromFollowingModel(UserModel following) {
@@ -25,6 +27,7 @@ class UserRelationItem {
       bio: following.bio ?? '',
       isFollowing: following.isFollowing,
       gender: following.gender ?? 'male',
+      isPending: following.isPending,
     );
   }
 
@@ -36,6 +39,7 @@ class UserRelationItem {
       bio: follower.bio ?? '',
       isFollowing: follower.isFollowing,
       gender: follower.gender ?? 'male',
+      isPending: follower.isPending,
     );
   }
 
@@ -47,6 +51,7 @@ class UserRelationItem {
       bio: friend.bio ?? '',
       isFollowing: friend.isFollowing,
       gender: friend.gender ?? 'male',
+      isPending: friend.isPending,
     );
   }
 }

@@ -88,6 +88,7 @@ class UserListSection extends StatelessWidget {
                       : _getDefaultButtonType(title, user.isFollowing);
 
                   return UserItemWidget(
+                    isPending: user.isPending,
                     user: user,
                     buttonType: buttonType,
                     onUserButtonPressed: onUserButtonPressed,
