@@ -27,7 +27,7 @@ class ProfileTopBar extends ConsumerWidget {
     return userGeneralAsync.when(
       data: (user) => AnimatedCustomTopBar(
         extent: profileData.draggableState.currentExtent,
-        avatarUrl: user?.avatarUrl,
+        avatarUrl: user?.avatar,
         nickname: user?.nickname,
         uid: user?.unionId,
         isMe: isMe,

@@ -36,7 +36,7 @@ abstract class UserProfileState with _$UserProfileState {
   bool get isMe => relationship?.isMe ?? true;
   
   /// Helper để lấy avatar URL với fallback
-  String get avatarUrl => user?.avatarUrl ?? '';
+  String get avatarUrl => user?.avatar ?? '';
   
   /// Helper để lấy nickname với fallback
   String get nickname => user?.nickname ?? 'Unknown User';

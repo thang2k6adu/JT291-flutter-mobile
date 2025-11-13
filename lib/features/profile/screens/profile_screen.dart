@@ -79,7 +79,7 @@ class ProfileScreen extends ConsumerWidget {
           child: Column(
             children: [
               ProfileHeader(
-                avatarUrl: user?.avatarUrl,
+                avatarUrl: user?.avatar,
                 followingCount: userStatsAsync.value?.followingCount ?? 0,
                 followersCount: userStatsAsync.value?.followersCount ?? 0,
                 viewsCount: userStatsAsync.value?.viewsCount ?? 0,
@@ -123,8 +123,8 @@ class ProfileScreen extends ConsumerWidget {
           currentIndex: 4,
           onTap: (index) {},
           profileNavItems: profileNavItems,
-          image: user?.avatarUrl != null
-              ? Image.network(user!.avatarUrl!).image
+          image: user?.avatar != null
+              ? Image.network(user!.avatar).image
               : null,
         ),
       ),

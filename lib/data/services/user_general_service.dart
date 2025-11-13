@@ -69,10 +69,8 @@ class UserGeneralService {
         orElse: () => allUsers.isNotEmpty ? allUsers.first : UserModel(
           id: userId,
           nickname: 'Unknown User',
-          username: 'unknown_user',
-          avatarUrl: 'https://i.pravatar.cc/150?u=unknown',
+          avatar: 'https://i.pravatar.cc/150?u=unknown',
           bio: 'This is a mock user profile',
-          shortBio: 'This is a mock user profile',
           gender: 'male',
           isFollowing: false,
         ),
@@ -86,7 +84,7 @@ class UserGeneralService {
           'https://picsum.photos/400/600?random=${userId}3',
         ],
         interests: ['Music', 'Travel', 'Photography', 'Food'],
-        dateOfBirth: DateTime(1995, 3, 15),
+        birthday: DateTime(1995, 3, 15),
         level: const UserLevelModel(
           currentLevel: 25,
           currentExp: 750,
@@ -165,8 +163,8 @@ class UserGeneralService {
         allData = allData
             .where(
               (u) =>
-                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
-                  false,
+                  u.nickname.toLowerCase().contains(search.toLowerCase()) ||
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
             )
             .toList();
       }
@@ -227,8 +225,8 @@ class UserGeneralService {
         allData = allData
             .where(
               (u) =>
-                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
-                  false,
+                  u.nickname.toLowerCase().contains(search.toLowerCase()) ||
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
             )
             .toList();
       }
@@ -289,8 +287,8 @@ class UserGeneralService {
         allData = allData
             .where(
               (u) =>
-                  u.username?.toLowerCase().contains(search.toLowerCase()) ??
-                  false,
+                  u.nickname.toLowerCase().contains(search.toLowerCase()) ||
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
             )
             .toList();
       }
@@ -342,7 +340,7 @@ class UserGeneralService {
       return true;
 
       // final response = await _apiService.post('/v1/users/$userId/following/$targetId');
-      // return response['success'] == true;
+      // return response['error'] == false;
     } catch (e) {
       print("followUser failed: $e");
       return false;
@@ -356,7 +354,7 @@ class UserGeneralService {
       return true;
 
       // final response = await _apiService.delete('/v1/users/$userId/following/$followingId');
-      // return response['success'] == true;
+      // return response['error'] == false;
     } catch (e) {
       print("unfollowUser failed: $e");
       return false;
@@ -371,7 +369,7 @@ class UserGeneralService {
       return true;
 
       // final response = await _apiService.delete('/v1/users/$userId/followers/$followerId');
-      // return response['success'] == true;
+      // return response['error'] == false;
     } catch (e) {
       print("removeFollower failed: $e");
       return false;
@@ -386,7 +384,7 @@ class UserGeneralService {
       return true;
 
       // final response = await _apiService.delete('/v1/users/$userId/friends/$friendId');
-      // return response['success'] == true;
+      // return response['error'] == false;
     } catch (e) {
       print("unfriend failed: $e");
       return false;
@@ -423,7 +421,7 @@ class UserGeneralService {
             .where(
               (u) =>
                   u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.username?.toLowerCase().contains(search.toLowerCase()) ?? false),
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
             )
             .toList();
       }
@@ -456,7 +454,7 @@ class UserGeneralService {
             .where(
               (u) =>
                   u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.username?.toLowerCase().contains(search.toLowerCase()) ?? false),
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
             )
             .toList();
       }
@@ -489,7 +487,7 @@ class UserGeneralService {
             .where(
               (u) =>
                   u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.username?.toLowerCase().contains(search.toLowerCase()) ?? false),
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
             )
             .toList();
       }
@@ -580,7 +578,7 @@ class UserGeneralService {
   }
 
   /// Search users trong toàn hệ thống
-  /// GET /v1/users/search?query=<query>&page=1&limit=10
+  /// GET /v1/users?query=<query>&page=1&limit=10
   /// Returns ApiResponse<PaginatedData<UserModel>> directly from backend
   FutureOr<ApiResponse<PaginatedData<UserModel>>> searchUsers({
     required String query,
@@ -597,17 +595,22 @@ class UserGeneralService {
         limit: limit,
       );
 
-      // Khi có API thật, parse và return ApiResponse:
+      // print('searchUsers query: $query');
+      // // Khi có API thật, parse và return ApiResponse:
+      // // TODO: Data bên be nên trả về meta data (pagination)
       // final response = await _apiService.get(
-      //   '/v1/users/search',
+      //   'https://gym-planner-saturday-incorporate.trycloudflare.com/users',
       //   queryParameters: {'query': query, 'page': page, 'limit': limit},
       // );
-      // 
+
+      // print('searchUsers response: $response');
       // return ApiResponse.fromJson(
       //   response,
       //   (data) => PaginatedData.fromJson(
       //     data as Map<String, dynamic>,
       //     (item) => UserModel.fromJson(item as Map<String, dynamic>),
+      //     dataKey: 'users',
+      //     metaKey: 'meta',
       //   ),
       // );
     } catch (e) {

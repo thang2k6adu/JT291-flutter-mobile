@@ -31,7 +31,8 @@ class SearchUserNotifier extends BasePaginatedNotifier<UserModel>
       page: page,
       limit: limit,
     );
-    
+
+    print('Search users apiResponse (provider): $apiResponse');
     // Wrap bằng ApiPaginatedResponse chuẩn từ base class
     final response = ApiPaginatedResponse(apiResponse);
     

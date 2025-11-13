@@ -53,7 +53,7 @@ class EditUser extends ConsumerWidget {
                       title: 'Profile Picture',
                       trailingMode: TrailingMode.avatar,
                       imageUrl:
-                          user?.avatarUrl ??
+                          user?.avatar ??
                           'https://picsum.photos/200/300?random=4',
                       onTap: () async {
                         final choice = await _chooseAvatarSource(context);
@@ -64,12 +64,12 @@ class EditUser extends ConsumerWidget {
                           final url = await _promptText(
                             context,
                             title: 'Avatar URL',
-                            initial: user?.avatarUrl ?? '',
+                            initial: user?.avatar ?? '',
                           );
                           if (url == null || url.isEmpty) return;
                           await ref
                               .read(userGeneralProvider.notifier)
-                              .updateProfile({'avatar_url': url});
+                              .updateProfile({'avatar': url});
                           await ref
                               .read(userGeneralProvider.notifier)
                               .refreshProfile();
@@ -113,14 +113,14 @@ class EditUser extends ConsumerWidget {
                     SettingsTile(
                       title: 'Birthday',
                       trailingMode: TrailingMode.text,
-                      trailingText: user?.dateOfBirth != null
-                          ? _fmtDate(user!.dateOfBirth!)
+                      trailingText: user?.birthday != null
+                          ? _fmtDate(user!.birthday!)
                           : '-',
                       onTap: () async {
                         final picked = await showDatePicker(
                           context: context,
                           initialDate:
-                              user?.dateOfBirth ?? DateTime(2000, 1, 1),
+                              user?.birthday ?? DateTime(2000, 1, 1),
                           firstDate: DateTime(1900),
                           lastDate: DateTime.now(),
                         );
@@ -128,7 +128,7 @@ class EditUser extends ConsumerWidget {
                         await ref
                             .read(userGeneralProvider.notifier)
                             .updateProfile({
-                              'date_of_birth': picked.toIso8601String(),
+                              'birthday': picked.toIso8601String(),
                             });
                         await ref
                             .read(userGeneralProvider.notifier)
@@ -208,7 +208,7 @@ Future<void> _pickAndUploadAvatar(BuildContext context, WidgetRef ref) async {
     }
 
     await ref.read(userGeneralProvider.notifier).updateProfile({
-      'avatar_url': urls.first,
+      'avatar': urls.first,
     });
     await ref.read(userGeneralProvider.notifier).refreshProfile();
     _snack(context, 'Avatar updated');
