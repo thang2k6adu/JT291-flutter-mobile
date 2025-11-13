@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+sonar-project.properties
+sonar-scanner-6.0.0.4432-linux/
+sonar-scanner-6.0.0.4432-linux.zip
