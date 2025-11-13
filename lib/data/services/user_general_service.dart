@@ -28,6 +28,7 @@ PaginationModel buildPagination(Map<String, dynamic>? json) {
 
 class UserGeneralService {
   final ApiService _apiService = ApiService();
+  final mockUserId = '02b2ab20-c75e-46ac-b135-30c74509c519';
 
   UserGeneralService();
 
@@ -60,22 +61,24 @@ class UserGeneralService {
     try {
       // Mock delay
       await Future.delayed(const Duration(milliseconds: 500));
-      
+
       // Mock data - tìm user trong search_user_mock data
       final allUsers = allSearchUsersMockData;
-      
+
       final foundUser = allUsers.firstWhere(
         (u) => u.id == userId,
-        orElse: () => allUsers.isNotEmpty ? allUsers.first : UserModel(
-          id: userId,
-          nickname: 'Unknown User',
-          avatar: 'https://i.pravatar.cc/150?u=unknown',
-          bio: 'This is a mock user profile',
-          gender: 'male',
-          isFollowing: false,
-        ),
+        orElse: () => allUsers.isNotEmpty
+            ? allUsers.first
+            : UserModel(
+                id: userId,
+                nickname: 'Unknown User',
+                avatar: 'https://i.pravatar.cc/150?u=unknown',
+                bio: 'This is a mock user profile',
+                gender: 'male',
+                isFollowing: false,
+              ),
       );
-      
+
       // Return user with full profile data
       return foundUser.copyWith(
         profileUrls: [
@@ -92,7 +95,7 @@ class UserGeneralService {
           nextLevelExp: 1000,
         ),
       );
-      
+
       // Khi có API thật:
       // final response = await _apiService.get('/v1/users/profile/$userId');
       // return UserModel.fromJson(response['data']);
@@ -164,7 +167,8 @@ class UserGeneralService {
             .where(
               (u) =>
                   u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
+                      false),
             )
             .toList();
       }
@@ -226,7 +230,8 @@ class UserGeneralService {
             .where(
               (u) =>
                   u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
+                      false),
             )
             .toList();
       }
@@ -288,7 +293,8 @@ class UserGeneralService {
             .where(
               (u) =>
                   u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
+                      false),
             )
             .toList();
       }
@@ -310,7 +316,7 @@ class UserGeneralService {
       //   queryParameters: {'page': page, 'limit': limit, 'search': search},
       // );
       // Xây pagination (tự tính hasNext)
-        // final pagination = buildPagination(response['pagination']);
+      // final pagination = buildPagination(response['pagination']);
 
       // // Trả về dữ liệu hoàn chỉnh
       // return UserListResponse(
@@ -335,12 +341,14 @@ class UserGeneralService {
 
   FutureOr<bool> followUser(String userId, String targetId) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 300));
-      print('Follow user $targetId');
-      return true;
+      // await Future.delayed(const Duration(milliseconds: 300));
+      // print('Follow user $targetId');
+      // return true;
 
-      // final response = await _apiService.post('/v1/users/$userId/following/$targetId');
-      // return response['error'] == false;
+      final response = await _apiService.post(
+        'http://10.0.2.2:3000/users/$mockUserId/following/$targetId',
+      );
+      return response['error'] == false;
     } catch (e) {
       print("followUser failed: $e");
       return false;
@@ -349,12 +357,14 @@ class UserGeneralService {
 
   FutureOr<bool> unfollowUser(String userId, String followingId) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 300));
-      print('Unfollow user $followingId');
-      return true;
+      // await Future.delayed(const Duration(milliseconds: 300));
+      // print('Unfollow user $followingId');
+      // return true;
 
-      // final response = await _apiService.delete('/v1/users/$userId/following/$followingId');
-      // return response['error'] == false;
+      final response = await _apiService.delete(
+        'http://10.0.2.2:3000/users/$mockUserId/following/$followingId',
+      );
+      return response['error'] == false;
     } catch (e) {
       print("unfollowUser failed: $e");
       return false;
@@ -421,7 +431,8 @@ class UserGeneralService {
             .where(
               (u) =>
                   u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
+                      false),
             )
             .toList();
       }
@@ -454,7 +465,8 @@ class UserGeneralService {
             .where(
               (u) =>
                   u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
+                      false),
             )
             .toList();
       }
@@ -487,7 +499,8 @@ class UserGeneralService {
             .where(
               (u) =>
                   u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ?? false),
+                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
+                      false),
             )
             .toList();
       }
@@ -507,7 +520,11 @@ class UserGeneralService {
   }
 
   /// GET /users/{user_id}/profile-views?page=2&limit=10
-  FutureOr<ProfileViewModel?> getProfileViews(String userId, {int page = 1, int limit = 10}) async {
+  FutureOr<ProfileViewModel?> getProfileViews(
+    String userId, {
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
       await Future.delayed(const Duration(milliseconds: 400));
 
@@ -516,12 +533,15 @@ class UserGeneralService {
       final end = (start + limit).clamp(0, allData.length);
       final pagedData = allData.sublist(start, end);
 
-      return profileViewMock.copyWith(views: pagedData, pagination: PaginationModel(
-        offset: page,
-        limit: limit,
-        total: allData.length,
-        hasNext: end < allData.length,
-      ));
+      return profileViewMock.copyWith(
+        views: pagedData,
+        pagination: PaginationModel(
+          offset: page,
+          limit: limit,
+          total: allData.length,
+          hasNext: end < allData.length,
+        ),
+      );
 
       // final response = await _apiService.get(
       //   '/v1/users/$userId/profile-views',
@@ -538,13 +558,15 @@ class UserGeneralService {
 
   /// Lấy thông tin relationship giữa current user và target user
   /// GET /v1/users/relationship/{targetUserId}
-  FutureOr<UserRelationshipModel> getUserRelationship(String targetUserId) async {
+  FutureOr<UserRelationshipModel> getUserRelationship(
+    String targetUserId,
+  ) async {
     try {
       // Mock delay
       await Future.delayed(const Duration(milliseconds: 300));
-      
+
       // Nếu id có chứa "me" hoặc "current" thì là chính mình
-      if (targetUserId.toLowerCase().contains('me') || 
+      if (targetUserId.toLowerCase().contains('me') ||
           targetUserId.toLowerCase().contains('current')) {
         return const UserRelationshipModel(
           isMe: true,
@@ -553,12 +575,18 @@ class UserGeneralService {
           isFriend: false,
         );
       }
-      
-      // Check trong following list
-      final isInFollowing = allSearchUsersMockData.any((u) => u.id == targetUserId && u.isFollowing);
 
-      final isInFollower = allSearchUsersMockData.any((u) => u.id == targetUserId && u.followStatus == 'follower');
-      final isInFriend = allSearchUsersMockData.any((u) => u.id == targetUserId && u.followStatus == 'friend');
+      // Check trong following list
+      final isInFollowing = allSearchUsersMockData.any(
+        (u) => u.id == targetUserId && u.isFollowing,
+      );
+
+      final isInFollower = allSearchUsersMockData.any(
+        (u) => u.id == targetUserId && u.followStatus == 'follower',
+      );
+      final isInFriend = allSearchUsersMockData.any(
+        (u) => u.id == targetUserId && u.followStatus == 'friend',
+      );
 
       return UserRelationshipModel(
         isMe: false,
@@ -567,7 +595,7 @@ class UserGeneralService {
         isFriend: isInFriend,
         isBlocked: false,
       );
-      
+
       // Khi có API thật:
       // final response = await _apiService.get('/v1/users/relationship/$targetUserId');
       // return UserRelationshipModel.fromJson(response['data']);
@@ -586,33 +614,29 @@ class UserGeneralService {
     int limit = 10,
   }) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 500));
+      // await Future.delayed(const Duration(milliseconds: 500));
 
-      // Return mock API response directly
-      return mockSearchUsersApiResponse(
-        query: query,
-        page: page,
-        limit: limit,
+      // // Return mock API response directly
+      // return mockSearchUsersApiResponse(query: query, page: page, limit: limit);
+
+      print('searchUsers query: $query');
+      // Khi có API thật, parse và return ApiResponse:
+      // TODO: Data bên be nên trả về meta data (pagination)
+      final response = await _apiService.get(
+        'http://10.0.2.2:3000/users/search/$mockUserId',
+        queryParameters: {'query': query, 'page': page, 'limit': limit},
       );
 
-      // print('searchUsers query: $query');
-      // // Khi có API thật, parse và return ApiResponse:
-      // // TODO: Data bên be nên trả về meta data (pagination)
-      // final response = await _apiService.get(
-      //   'https://gym-planner-saturday-incorporate.trycloudflare.com/users',
-      //   queryParameters: {'query': query, 'page': page, 'limit': limit},
-      // );
-
-      // print('searchUsers response: $response');
-      // return ApiResponse.fromJson(
-      //   response,
-      //   (data) => PaginatedData.fromJson(
-      //     data as Map<String, dynamic>,
-      //     (item) => UserModel.fromJson(item as Map<String, dynamic>),
-      //     dataKey: 'users',
-      //     metaKey: 'meta',
-      //   ),
-      // );
+      print('searchUsers response: $response');
+      return ApiResponse.fromJson(
+        response,
+        (data) => PaginatedData.fromJson(
+          data as Map<String, dynamic>,
+          (item) => UserModel.fromJson(item as Map<String, dynamic>),
+          dataKey: 'users',
+          metaKey: 'meta',
+        ),
+      );
     } catch (e) {
       print("searchUsers failed: $e");
       // Return error response

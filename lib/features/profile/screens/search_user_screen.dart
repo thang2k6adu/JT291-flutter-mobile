@@ -28,6 +28,12 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
   void initState() {
     super.initState();
     _setupScrollListener();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(searchUserProvider.notifier).fetchData(reset: true).then((_) {
+        _checkLoadMoreIfListNotFull();
+      });
+    });
   }
 
   void _setupScrollListener() {
@@ -39,18 +45,30 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
     });
   }
 
+  void _checkLoadMoreIfListNotFull() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients &&
+          _scrollController.position.maxScrollExtent <=
+              _scrollController.position.viewportDimension &&
+          ref.read(searchUserProvider.notifier).hasNext) {
+        ref.read(searchUserProvider.notifier).loadMore();
+      }
+    });
+  }
+
   void _onSearchChanged(String query) {
     // Cancel timer trước đó nếu có
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
     // Tạo timer mới để debounce
-    _debounce = Timer(const Duration(milliseconds: 500), () {
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
       if (query != _currentQuery) {
         _currentQuery = query;
-        ref.read(searchUserProvider.notifier).fetchData(
-              reset: true,
-              search: query,
-            );
+        await ref
+            .read(searchUserProvider.notifier)
+            .fetchData(reset: true, search: query);
+
+        _checkLoadMoreIfListNotFull();
       }
     });
   }
@@ -62,17 +80,15 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
     switch (type) {
       case UserButtonType.follow:
       case UserButtonType.followBack:
-        ref.read(searchUserProvider.notifier).followUser(
-              currentUserId,
-              user.id,
-            );
+        ref
+            .read(searchUserProvider.notifier)
+            .followUser(currentUserId, user.id);
         break;
       case UserButtonType.following:
       case UserButtonType.unfollow:
-        ref.read(searchUserProvider.notifier).unfollowUser(
-              currentUserId,
-              user.id,
-            );
+        ref
+            .read(searchUserProvider.notifier)
+            .unfollowUser(currentUserId, user.id);
         break;
       case UserButtonType.friends:
         // Unfriend logic - có thể delegate sang friend provider
@@ -117,11 +133,7 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.search,
-                          size: 64,
-                          color: Colors.grey[400],
-                        ),
+                        Icon(Icons.search, size: 64, color: Colors.grey[400]),
                         const SizedBox(height: 16),
                         Text(
                           'Search for users',
@@ -156,11 +168,15 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
 
                         return UserItemWidget(
                           user: userRelationItem,
+                          isPending: user.isPending,
                           buttonType: _getUserButtonType(userRelationItem),
                           onUserButtonPressed: _handleUserButtonPressed,
                           onTap: () {
                             // Navigate đến UserMeScreen với userId
-                            pushScreen(context, '${RouteConstants.userMe}?id=${user.id}');
+                            pushScreen(
+                              context,
+                              '${RouteConstants.userMe}?id=${user.id}',
+                            );
                           },
                         );
                       } else {
@@ -185,8 +201,11 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline,
-                        size: 48, color: Colors.red),
+                    const Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: Colors.red,
+                    ),
                     const SizedBox(height: 16),
                     Text('Error: $error'),
                     const SizedBox(height: 16),

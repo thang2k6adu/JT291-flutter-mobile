@@ -30,6 +30,7 @@ class ActionButton extends StatelessWidget {
   final VoidCallback? onPressed; // Callback khi nhấn button
   final double borderRadius; // Lưu ý có thể tuỳ chỉnh border radius của button
   final EdgeInsetsGeometry padding; // Padding của button
+  final bool isLoading; // Cho phép nhấn button
 
   const ActionButton({
     super.key,
@@ -39,6 +40,7 @@ class ActionButton extends StatelessWidget {
     this.onPressed,
     this.borderRadius = 4.0,
     this.padding = const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+    this.isLoading = false,
   });
 
   @override
@@ -50,15 +52,24 @@ class ActionButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: GestureDetector(
-        onTap: onPressed,
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: textColor,
-          ),
-        ),
+        onTap: isLoading ? null : onPressed,
+        child: isLoading
+            ?  SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color:  textColor,
+                ),
+              )
+            : Text(
+                text,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: textColor,
+                ),
+              ),
       ),
     );
   }
