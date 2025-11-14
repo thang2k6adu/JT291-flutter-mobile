@@ -16,6 +16,7 @@ class AppIcons {
   static const String grown = 'lib/assets/icons/grown.png';
   static const String flower = 'lib/assets/icons/flower.png';
   static const String malePng = 'lib/assets/icons/male.png';
+  static const String femalePng = 'lib/assets/icons/female.png';
   static const String badge1Png = 'lib/assets/icons/badge1.png';
   static const String scanner = 'lib/assets/icons/scanner.svg';
   static const String setting = 'lib/assets/icons/setting.svg';

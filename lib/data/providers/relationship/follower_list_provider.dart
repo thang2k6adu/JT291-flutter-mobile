@@ -10,19 +10,6 @@ final followerListProvider =
       FollowerListNotifier.new,
     );
 
-/// Wrapper để implement PaginatedResponse interface
-class _FollowerResponse implements PaginatedResponse<UserModel> {
-  final UserListResponse? _response;
-
-  _FollowerResponse(this._response);
-
-  @override
-  List<UserModel> get data => _response?.data ?? [];
-
-  @override
-  bool get hasNext => _response?.pagination?.hasNext ?? false;
-}
-
 class FollowerListNotifier extends BasePaginatedNotifier<UserModel>
     with ListItemUpdateMixin<UserModel> {
   late final UserGeneralService _service;
@@ -44,7 +31,7 @@ class FollowerListNotifier extends BasePaginatedNotifier<UserModel>
       limit: limit,
       search: search,
     );
-    return _FollowerResponse(response);
+    return ApiPaginatedResponse<UserModel>(response!);
   }
 
   /// Follow back a follower

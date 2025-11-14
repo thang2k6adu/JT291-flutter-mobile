@@ -28,7 +28,7 @@ PaginationModel buildPagination(Map<String, dynamic>? json) {
 
 class UserGeneralService {
   final ApiService _apiService = ApiService();
-  final mockUserId = '02b2ab20-c75e-46ac-b135-30c74509c519';
+  final mockUserId = 'fa541f1d-a162-45cc-85a7-f16838408142';
 
   UserGeneralService();
 
@@ -46,7 +46,7 @@ class UserGeneralService {
 
   /// Cập nhật thông tin người dùng hiện tại
   /// [data] có thể bao gồm nickname, bio, gender, date_of_birth,...
-  FutureOr<bool> updateCurrentUser( Map<String, dynamic> data) async {
+  FutureOr<bool> updateCurrentUser(Map<String, dynamic> data) async {
     try {
       print('updateCurrentUser: $data');
       final response = await _apiService.put('/users/$mockUserId', data: data);
@@ -98,9 +98,7 @@ class UserGeneralService {
       // );
 
       // Khi có API thật:
-      final response = await _apiService.get(
-        'http://10.0.2.2:3000/users/profile/$mockUserId',
-      );
+      final response = await _apiService.get('/users/profile/$userId');
 
       print('getUserProfile response: $response');
       return UserModel.fromJson(response['data']);
@@ -191,9 +189,12 @@ class UserGeneralService {
       //     hasNext: end < allData.length,
       //   ),
       // );
+      print(
+        'getFollowingList queryParameters: {page: $page, limit: $limit, search: $search, type: following}',
+      );
 
       final response = await _apiService.get(
-        'http://10.0.2.2:3000/users/$mockUserId/connections',
+        '/users/$mockUserId/connections',
         queryParameters: {
           'page': page,
           'limit': limit,
@@ -219,126 +220,122 @@ class UserGeneralService {
   }
 
   /// get Follower list
-  FutureOr<UserListResponse?> getFollowerList({
+  FutureOr<ApiResponse<PaginatedData<UserModel>>?> getFollowerList({
     int page = 1,
     int limit = 10,
     String? search,
   }) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 500));
+      // await Future.delayed(const Duration(milliseconds: 500));
 
-      var allData = followerMock.data ?? [];
-      if (search != null && search.isNotEmpty) {
-        allData = allData
-            .where(
-              (u) =>
-                  u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
-                      false),
-            )
-            .toList();
-      }
-      final start = (page - 1) * limit;
-      final end = (start + limit).clamp(0, allData.length);
-      final pagedData = allData.sublist(start, end);
+      // var allData = followerMock.data ?? [];
+      // if (search != null && search.isNotEmpty) {
+      //   allData = allData
+      //       .where(
+      //         (u) =>
+      //             u.nickname.toLowerCase().contains(search.toLowerCase()) ||
+      //             (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
+      //                 false),
+      //       )
+      //       .toList();
+      // }
+      // final start = (page - 1) * limit;
+      // final end = (start + limit).clamp(0, allData.length);
+      // final pagedData = allData.sublist(start, end);
 
-      // Tạo response phân trang mock
-      return UserListResponse(
-        data: pagedData,
-        pagination: PaginationModel(
-          offset: page,
-          limit: limit,
-          total: allData.length,
-          hasNext: end < allData.length,
+      // // Tạo response phân trang mock
+      // return UserListResponse(
+      //   data: pagedData,
+      //   pagination: PaginationModel(
+      //     offset: page,
+      //     limit: limit,
+      //     total: allData.length,
+      //     hasNext: end < allData.length,
+      //   ),
+      // );
+      final response = await _apiService.get(
+        '/users/$mockUserId/connections',
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+          'search': search,
+          'type': 'followers',
+        },
+      );
+      print('getFollowerList response: $response');
+      return ApiResponse.fromJson(
+        response,
+        (data) => PaginatedData.fromJson(
+          data as Map<String, dynamic>,
+          (item) => UserModel.fromJson(item as Map<String, dynamic>),
+          dataKey: 'users',
+          metaKey: 'meta',
         ),
       );
-      // final response = await _apiService.get(
-      //   '/v1/users/followers',
-      //   queryParameters: {'page': page, 'limit': limit, 'search': search},
-      // );
-      // Xây pagination (tự tính hasNext)
-      // final pagination = buildPagination(response['pagination']);
-
-      // // Trả về dữ liệu hoàn chỉnh
-      // return UserListResponse(
-      //   userId: response['user_id'],
-      //   username: response['username'],
-      //   avatarUrl: response['avatar_url'],
-      //   followingCount: response['following_count'],
-      //   followersCount: response['followers_count'],
-      //   friendsCount: response['friends_count'],
-      //   data:
-      //       (response['data'] as List<dynamic>?)
-      //           ?.map((e) => UserSummaryModel.fromJson(e))
-      //           .toList() ??
-      //       [],
-      //   pagination: pagination,
-      // );
     } catch (e) {
       print("getFollowerList failed: $e");
-      return const UserListResponse(data: []);
+      return null;
     }
   }
 
   /// get Friend list
-  FutureOr<UserListResponse?> getFriendList({
+  FutureOr<ApiResponse<PaginatedData<UserModel>>?> getFriendList({
     int page = 1,
     int limit = 10,
     String? search,
   }) async {
     try {
-      await Future.delayed(
-        const Duration(milliseconds: 500),
-      ); // simulate network delay
-      var allData = friendMock.data ?? [];
-      if (search != null && search.isNotEmpty) {
-        allData = allData
-            .where(
-              (u) =>
-                  u.nickname.toLowerCase().contains(search.toLowerCase()) ||
-                  (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
-                      false),
-            )
-            .toList();
-      }
-      final start = (page - 1) * limit;
-      final end = (start + limit).clamp(0, allData.length);
-      final pagedData = allData.sublist(start, end);
+      // await Future.delayed(
+      //   const Duration(milliseconds: 500),
+      // ); // simulate network delay
+      // var allData = friendMock.data ?? [];
+      // if (search != null && search.isNotEmpty) {
+      //   allData = allData
+      //       .where(
+      //         (u) =>
+      //             u.nickname.toLowerCase().contains(search.toLowerCase()) ||
+      //             (u.bio?.toLowerCase().contains(search.toLowerCase()) ??
+      //                 false),
+      //       )
+      //       .toList();
+      // }
+      // final start = (page - 1) * limit;
+      // final end = (start + limit).clamp(0, allData.length);
+      // final pagedData = allData.sublist(start, end);
 
-      return UserListResponse(
-        data: pagedData,
-        pagination: PaginationModel(
-          offset: page,
-          limit: limit,
-          total: allData.length,
-          hasNext: end < allData.length,
+      // return ApiResponse<PaginatedData<UserModel>>(
+      //   error: false,
+      //   code: 200,
+      //   message: 'Friend list fetched successfully',
+      //   data: PaginatedData<UserModel>(
+      //     items: pagedData,
+      //     meta: PaginationMeta(
+      //       itemCount: allData.length,
+      //       totalItems: allData.length,
+      //       itemsPerPage: limit,
+      //       totalPages: (allData.length / limit).ceil(),
+      //       currentPage: page,
+      //     ),
+      //   ),
+      // );
+
+      final response = await _apiService.get(
+        '/users/$mockUserId/connections',
+        queryParameters: {'page': page, 'limit': limit, 'search': search},
+      );
+      // Xây pagination (tự tính hasNext)
+      return ApiResponse.fromJson(
+        response,
+        (data) => PaginatedData.fromJson(
+          data as Map<String, dynamic>,
+          (item) => UserModel.fromJson(item as Map<String, dynamic>),
+          dataKey: 'users',
+          metaKey: 'meta',
         ),
       );
-      // final response = await _apiService.get(
-      //   '/v1/users/friends',
-      //   queryParameters: {'page': page, 'limit': limit, 'search': search},
-      // );
-      // Xây pagination (tự tính hasNext)
-      // final pagination = buildPagination(response['pagination']);
-
-      // // Trả về dữ liệu hoàn chỉnh
-      // return UserListResponse(
-      //   userId: response['user_id'],
-      //   username: response['username'],
-      //   avatarUrl: response['avatar_url'],
-      //   followingCount: response['following_count'],
-      //   followersCount: response['followers_count'],
-      //   friendCount: response['friends_count'],
-      //   data:
-      //       (response['data'] as List<dynamic>?)
-      //           ?.map((e) => UserSummaryModel.fromJson(e))
-      //           .toList() ??
-      //       [],
-      //   pagination: pagination,
-      // );
     } catch (e) {
       print("getFriendList failed: $e");
-      return const UserListResponse(data: []);
+      return null;
     }
   }
 
@@ -349,7 +346,7 @@ class UserGeneralService {
       // return true;
 
       final response = await _apiService.post(
-        'http://10.0.2.2:3000/users/$mockUserId/following/$targetId',
+        '/users/$mockUserId/following/$targetId',
       );
       return response['error'] == false;
     } catch (e) {
@@ -365,7 +362,7 @@ class UserGeneralService {
       // return true;
 
       final response = await _apiService.delete(
-        'http://10.0.2.2:3000/users/$mockUserId/following/$followingId',
+        '/users/$mockUserId/following/$followingId',
       );
       return response['error'] == false;
     } catch (e) {
@@ -392,12 +389,14 @@ class UserGeneralService {
   /// Hủy kết bạn
   FutureOr<bool> unfriend(String userId, String friendId) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 300));
-      print('Unfriend $friendId');
-      return true;
+      // await Future.delayed(const Duration(milliseconds: 300));
+      // print('Unfriend $friendId');
+      // return true;
 
-      // final response = await _apiService.delete('/v1/users/$userId/friends/$friendId');
-      // return response['error'] == false;
+      final response = await _apiService.delete(
+        '/users/$mockUserId/friends/$friendId',
+      );
+      return response['error'] == false;
     } catch (e) {
       print("unfriend failed: $e");
       return false;

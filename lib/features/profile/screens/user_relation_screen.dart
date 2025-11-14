@@ -36,6 +36,12 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
   void initState() {
     super.initState();
     _setupScrollListeners();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(followingListProvider.notifier).fetchData(reset: true);
+      ref.read(followerListProvider.notifier).fetchData(reset: true);
+      ref.read(friendListProvider.notifier).fetchData(reset: true);
+    });
   }
 
   void _setupScrollListeners() {
@@ -147,7 +153,7 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
     final followerState = ref.watch(followerListProvider);
     final friendState = ref.watch(friendListProvider);
     final searchQuery = ref.watch(searchQueryProvider);
-    
+
     final userStatsAsync = ref.watch(userStatsProvider);
 
     final followingNotifier = ref.read(followingListProvider.notifier);

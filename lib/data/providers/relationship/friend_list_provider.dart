@@ -10,19 +10,6 @@ final friendListProvider =
       FriendListNotifier.new,
     );
 
-/// Wrapper để implement PaginatedResponse interface
-class _FriendResponse implements PaginatedResponse<UserModel> {
-  final UserListResponse? _response;
-
-  _FriendResponse(this._response);
-
-  @override
-  List<UserModel> get data => _response?.data ?? [];
-
-  @override
-  bool get hasNext => _response?.pagination?.hasNext ?? false;
-}
-
 class FriendListNotifier extends BasePaginatedNotifier<UserModel>
     with ListItemUpdateMixin<UserModel> {
   late final UserGeneralService _service;
@@ -44,7 +31,7 @@ class FriendListNotifier extends BasePaginatedNotifier<UserModel>
       limit: limit,
       search: search,
     );
-    return _FriendResponse(response);
+    return ApiPaginatedResponse<UserModel>(response!);
   }
 
   /// Unfriend a user

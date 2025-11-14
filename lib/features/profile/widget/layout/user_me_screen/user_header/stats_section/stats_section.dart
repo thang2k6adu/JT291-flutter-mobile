@@ -19,6 +19,8 @@ class StatsSection extends StatelessWidget {
             nickname: user?.nickname,
             gender: user?.gender,
             currentLevel: user?.level?.currentLevel,
+            following: user?.followingCount,
+            followers: user?.followersCount,
           ),
         ),
       ],

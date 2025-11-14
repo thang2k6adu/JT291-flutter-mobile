@@ -45,11 +45,18 @@ class UserProfileSection extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               // Hiển thị icon phù hợp theo giới tính
-              Image.asset(
+              if (gender == 'male')
+                Image.asset(
                 AppIcons.malePng,
                 width: 14,
                 height: 14,
-              ),
+              ) else if (gender == 'female')
+                Image.asset(
+                  AppIcons.femalePng,
+                  width: 14,
+                  height: 14,
+                ) else
+                SizedBox.shrink(),
               const SizedBox(width: 8),
               const LockedBadge(iconSize: 18),
             ],

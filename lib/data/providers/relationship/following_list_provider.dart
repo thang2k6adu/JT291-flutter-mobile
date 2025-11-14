@@ -32,7 +32,7 @@ class FollowingListNotifier extends BasePaginatedNotifier<UserModel>
       limit: limit,
       search: search,
     );
-    print('Search users apiResponse (provider): $apiResponse');
+    print('Search users apiResponse (provider): ${apiResponse?.data?.items.length ?? 0}');
     // Wrap bằng ApiPaginatedResponse chuẩn từ base class
     final response = ApiPaginatedResponse<UserModel>(apiResponse!);
 
