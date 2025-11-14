@@ -24,7 +24,8 @@ class RouteConstants {
   static const String userSettingPrivacy = "/user/setting/privacy";
   static const String userRelationships = "/user/relationships";
   static const String searchUser = "/user/search";
-
+  static const String vexWallet = "/wallet/vex";
+  
   static const String diamonds = "/wallet/diamonds";
   static const String history = "/wallet/history";
 
