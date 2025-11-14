@@ -43,4 +43,10 @@ class AppIcons {
   static const String fiveDiamondsPng = 'lib/assets/icons/five_diamonds.png';
   static const String bunchDiamondsPng = 'lib/assets/icons/bunch_diamonds.png';
   static const String manyDiamondsPng = 'lib/assets/icons/many_diamonds.png';
+  static const String giftPng = 'lib/assets/icons/give_a_gift.png';
+  static const String sendMessagePng = 'lib/assets/icons/send_message.png';
+  static const String vexPng = 'lib/assets/icons/vex.png';
+  static const String moneyReceivePng = 'lib/assets/icons/money_receive.png';
+  static const String moneySendPng = 'lib/assets/icons/money_send.png';
+  static const String cardSendPng = 'lib/assets/icons/card_send.png';
 }

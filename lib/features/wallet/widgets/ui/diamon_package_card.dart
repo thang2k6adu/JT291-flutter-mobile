@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/core/utils/currency_formatter.dart';
+import 'package:jt291_flutter_mobile/core/utils/currency_formatter_with_icon.dart';
 
 class DiamondPackageCard extends StatelessWidget {
   final String diamondsCount;
   final String price;
   final Widget icon;
   final VoidCallback? onTap;
+  final String? currencyIcon;
 
   const DiamondPackageCard({
     super.key,
     required this.diamondsCount,
     required this.price,
     required this.icon,
+    this.currencyIcon,
     this.onTap,
   });
 
@@ -62,14 +65,15 @@ class DiamondPackageCard extends StatelessWidget {
                 color: const Color(0xFFE65983),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text(
+              child: 
+              currencyIcon == null ? Text(
                 CurrencyFormatter.format(num.parse(price)),
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                ),
-              ),
+                ), 
+              ) : CurrencyFormatterWithIcon(iconPath: currencyIcon!, value: num.parse(price)),
             ),
           ],
         ),

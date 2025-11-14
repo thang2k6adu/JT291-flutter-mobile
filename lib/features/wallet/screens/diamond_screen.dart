@@ -51,7 +51,9 @@ class DiamondScreen extends ConsumerWidget {
                   {
                     'title': 'Vex conversion',
                     'subtitle': 'Account balance',
-                    'onTap': () {},
+                    'onTap': () {
+                      pushScreen(context, RouteConstants.vexWallet);
+                    },
                   },
                   {
                     'title': 'Monthly card',
