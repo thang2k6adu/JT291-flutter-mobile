@@ -34,14 +34,10 @@ class ProfileActionButtons extends ConsumerWidget {
       child: Row(
         children: [
           // Button Follow/Message
-          Expanded(
-            child: _buildMainActionButton(context),
-          ),
+          Expanded(child: _buildGiftButton(context)),
           const SizedBox(width: 12),
           // Button Give a gift
-          Expanded(
-            child: _buildGiftButton(context),
-          ),
+          Expanded(child: _buildMainActionButton(context)),
         ],
       ),
     );
@@ -53,22 +49,48 @@ class ProfileActionButtons extends ConsumerWidget {
       return _ActionButton(
         text: 'Message',
         icon: Icons.send,
-        backgroundColor: const Color(0xFF6C9EFF),
+        gradient: const LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: const [
+            Color(0xFFB3A6FF),
+            Color(0xFFADA5FF),
+            Color(0xFF9FA2FF),
+            Color(0xFF879EFF),
+            Color(0xFF6599FF),
+            Color(0xFF3A92FF),
+            Color(0xFF0589FF),
+            Color(0xFF0089FF),
+          ],
+          stops: const [
+            0.0435, // 4.35%
+            0.2377, // 23.77%
+            0.4618, // 46.18%
+            0.7009, // 70.09%
+            0.9698, // 96.98%
+            1.2387, // 123.87% -> >1 vẫn ok, sẽ normalize Flutter
+            1.5076, // 150.76%
+            1.5375, // 153.75%
+          ],
+        ),
         textColor: Colors.white,
-        onPressed: onMessagePressed ?? () {
-          print('Message pressed');
-        },
+        onPressed:
+            onMessagePressed ??
+            () {
+              print('Message pressed');
+            },
       );
     } else {
       // Chưa follow -> hiện nút Follow
       return _ActionButton(
         text: 'Follow',
         icon: Icons.person_add,
-        backgroundColor: const Color(0xFFE65983),
         textColor: Colors.white,
-        onPressed: onFollowPressed ?? () {
-          print('Follow pressed');
-        },
+        onPressed:
+            onFollowPressed ??
+            () {
+              print('Follow pressed');
+            },
       );
     }
   }
@@ -77,11 +99,12 @@ class ProfileActionButtons extends ConsumerWidget {
     return _ActionButton(
       text: 'Give a gift',
       icon: Icons.card_giftcard,
-      backgroundColor: const Color(0xFFFFA6C9),
       textColor: Colors.white,
-      onPressed: onGiftPressed ?? () {
-        print('Gift pressed');
-      },
+      onPressed:
+          onGiftPressed ??
+          () {
+            print('Gift pressed');
+          },
     );
   }
 }
@@ -89,46 +112,57 @@ class ProfileActionButtons extends ConsumerWidget {
 class _ActionButton extends StatelessWidget {
   final String text;
   final IconData icon;
-  final Color backgroundColor;
+  final Color? backgroundColor; // dùng khi không có gradient
+  final LinearGradient? gradient; // nếu muốn gradient
   final Color textColor;
   final VoidCallback onPressed;
 
   const _ActionButton({
     required this.text,
     required this.icon,
-    required this.backgroundColor,
+    this.backgroundColor,
+    this.gradient = const LinearGradient(
+      colors: [Color(0xFFFB9EBA), Color(0xFFE65983)],
+    ),
     required this.textColor,
     required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: backgroundColor,
-        foregroundColor: textColor,
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(26),
+    final borderRadius = BorderRadius.circular(26);
+
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        decoration: BoxDecoration(
+          color: gradient == null ? backgroundColor ?? Colors.grey : null,
+          gradient: gradient,
+          borderRadius: borderRadius,
         ),
-        elevation: 0,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 20),
-          const SizedBox(width: 8),
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
+        child: InkWell(
+          borderRadius: borderRadius,
+          onTap: onPressed,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 20, color: textColor),
+                const SizedBox(width: 8),
+                Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: textColor,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 }
-
