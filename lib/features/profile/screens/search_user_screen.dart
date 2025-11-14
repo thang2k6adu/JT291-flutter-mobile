@@ -64,6 +64,7 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
     _debounce = Timer(const Duration(milliseconds: 500), () async {
       if (query != _currentQuery) {
         _currentQuery = query;
+        print('Search query: $query');
         await ref
             .read(searchUserProvider.notifier)
             .fetchData(reset: true, search: query);

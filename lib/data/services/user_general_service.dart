@@ -628,7 +628,7 @@ class UserGeneralService {
       // TODO: Data bên be nên trả về meta data (pagination)
       final response = await _apiService.get(
         'http://10.0.2.2:3000/users/search/$mockUserId',
-        queryParameters: {'query': query, 'page': page, 'limit': limit},
+        queryParameters: {'search': query, 'page': page, 'limit': limit},
       );
 
       print('searchUsers response: $response');

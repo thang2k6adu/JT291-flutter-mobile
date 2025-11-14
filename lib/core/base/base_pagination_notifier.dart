@@ -63,7 +63,7 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
   /// Fetch dữ liệu (có handle reset, pagination)
   Future<List<T>> fetchData({bool reset = false, String? search}) async {
     if (_isLoadingMore && !reset) return state.value ?? [];
-    
+
     if (reset) {
       _page = 1;
       _hasNext = true;
@@ -87,10 +87,7 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
       if (_hasNext) _page++;
 
       // Kết hợp với list hiện tại
-      final updatedList = <T>[
-        if (!reset) ...(state.value ?? []),
-        ...newData,
-      ];
+      final updatedList = <T>[if (!reset) ...(state.value ?? []), ...newData];
 
       state = AsyncData(updatedList);
       return updatedList;
@@ -125,10 +122,7 @@ mixin ListItemUpdateMixin<T> on AsyncNotifier<List<T>> {
   /// Update một item trong list dựa trên id
   /// [identify] - function để identify item cần update
   /// [update] - function để update item
-  void updateItem(
-    bool Function(T item) identify,
-    T Function(T item) update,
-  ) {
+  void updateItem(bool Function(T item) identify, T Function(T item) update) {
     final currentList = state.value ?? [];
     final updatedList = currentList.map((item) {
       if (identify(item)) {
@@ -136,7 +130,7 @@ mixin ListItemUpdateMixin<T> on AsyncNotifier<List<T>> {
       }
       return item;
     }).toList();
-    
+
     state = AsyncData(updatedList);
   }
 
@@ -147,22 +141,27 @@ mixin ListItemUpdateMixin<T> on AsyncNotifier<List<T>> {
     Future<bool> Function() operation,
     T Function(T item, bool success) updateResult,
   ) async {
-    final oldList = state.value ?? [];
+    // 1) Lấy list hiện tại
+    final initialList = state.value ?? [];
 
-    // Set pending state
+    // 2) Optimistic update: set pending
     updateItem(identify, setPending);
 
-    // Perform operation
+    // 3) Perform operation
     final success = await operation();
 
-    // Update based on result
-    final updatedList = oldList.map((item) {
+    // 4) Lấy lại list hiện tại sau optimistic update
+    final currentList = state.value ?? [];
+
+    // 5) Update item dựa trên list hiện tại
+    final updatedList = currentList.map((item) {
       if (identify(item)) {
         return updateResult(item, success);
       }
       return item;
     }).toList();
 
+    // 6) Set state
     state = AsyncData(updatedList);
   }
 }

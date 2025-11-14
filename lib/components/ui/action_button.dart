@@ -53,23 +53,14 @@ class ActionButton extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: isLoading ? null : onPressed,
-        child: isLoading
-            ?  SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color:  textColor,
-                ),
-              )
-            : Text(
-                text,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: textColor,
-                ),
-              ),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: textColor,
+          ),
+        ),
       ),
     );
   }
