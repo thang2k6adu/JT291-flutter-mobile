@@ -70,19 +70,51 @@ class AuthService {
     }
   }
 
+  // /auth/login
+  Future<UserModel?> loginWithEmailAndPassword(String email, String password) async {
+    try {
+      final response = await _apiService.post(
+        '/auth/login',
+        data: {'ref_id': email, 'password': password},
+      );
+
+      print("loginWithEmailAndPassword response: ${response}");
+
+      if (response['error'] == false) {
+        final authToken = TokenModel.fromJson(response['data']);
+        final user = UserModel.fromJson(response['data']['user']);
+        print("loginWithEmailAndPassword authToken: ${authToken}");
+        await _saveTokens(authToken);
+        print("loginWithEmailAndPassword saveTokens success");
+        return user;
+
+      } else {
+        throw Exception(response['message']);
+      }
+
+    } catch (e) {
+      print("Error Call API Login: ${e.toString()}");
+      rethrow;
+    }
+  }
+
   Future<void> _saveTokens(TokenModel token) async {
     await _storage.write(
       key: StorageConstants.accessTokenKey,
       value: token.accessToken,
     );
-    await _storage.write(
-      key: StorageConstants.refreshTokenKey,
-      value: token.refreshToken,
-    );
+    if (token.refreshToken != null) {
+      await _storage.write(
+        key: StorageConstants.refreshTokenKey,
+        value: token.refreshToken!,
+      );
+    }
+    if (token.expiredAt != null) {
     await _storage.write(
       key: StorageConstants.tokenExpiredKey,
-      value: token.expiredAt?.toIso8601String(),
-    );
+      value: token.expiredAt!.toIso8601String(),
+      );
+    }
   }
 
   Future<TokenModel?> restoreSession() async {

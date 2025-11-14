@@ -35,7 +35,8 @@ class UserGeneralService {
   /// Lấy thông tin người dùng hiện tại (dựa trên accessToken)
   FutureOr<UserModel?> getCurrentUser() async {
     try {
-      final response = await _apiService.get('/v1/users/me');
+      // final response = await _apiService.get('/v1/users/me');
+      final response = await _apiService.get('/users/profile/$mockUserId');
       return UserModel.fromJson(response['data']);
     } catch (e) {
       print("getCurrentUser failed: $e");
@@ -45,10 +46,10 @@ class UserGeneralService {
 
   /// Cập nhật thông tin người dùng hiện tại
   /// [data] có thể bao gồm nickname, bio, gender, date_of_birth,...
-  FutureOr<bool> updateCurrentUser(Map<String, dynamic> data) async {
+  FutureOr<bool> updateCurrentUser( Map<String, dynamic> data) async {
     try {
       print('updateCurrentUser: $data');
-      final response = await _apiService.put('/v1/users/me', data: data);
+      final response = await _apiService.put('/users/$mockUserId', data: data);
       return response['success'] as bool;
     } catch (e) {
       print("updateCurrentUser failed: $e");
@@ -193,7 +194,12 @@ class UserGeneralService {
 
       final response = await _apiService.get(
         'http://10.0.2.2:3000/users/$mockUserId/connections',
-        queryParameters: {'page': page, 'limit': limit, 'search': search, 'type': 'following'},
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+          'search': search,
+          'type': 'following',
+        },
       );
 
       print('getFollowingList response: $response');
@@ -404,9 +410,7 @@ class UserGeneralService {
       // await Future.delayed(const Duration(milliseconds: 300));
       // return userStatsMock;
 
-      final response = await _apiService.get(
-        'http://10.0.2.2:3000/users/$mockUserId/stats',
-      );
+      final response = await _apiService.get('/users/$mockUserId/stats');
 
       print('getUserStats response: $response');
       return UserStatsModel.fromJson(response['data']);

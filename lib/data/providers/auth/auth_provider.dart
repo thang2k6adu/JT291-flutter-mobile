@@ -44,6 +44,22 @@ class UserAuthNotifier extends AsyncNotifier<UserModel?> {
       return null;
     }
   }
+  
+  Future<UserModel?> loginWithEmailAndPassword(String username, String password) async {
+    state = const AsyncLoading();
+    try {
+      final user = await _authService.loginWithEmailAndPassword(username, password);
+      if (user != null) {
+        state = AsyncData(user);
+        return user;
+      } else {
+        throw Exception("loginWithEmailAndPassword failed");
+      }
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      return null;
+    }
+  }
 
   /// Logout User
   Future<void> logout() async {
