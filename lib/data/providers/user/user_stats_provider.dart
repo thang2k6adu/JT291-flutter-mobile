@@ -26,6 +26,7 @@ class UserStatsNotifier extends AsyncNotifier<UserStatsModel?> {
     try {
       print('getUserStats: ${user.id}');
       final stats = await _userService.getUserStats(user.id);
+      print('getUserStats stats: $stats');
       return stats; // Trả về stats, đồng thời state sẽ tự thành AsyncData(stats)
     } catch (e, st) {
       state = AsyncError(e, st);
@@ -42,6 +43,62 @@ class UserStatsNotifier extends AsyncNotifier<UserStatsModel?> {
     } catch (e, st) {
       state = AsyncError(e, st);
       return null;
+    }
+  }
+
+  void incrementFollowing() {
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(current.copyWith(followingCount: current.followingCount! + 1));
+    }
+  }
+
+  void decrementFollowing() {
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(current.copyWith(followingCount: current.followingCount! - 1));
+    }
+  }
+
+  void incrementFollowers() {
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(current.copyWith(followersCount: current.followersCount! + 1));
+    }
+  }
+
+  void decrementFollowers() {
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(current.copyWith(followersCount: current.followersCount! - 1));
+    }
+  }
+
+  void incrementFriends() {
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(current.copyWith(friendsCount: current.friendsCount! + 1));
+    }
+  }
+
+  void decrementFriends() {
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(current.copyWith(friendsCount: current.friendsCount! - 1));
+    }
+  }
+
+  void incrementViews() {
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(current.copyWith(viewsCount: current.viewsCount! + 1));
+    }
+  }
+
+  void decrementViews() {
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(current.copyWith(viewsCount: current.viewsCount! - 1));
     }
   }
 }

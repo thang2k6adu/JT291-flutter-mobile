@@ -44,16 +44,23 @@ abstract class PaginatedData<T> with _$PaginatedData<T> {
   /// Usage: PaginatedData.fromJson(json, (item) => YourModel.fromJson(item as Map<String, dynamic>))
   factory PaginatedData.fromJson(
     Map<String, dynamic> json,
-    T Function(Object?) fromJsonT,
-  ) {
-    final itemsList = (json['items'] as List<dynamic>?)
-            ?.map((e) => fromJsonT(e))
-            .toList() ??
+    T Function(Object?) fromJsonT, {
+    String dataKey = 'items',
+    String metaKey = 'meta',
+  }) {
+    final itemsList =
+        (json[dataKey] as List<dynamic>?)?.map((e) => fromJsonT(e)).toList() ??
         [];
-    
+
+    final rawMeta = json[metaKey];
+    final meta = (rawMeta is Map<String, dynamic>)
+        ? PaginationMeta.fromJson(rawMeta)
+        : PaginationMeta(); // default meta nếu không có
+
+
     return PaginatedData<T>(
       items: itemsList,
-      meta: PaginationMeta.fromJson(json['meta'] as Map<String, dynamic>),
+      meta: meta,
     );
   }
 }
@@ -72,4 +79,3 @@ abstract class PaginationMeta with _$PaginationMeta {
   factory PaginationMeta.fromJson(Map<String, dynamic> json) =>
       _$PaginationMetaFromJson(json);
 }
-

@@ -14,6 +14,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -34,7 +36,7 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
         await authController.loginWithProvide(context, provider);
       } else {
         if (password != null && username != null) {
-          // If login with password
+          await authController.loginWithEmailAndPassword(context, username, password);
         }
       }
     } catch (e) {
@@ -146,6 +148,57 @@ class LoginScreenState extends ConsumerState<LoginScreen> {
               await _onSignIn(ProviderLogin.facebook);
             },
             child: Text("Login with Facebook"),
+          ),
+          // Email and Password form
+          TextFormField(
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              labelText: 'Email',
+              hintText: 'Enter your email',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your email';
+              }
+              if (!RegExp(
+                r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$",
+              ).hasMatch(value)) {
+                return 'Please enter a valid email';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 16),
+
+          TextFormField(
+            controller: _passwordController,
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: 'Password',
+              hintText: 'Enter your password',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your password';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 24),
+
+          // Login button
+          ElevatedButton(
+            onPressed: () async {
+              await _onSignIn(
+                ProviderLogin.password,
+                username: _emailController.text,
+                password: _passwordController.text,
+              );
+            },
+            child: Text("Login with Email"),
           ),
         ],
       ),

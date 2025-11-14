@@ -1,6 +1,7 @@
 class RouteConstants {
   static const String index = '/';
   static const String login = '/login';
+  static const String loginWithPassword = '/login/password';
   static const String splash = '/splash';
   static const String main = '/main';
   static const String onboarding = '/onboarding';
@@ -15,6 +16,7 @@ class RouteConstants {
 
   static const String userSetting = "/user/setting";
   static const String myAlbum = "/user/my-album";
+  static const String albumViewer = "/user/album-viewer";
   static const String userEditNickname = "/user/edit/nickname";
   static const String userEditBio = "/user/edit/bio";
   static const String userSettingAccounts = "/user/setting/accounts";
@@ -22,7 +24,8 @@ class RouteConstants {
   static const String userSettingPrivacy = "/user/setting/privacy";
   static const String userRelationships = "/user/relationships";
   static const String searchUser = "/user/search";
-
+  static const String vexWallet = "/wallet/vex";
+  
   static const String diamonds = "/wallet/diamonds";
   static const String history = "/wallet/history";
 

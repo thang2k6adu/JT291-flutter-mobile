@@ -8,17 +8,14 @@ part of 'user_model.dart';
 
 _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   id: json['id'] as String,
-  uid: json['uid'] as String?,
   unionId: json['union_id'] as String?,
   nickname: json['nickname'] as String,
-  username: json['username'] as String?,
-  avatarUrl: json['avatar_url'] as String? ?? '',
+  avatar: json['avatar'] as String? ?? '',
   bio: json['bio'] as String?,
-  shortBio: json['short_bio'] as String? ?? '',
   gender: json['gender'] as String?,
-  dateOfBirth: json['date_of_birth'] == null
+  birthday: json['birthday'] == null
       ? null
-      : DateTime.parse(json['date_of_birth'] as String),
+      : DateTime.parse(json['birthday'] as String),
   profileUrls:
       (json['profile_urls'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -33,7 +30,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   isFollowing: json['is_following'] as bool? ?? false,
   followStatus: json['follow_status'] as String? ?? 'not_following',
   mutualFollowersCount: (json['mutual_followers_count'] as num?)?.toInt() ?? 0,
-  verified: json['verified'] as bool? ?? false,
+  role: json['role'] as String? ?? 'user',
   isDeleted: json['is_deleted'] as bool? ?? false,
   isBlocked: json['is_blocked'] as bool? ?? false,
   isPending: json['isPending'] as bool? ?? false,
@@ -45,15 +42,12 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'uid': instance.uid,
       'union_id': instance.unionId,
       'nickname': instance.nickname,
-      'username': instance.username,
-      'avatar_url': instance.avatarUrl,
+      'avatar': instance.avatar,
       'bio': instance.bio,
-      'short_bio': instance.shortBio,
       'gender': instance.gender,
-      'date_of_birth': instance.dateOfBirth?.toIso8601String(),
+      'birthday': instance.birthday?.toIso8601String(),
       'profile_urls': instance.profileUrls,
       'interests': instance.interests,
       'following_count': instance.followingCount,
@@ -62,7 +56,7 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'is_following': instance.isFollowing,
       'follow_status': instance.followStatus,
       'mutual_followers_count': instance.mutualFollowersCount,
-      'verified': instance.verified,
+      'role': instance.role,
       'is_deleted': instance.isDeleted,
       'is_blocked': instance.isBlocked,
       'isPending': instance.isPending,

@@ -5,6 +5,7 @@
 
   class DiamondPackagesGrid extends StatelessWidget {
     final List<RechargePackageModel> packages;
+    final String? currencyIcon;
 
     final diamondIcons = [
       Image.asset(AppIcons.diamondPng, width: 24, height: 24),
@@ -15,7 +16,7 @@
       Image.asset(AppIcons.bunchDiamondsPng, width: 48, height: 24),
     ];
 
-    DiamondPackagesGrid({super.key, required this.packages});
+    DiamondPackagesGrid({super.key, required this.packages, this.currencyIcon});
 
     @override
     Widget build(BuildContext context) {
@@ -35,6 +36,7 @@
             diamondsCount: package.diamonds.toString(),
             price: package.price.toString(),
             icon: diamondIcons[index],
+            currencyIcon: currencyIcon,
           );
         },
       );

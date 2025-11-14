@@ -138,14 +138,7 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       builder: (context, child) {
-        final firebaseUser = ref.watch(firebaseAuthProvider);
-        return firebaseUser.when(
-          data: (uFirebase) {
-            return child ?? const Center(child: Text("No router"));
-          },
-          error: (e, _) => const LoginScreen(),
-          loading: () => const SplashScreen(),
-        );
+        return child ?? const Center(child: Text("No router"));
       },
     );
   }

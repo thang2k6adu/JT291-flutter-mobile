@@ -3,6 +3,8 @@ import 'package:jt291_flutter_mobile/core/utils/string_utils.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_relation_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/user_item_widget.dart';
+import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
+import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 
 /// Widget hiển thị danh sách user với label tab, hỗ trợ loading indicator.
 /// Tất cả dữ liệu, scrollController, onRefresh, isLoading đều truyền từ ngoài.
@@ -88,9 +90,17 @@ class UserListSection extends StatelessWidget {
                       : _getDefaultButtonType(title, user.isFollowing);
 
                   return UserItemWidget(
+                    isPending: user.isPending,
                     user: user,
                     buttonType: buttonType,
                     onUserButtonPressed: onUserButtonPressed,
+                    onTap: () {
+                      // Navigate đến UserMeScreen với userId
+                      pushScreen(
+                        context,
+                        '${RouteConstants.userMe}?id=${user.id}',
+                      );
+                    },
                   );
                 } else {
                   // Đây là item cuối cùng hiển thị loading indicator

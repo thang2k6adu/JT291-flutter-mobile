@@ -7,6 +7,7 @@ class UserRelationItem {
   final String bio;
   final bool isFollowing;
   final String gender;
+  final bool isPending;
 
   UserRelationItem({
     required this.id,
@@ -15,16 +16,18 @@ class UserRelationItem {
     required this.bio,
     this.isFollowing = false,
     required this.gender,
+    this.isPending = false,
   });
 
   factory UserRelationItem.fromFollowingModel(UserModel following) {
     return UserRelationItem(
       id: following.id,
       nickname: following.nickname,
-      avatarUrl: following.avatarUrl,
-      bio: following.bio ?? following.shortBio,
+      avatarUrl: following.avatar,
+      bio: following.bio ?? '',
       isFollowing: following.isFollowing,
       gender: following.gender ?? 'male',
+      isPending: following.isPending,
     );
   }
 
@@ -32,10 +35,11 @@ class UserRelationItem {
     return UserRelationItem(
       id: follower.id,
       nickname: follower.nickname,
-      avatarUrl: follower.avatarUrl,
-      bio: follower.bio ?? follower.shortBio,
+      avatarUrl: follower.avatar,
+      bio: follower.bio ?? '',
       isFollowing: follower.isFollowing,
       gender: follower.gender ?? 'male',
+      isPending: follower.isPending,
     );
   }
 
@@ -43,10 +47,11 @@ class UserRelationItem {
     return UserRelationItem(
       id: friend.id,
       nickname: friend.nickname,
-      avatarUrl: friend.avatarUrl,
-      bio: friend.bio ?? friend.shortBio,
+      avatarUrl: friend.avatar,
+      bio: friend.bio ?? '',
       isFollowing: friend.isFollowing,
       gender: friend.gender ?? 'male',
+      isPending: friend.isPending,
     );
   }
 }

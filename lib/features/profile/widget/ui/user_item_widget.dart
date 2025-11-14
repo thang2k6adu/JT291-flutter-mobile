@@ -8,6 +8,7 @@ class UserItemWidget extends StatelessWidget {
   final void Function(UserRelationItem user, UserButtonType type)?
       onUserButtonPressed;
   final VoidCallback? onTap;
+  final bool isPending;
 
   const UserItemWidget({
     super.key,
@@ -15,6 +16,7 @@ class UserItemWidget extends StatelessWidget {
     required this.buttonType,
     this.onUserButtonPressed,
     this.onTap,
+    this.isPending = false,
   });
 
   @override
@@ -101,7 +103,8 @@ class UserItemWidget extends StatelessWidget {
 
             // Button
             ActionButton(
-              text: buttonText,
+              isLoading: isPending,
+              text:  buttonText,
               backgroundColor: buttonBg,
               textColor: buttonTextColor,
               onPressed: () => onUserButtonPressed?.call(user, buttonType),

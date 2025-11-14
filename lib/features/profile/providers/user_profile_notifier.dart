@@ -100,6 +100,8 @@ class UserProfileNotifier extends StateNotifier<UserProfileState> {
     if (images.isEmpty) {
       print('no images, add placeholder image');
       images.add('https://i.pravatar.cc/400?u=${user.id}');
+      images.add('https://i.pravatar.cc/401?u=${user.id}');
+      images.add('https://i.pravatar.cc/402?u=${user.id}');
     }
     
     return images;

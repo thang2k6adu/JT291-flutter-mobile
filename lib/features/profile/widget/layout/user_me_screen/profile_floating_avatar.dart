@@ -29,7 +29,7 @@ class ProfileFloatingAvatar extends ConsumerWidget {
       top: position.dy,
       left: position.dx,
       child: userGeneralAsync.when(
-        data: (user) => UserAvatarSection(avatarUrl: user?.avatarUrl),
+        data: (user) => UserAvatarSection(avatarUrl: user?.avatar),
         loading: () => const SizedBox.shrink(),
         error: (error, stack) => const SizedBox.shrink(),
       ),

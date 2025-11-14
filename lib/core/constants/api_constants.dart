@@ -1,6 +1,6 @@
 class ApiConstants {
   // Base URL cho API
-  static const String baseUrl = 'https://jt291-dev.dolfie.tech/api';
+  static const String baseUrl = 'http://10.0.2.2:3000';
   static const String webClientId =
       '839130523883-20l9ejh0q1omrdt74u14qnr5mqgt1f0h.apps.googleusercontent.com';
 

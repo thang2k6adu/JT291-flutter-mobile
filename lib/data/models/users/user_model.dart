@@ -13,48 +13,49 @@ abstract class UserModel with _$UserModel {
     // Basic Info (always present)
     // ========================================
     required String id,
-    String? uid,
     @JsonKey(name: 'union_id') String? unionId,
     required String nickname,
-    String? username,
-    
+
     // ========================================
     // Profile Info
     // ========================================
-    @Default('') @JsonKey(name: 'avatar_url') String avatarUrl,
+    @Default('') @JsonKey(name: 'avatar') String avatar,
     String? bio,
-    @Default('') @JsonKey(name: 'short_bio') String shortBio,
     String? gender,
-    @JsonKey(name: 'date_of_birth') DateTime? dateOfBirth,
-    
+    @JsonKey(name: 'birthday') DateTime? birthday,
+
     // ========================================
     // Additional Profile Data (full profile only)
     // ========================================
     @Default([]) @JsonKey(name: 'profile_urls') List<String> profileUrls,
     @Default([]) List<String>? interests,
-    
+
     // ========================================
     // Stats & Counts
     // ========================================
     @JsonKey(name: 'following_count') int? followingCount,
     @JsonKey(name: 'followers_count') int? followersCount,
     @JsonKey(name: 'views_count') int? viewsCount,
-    
+
     // ========================================
     // Relationship Status (for other users)
     // ========================================
     @Default(false) @JsonKey(name: 'is_following') bool isFollowing,
-    @Default('not_following') @JsonKey(name: 'follow_status') String followStatus,
-    @Default(0) @JsonKey(name: 'mutual_followers_count') int mutualFollowersCount,
-    
+    @Default('not_following')
+    @JsonKey(name: 'follow_status')
+    String followStatus,
+    @Default(0)
+    @JsonKey(name: 'mutual_followers_count')
+    int mutualFollowersCount,
+
     // ========================================
     // Status & Flags
     // ========================================
-    @Default(false) bool verified,
+    @JsonKey(name: 'role') @Default('user') String role,
     @Default(false) @JsonKey(name: 'is_deleted') bool isDeleted,
     @Default(false) @JsonKey(name: 'is_blocked') bool isBlocked,
     @Default(false) bool isPending,
-    
+
     // ========================================
     // Level System (full profile only)
     // ========================================

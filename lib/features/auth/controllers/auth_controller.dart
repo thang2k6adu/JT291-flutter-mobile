@@ -57,6 +57,32 @@ class AuthController extends AutoDisposeNotifier<void> {
     }
   }
 
+  Future<void> loginWithEmailAndPassword(
+    BuildContext context,
+    String email,
+    String password,
+  ) async {
+    final overlay = UOverlay(context);
+    String messageLogin = '';
+    try {
+      final authNotifier = ref.read(userAuthProvider.notifier);
+      final user = await authNotifier.loginWithEmailAndPassword(email, password);
+      if (user != null) {
+        overlay.showWithTimeout(message: "Đăng nhập thành công");
+        await Future.delayed(Duration(microseconds: 500));
+        if (context.mounted) {
+          goScreen(context, RouteConstants.home);
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        overlay.showWithTimeout(message: "Đăng nhập thất bại");
+      }
+    } finally {
+      overlay.hide();
+    }
+  }
+
   Future<void> loginWithProvide(
     BuildContext context,
     ProviderLogin provider,

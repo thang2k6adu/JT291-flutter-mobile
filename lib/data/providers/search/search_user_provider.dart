@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/base/base_pagination_notifier.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_stats_provider.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 
 /// Provider để quản lý search users với pagination
@@ -31,15 +32,16 @@ class SearchUserNotifier extends BasePaginatedNotifier<UserModel>
       page: page,
       limit: limit,
     );
-    
+
+    print('Search users apiResponse (provider): $apiResponse');
     // Wrap bằng ApiPaginatedResponse chuẩn từ base class
     final response = ApiPaginatedResponse(apiResponse);
-    
+
     // Log error nếu có
     if (response.hasError) {
       print('Search users error: ${response.errorMessage}');
     }
-    
+
     return response;
   }
 
@@ -47,13 +49,31 @@ class SearchUserNotifier extends BasePaginatedNotifier<UserModel>
   Future<void> followUser(String userId, String targetUserId) async {
     await updateItemAsync(
       (user) => user.id == targetUserId,
-      (user) => user.copyWith(isPending: true),
+      (user) {
+        ref.read(userStatsProvider.notifier).incrementFollowing();
+
+        return user.copyWith(
+          isFollowing: true,
+          followStatus: "following",
+          isPending: true,
+        );
+      },
       () async => await _service.followUser(userId, targetUserId),
-      (user, success) => user.copyWith(
-        isFollowing: success,
-        followStatus: success ? 'following' : user.followStatus,
-        isPending: false,
-      ),
+      (user, success) {
+        if (!success) {
+          // rollback
+          ref.read(userStatsProvider.notifier).decrementFollowing();
+
+          return user.copyWith(
+            isFollowing: false,
+            followStatus: 'not_following',
+            isPending: false,
+          );
+        }
+
+        // Nếu success → giữ trạng thái optimistic
+        return user.copyWith(isPending: false);
+      },
     );
   }
 
@@ -61,14 +81,30 @@ class SearchUserNotifier extends BasePaginatedNotifier<UserModel>
   Future<void> unfollowUser(String userId, String targetUserId) async {
     await updateItemAsync(
       (user) => user.id == targetUserId,
-      (user) => user.copyWith(isPending: true),
+      (user) {
+        ref.read(userStatsProvider.notifier).decrementFollowing();
+
+        return user.copyWith(
+          isFollowing: false,
+          followStatus: "not_following",
+          isPending: true,
+        );
+      },
       () async => await _service.unfollowUser(userId, targetUserId),
-      (user, success) => user.copyWith(
-        isFollowing: !success,
-        followStatus: success ? 'not_following' : user.followStatus,
-        isPending: false,
-      ),
+      (user, success) {
+        if (!success) {
+          // rollback
+          ref.read(userStatsProvider.notifier).incrementFollowing();
+
+          return user.copyWith(
+            isFollowing: true,
+            followStatus: 'following',
+            isPending: false,
+          );
+        }
+
+        return user.copyWith(isPending: false);
+      },
     );
   }
 }
-

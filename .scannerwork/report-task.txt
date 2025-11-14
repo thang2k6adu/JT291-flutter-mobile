@@ -1,0 +1,7 @@
+organization=thang2k6adu
+projectKey=thang2k6adu_JT291-flutter-mobile
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.76487
+dashboardUrl=https://sonarcloud.io/dashboard?id=thang2k6adu_JT291-flutter-mobile
+ceTaskId=AZp6-ovJEntmHmgd9K7A
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZp6-ovJEntmHmgd9K7A
