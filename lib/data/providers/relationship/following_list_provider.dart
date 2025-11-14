@@ -48,17 +48,29 @@ class FollowingListNotifier extends BasePaginatedNotifier<UserModel>
   Future<void> unfollowUser(String userId, String followingId) async {
     await updateItemAsync(
       (user) => user.id == followingId,
-      (user) => user.copyWith(isPending: true),
+      (user) {
+        ref.read(userStatsProvider.notifier).decrementFollowing();
+
+        return user.copyWith(
+          isFollowing: false,
+          followStatus: "not_following",
+          isPending: true,
+        );
+      },
       () async => await _service.unfollowUser(userId, followingId),
       (user, success) {
-        if (success) {
-          // update stats
-          ref.read(userStatsProvider.notifier).decrementFollowing();
+        if (!success) {
+          // rollback
+          ref.read(userStatsProvider.notifier).incrementFollowing();
+
+          return user.copyWith(
+            isFollowing: true,
+            followStatus: 'following',
+            isPending: false,
+          );
         }
-        return user.copyWith(
-          isFollowing: success ? false : user.isFollowing,
-          isPending: false,
-        );
+
+        return user.copyWith(isPending: false);
       },
     );
   }
@@ -67,17 +79,29 @@ class FollowingListNotifier extends BasePaginatedNotifier<UserModel>
   Future<void> followUser(String userId, String followingId) async {
     await updateItemAsync(
       (user) => user.id == followingId,
-      (user) => user.copyWith(isPending: true),
+      (user) {
+        ref.read(userStatsProvider.notifier).incrementFollowing();
+
+        return user.copyWith(
+          isFollowing: true,
+          followStatus: "following",
+          isPending: true,
+        );
+      },
       () async => await _service.followUser(userId, followingId),
       (user, success) {
-        if (success) {
-          // update stats
-          ref.read(userStatsProvider.notifier).incrementFollowing();
+        if (!success) {
+          // rollback
+          ref.read(userStatsProvider.notifier).decrementFollowing();
+
+          return user.copyWith(
+            isFollowing: false,
+            followStatus: 'not_following',
+            isPending: false,
+          );
         }
-        return user.copyWith(
-          isFollowing: success ? true : user.isFollowing,
-          isPending: false,
-        );
+
+        return user.copyWith(isPending: false);
       },
     );
   }

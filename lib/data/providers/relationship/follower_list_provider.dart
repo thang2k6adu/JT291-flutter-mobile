@@ -38,17 +38,30 @@ class FollowerListNotifier extends BasePaginatedNotifier<UserModel>
   Future<void> followBackUser(String userId, String followerId) async {
     await updateItemAsync(
       (user) => user.id == followerId,
-      (user) => user.copyWith(isPending: true),
+      (user) {
+        ref.read(userStatsProvider.notifier).incrementFollowing();
+
+        return user.copyWith(
+          isFollowing: true,
+          followStatus: "following",
+          isPending: true,
+        );
+      },
       () async => await _service.followUser(userId, followerId),
       (user, success) {
-        if (success) {
-          // update stats
-          ref.read(userStatsProvider.notifier).incrementFollowers();
+        if (!success) {
+          // rollback
+          ref.read(userStatsProvider.notifier).decrementFollowing();
+
+          return user.copyWith(
+            isFollowing: false,
+            followStatus: 'not_following',
+            isPending: false,
+          );
         }
-        return user.copyWith(
-          isFollowing: success ? true : user.isFollowing,
-          isPending: false,
-        );
+
+        // Nếu success → giữ trạng thái optimistic
+        return user.copyWith(isPending: false);
       },
     );
   }
@@ -57,17 +70,30 @@ class FollowerListNotifier extends BasePaginatedNotifier<UserModel>
   Future<void> unfollowUser(String userId, String followerId) async {
     await updateItemAsync(
       (user) => user.id == followerId,
-      (user) => user.copyWith(isPending: true),
+      (user) {
+        ref.read(userStatsProvider.notifier).decrementFollowing();
+
+        return user.copyWith(
+          isFollowing: false,
+          followStatus: "not_following",
+          isPending: true,
+        );
+      },
       () async => await _service.unfollowUser(userId, followerId),
       (user, success) {
-        if (success) {
-          // update stats
-          ref.read(userStatsProvider.notifier).decrementFollowers();
+        if (!success) {
+          // rollback
+          ref.read(userStatsProvider.notifier).decrementFollowing();
+
+          return user.copyWith(
+            isFollowing: true,
+            followStatus: 'following',
+            isPending: false,
+          );
         }
-        return user.copyWith(
-          isFollowing: success ? false : user.isFollowing,
-          isPending: false,
-        );
+
+        // Nếu success → giữ trạng thái optimistic
+        return user.copyWith(isPending: false);
       },
     );
   }
