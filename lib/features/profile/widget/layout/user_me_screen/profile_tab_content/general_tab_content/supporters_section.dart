@@ -16,8 +16,8 @@ class TopSupporterSection extends StatelessWidget {
         Text(
           'Top Supporter',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
             color: AppColors.gray[8],
           ),
         ),
@@ -115,10 +115,10 @@ class SupporterItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 12),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),
       decoration: BoxDecoration(
         color: Color(0xFFF3F4F6),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         children: [
@@ -128,7 +128,7 @@ class SupporterItem extends StatelessWidget {
             showGlow: false,
             borderWidth: 0,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [

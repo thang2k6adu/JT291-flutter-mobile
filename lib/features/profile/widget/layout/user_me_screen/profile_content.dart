@@ -125,6 +125,7 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
 
   /// Build tab content as sliver based on current tab
   Widget _buildTabContentSliver(TabController tabController, AsyncValue userAsync) {
+    // Rebuild UI khi 1 controller thay đổi giá trị
     return AnimatedBuilder(
       animation: tabController,
       builder: (context, child) {

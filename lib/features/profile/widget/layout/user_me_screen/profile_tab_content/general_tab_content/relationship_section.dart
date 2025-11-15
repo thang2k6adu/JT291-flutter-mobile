@@ -19,8 +19,8 @@ class RelationshipSection extends StatelessWidget {
             Text(
               'Relationship',
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
                 color: AppColors.gray[8],
               ),
             ),
@@ -57,6 +57,9 @@ class SupportersList extends StatelessWidget {
         'name': 'User 1',
         'score': '1200',
         'color': AppColors.blue[4],
+        'level': 1,
+        'badge_type': 'badge1',
+        'fighter_type': 'fighter_octopus',
         'avatarUrl':
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
       },
@@ -64,6 +67,9 @@ class SupportersList extends StatelessWidget {
         'name': 'User 2',
         'score': '1000',
         'color': AppColors.pink[4],
+        'level': 2,
+        'badge_type': 'badge2',
+        'fighter_type': 'fighter_turtle',
         'avatarUrl':
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
       },
@@ -71,6 +77,9 @@ class SupportersList extends StatelessWidget {
         'name': 'User 3',
         'score': '900',
         'color': AppColors.green[4],
+        'level': 3,
+        'badge_type': 'badge3',
+        'fighter_type': 'fighter_ship',
         'avatarUrl':
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
       },
@@ -78,41 +87,32 @@ class SupportersList extends StatelessWidget {
         'name': 'User 4',
         'score': '840',
         'color': AppColors.orange[4],
-        'avatarUrl':
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
-      },
-      {
-        'name': 'User 4',
-        'score': '840',
-        'color': AppColors.orange[4],
-        'avatarUrl':
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
-      },
-      {
-        'name': 'User 4',
-        'score': '840',
-        'color': AppColors.orange[4],
+        'level': 4,
+        'badge_type': 'badge4',
+        'fighter_type': 'fighter_octopus',
         'avatarUrl':
             'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
       },
     ];
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (var i = 0; i < supporters.length; i++) ...[
-            RelationshipItem(
+    return Row(
+      children: [
+        for (var i = 0; i < supporters.length; i++) ...[
+          Flexible(
+            child: RelationshipItem(
               name: supporters[i]['name'] as String,
               score: supporters[i]['score'] as String,
               color: supporters[i]['color'] as Color,
               avatarUrl: supporters[i]['avatarUrl'] as String,
+              level: supporters[i]['level'] as int,
+              badgeType: supporters[i]['badge_type'] as String,
+              fighterType: supporters[i]['fighter_type'] as String,
             ),
-            if (i != supporters.length - 1)
-              const SizedBox(width: 8), // khoảng cách giữa các item
-          ],
+          ),
+          if (i != supporters.length - 1)
+            const SizedBox(width: 8), // khoảng cách giữa các item
         ],
-      ),
+      ],
     );
   }
 }
@@ -122,6 +122,9 @@ class RelationshipItem extends StatelessWidget {
   final String score;
   final Color color;
   final String avatarUrl;
+  final int level;
+  final String badgeType;
+  final String fighterType;
 
   const RelationshipItem({
     super.key,
@@ -129,39 +132,111 @@ class RelationshipItem extends StatelessWidget {
     required this.score,
     required this.color,
     required this.avatarUrl,
+    required this.level,
+    required this.badgeType,
+    required this.fighterType,
   });
+
+  String getBadgeImage(String badgeType) {
+    switch (badgeType) {
+      case 'badge1':
+        return AppIcons.badge1Png;
+      case 'badge2':
+        return AppIcons.badge2Png;
+      case 'badge3':
+        return AppIcons.badge3Png;
+      case 'badge4':
+        return AppIcons.badge4Png;
+      default:
+        return AppIcons.badge1Png;
+    }
+  }
+
+  String getFighterImage(String fighterType) {
+    switch (fighterType) {
+      case 'fighter_ship':
+        return AppIcons.fighterShipPng;
+      case 'fighter_turtle':
+        return AppIcons.fighterTurtlePng;
+      default:
+        return AppIcons.fighterOctopusPng;
+    }
+  }
+
+  getLinerGradientAndColor(String badgeType) {
+    switch (badgeType) {
+      case 'badge1':
+        return {
+          'linerGradient': [Color(0xFFFFE9B3), Color(0xFFF36C18)],
+          'color': Color(0xFFF3904D),
+        };
+      case 'badge2':
+        return {
+          'linerGradient': [Color(0xFFF0E3FF), Color(0xFF654DFC)],
+          'color': Color(0xFF654DFC),
+        };
+      case 'badge3':
+        return {
+          'linerGradient': [Color(0xFFFED794), Color(0xFFF70924)],
+          'color': Color(0xFFFA6C5A),
+        };
+      default:
+        return {
+          'linerGradient': [Color(0xFF36E68C), Color(0xFF097446)],
+          'color': Color(0xFF50A775),
+        };
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 12),
+      padding: const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 4),
       decoration: BoxDecoration(
-        color: Color(0xFFF3F4F6),
-        borderRadius: BorderRadius.circular(16),
+        gradient: LinearGradient(
+          colors: getLinerGradientAndColor(badgeType)['linerGradient'] as List<Color>,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(8),
+        image: DecorationImage(
+          image: AssetImage(AppIcons.relationshipBgPng),
+          fit: BoxFit.cover,
+        ),
       ),
       child: Column(
         children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: getLinerGradientAndColor(badgeType)['color'] as Color,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(getBadgeImage(badgeType), width: 18, height: 18),
+                Text(
+                  ' LV$level',
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.4,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Image.asset(getFighterImage(fighterType), width: 48, height: 48),
           AvatarWidget(
             image: NetworkImage(avatarUrl),
-            size: 48,
+            size: 34,
             showGlow: false,
             borderWidth: 0,
-          ),
-          const SizedBox(height: 4),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(AppIcons.diamondPng, width: 15, height: 15),
-              const SizedBox(width: 2),
-              Text(
-                score,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.gray[7],
-                ),
-              ),
-            ],
           ),
         ],
       ),

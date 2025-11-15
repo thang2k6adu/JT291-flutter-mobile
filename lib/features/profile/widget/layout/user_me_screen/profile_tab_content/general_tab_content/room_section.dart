@@ -16,8 +16,8 @@ class RoomSection extends StatelessWidget {
         Text(
           'Room',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
             color: AppColors.gray[8],
           ),
         ),
