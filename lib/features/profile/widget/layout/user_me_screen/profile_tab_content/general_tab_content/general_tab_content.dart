@@ -9,10 +9,7 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 
 class GeneralTabContent extends StatelessWidget {
   final UserModel? user;
-  const GeneralTabContent({
-    super.key,
-    this.user,
-  });
+  const GeneralTabContent({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +37,16 @@ class GeneralTabContent extends StatelessWidget {
           const SizedBox(height: 24),
           const RelationshipSection(),
           const SizedBox(height: 24),
-          const RoomSection(),
+          const RoomSection(
+            roomImage:
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
+          ),
           const SizedBox(height: 24),
-          const ClanSection(),
+          const ClanSection(
+            clanName: 'Thang',
+            clanImage:
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
+          ),
           const SizedBox(height: 24),
         ],
       ),

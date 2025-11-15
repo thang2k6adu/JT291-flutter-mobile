@@ -37,7 +37,8 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
     super.initState();
     // Initialize TabController
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(profileControllerProvider.notifier)
+      ref
+          .read(profileControllerProvider.notifier)
           .initializeTabController(this);
     });
   }
@@ -46,7 +47,7 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
   Widget build(BuildContext context) {
     final profileData = ref.watch(profileScreenProvider);
     final draggableState = ref.watch(draggableSheetControllerProvider);
-    
+
     // Sử dụng provider phù hợp tùy theo userId
     final userGeneralAsync = widget.userId == null
         ? profileData.userGeneralAsync
@@ -58,10 +59,10 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
         // User Header
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(
-            ProfileConstants.paddingHorizontal, 
-            0, 
-            ProfileConstants.paddingHorizontal, 
-            0
+            ProfileConstants.paddingHorizontal,
+            0,
+            ProfileConstants.paddingHorizontal,
+            0,
           ),
           sliver: SliverList(
             delegate: SliverChildListDelegate([
@@ -102,35 +103,38 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
       ProfileConstants.minChildSize,
       ProfileConstants.maxChildSize,
     );
-    
+
     // Check if extent is above threshold
     if (clampedExtent >= ProfileConstants.paddingThreshold) {
       final extraExtent = clampedExtent - ProfileConstants.paddingThreshold;
-      
+
       // Ensure paddingRange is not zero to avoid division by zero
       if (ProfileConstants.paddingRange <= 0) {
         return EdgeInsets.zero;
       }
-      
+
       // Calculate padding value with bounds checking
       final normalizedExtra = extraExtent / ProfileConstants.paddingRange;
       final paddingValue = (normalizedExtra * ProfileConstants.maxPadding)
           .clamp(0.0, ProfileConstants.maxPadding);
-      
+
       return EdgeInsets.only(top: paddingValue);
     }
-    
+
     return EdgeInsets.zero;
   }
 
   /// Build tab content as sliver based on current tab
-  Widget _buildTabContentSliver(TabController tabController, AsyncValue userAsync) {
+  Widget _buildTabContentSliver(
+    TabController tabController,
+    AsyncValue userAsync,
+  ) {
     // Rebuild UI khi 1 controller thay đổi giá trị
     return AnimatedBuilder(
       animation: tabController,
       builder: (context, child) {
         final currentIndex = tabController.index;
-        
+
         return userAsync.when(
           data: (user) {
             if (currentIndex == 0) {
@@ -158,9 +162,16 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
                     const SizedBox(height: 24),
                     const RelationshipSection(),
                     const SizedBox(height: 24),
-                    const RoomSection(),
+                    const RoomSection(
+                      roomImage:
+                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
+                    ),
                     const SizedBox(height: 24),
-                    const ClanSection(),
+                    const ClanSection(
+                      clanName: 'Thang',
+                      clanImage:
+                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
+                    ),
                     const SizedBox(height: 24),
                   ]),
                 ),
@@ -183,9 +194,8 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
           loading: () => const SliverToBoxAdapter(
             child: Center(child: CircularProgressIndicator()),
           ),
-          error: (error, stack) => SliverToBoxAdapter(
-            child: Center(child: Text('Error: $error')),
-          ),
+          error: (error, stack) =>
+              SliverToBoxAdapter(child: Center(child: Text('Error: $error'))),
         );
       },
     );

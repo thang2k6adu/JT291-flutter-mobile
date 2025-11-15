@@ -2,9 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/ui/section_card.dart';
 
 class ClanSection extends StatelessWidget {
-  const ClanSection({super.key});
+  final String clanName;
+  final String clanImage;
+  final String clanDescription;
+  final int clanMembersNumber;
+
+  const ClanSection({
+    super.key,
+    required this.clanName,
+    required this.clanImage,
+    this.clanDescription =
+        "Clans are a way to connect with like minded individua, build relationships, and create a sense of belonging. A clan typically includes a name, a description of its purpose, and a list of members united by a common bond.",
+    this.clanMembersNumber = 42,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,131 +35,50 @@ class ClanSection extends StatelessWidget {
             color: AppColors.gray[8],
           ),
         ),
-        const SizedBox(height: 12),
-        const ClanList(),
-      ],
-    );
-  }
-}
-
-class ClanList extends StatelessWidget {
-  const ClanList({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final supporters = [
-      {
-        'name': 'User 1',
-        'score': '1200',
-        'color': AppColors.blue[4],
-        'avatarUrl':
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
-      },
-      {
-        'name': 'User 2',
-        'score': '1000',
-        'color': AppColors.pink[4],
-        'avatarUrl':
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
-      },
-      {
-        'name': 'User 3',
-        'score': '900',
-        'color': AppColors.green[4],
-        'avatarUrl':
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
-      },
-      {
-        'name': 'User 4',
-        'score': '840',
-        'color': AppColors.orange[4],
-        'avatarUrl':
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
-      },
-      {
-        'name': 'User 4',
-        'score': '840',
-        'color': AppColors.orange[4],
-        'avatarUrl':
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
-      },
-      {
-        'name': 'User 4',
-        'score': '840',
-        'color': AppColors.orange[4],
-        'avatarUrl':
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
-      },
-    ];
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (var i = 0; i < supporters.length; i++) ...[
-            ClanItem(
-              name: supporters[i]['name'] as String,
-              score: supporters[i]['score'] as String,
-              color: supporters[i]['color'] as Color,
-              avatarUrl: supporters[i]['avatarUrl'] as String,
-            ),
-            if (i != supporters.length - 1)
-              const SizedBox(width: 8), // khoảng cách giữa các item
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class ClanItem extends StatelessWidget {
-  final String name;
-  final String score;
-  final Color color;
-  final String avatarUrl;
-
-  const ClanItem({
-    super.key,
-    required this.name,
-    required this.score,
-    required this.color,
-    required this.avatarUrl,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 12),
-      decoration: BoxDecoration(
-        color: Color(0xFFF3F4F6),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          AvatarWidget(
-            image: NetworkImage(avatarUrl),
-            size: 48,
-            showGlow: false,
-            borderWidth: 0,
-          ),
-          const SizedBox(height: 4),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Image.asset(AppIcons.diamondPng, width: 15, height: 15),
-              const SizedBox(width: 2),
-              Text(
-                score,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.gray[7],
-                ),
-              ),
+        const SizedBox(height: 8),
+        SectionCard(
+          avatarUrl: clanImage,
+          title: clanName,
+          backgroundImage: AppImages.clanBg,
+          gradient: LinearGradient(
+            begin: Alignment(-0.1, -1), // gần với 84.5 độ
+            end: Alignment(1, 0.1),
+            colors: [
+              Color(0xFFFFB044), // 0.62%
+              Color(0xFFEFA9DF), // 35.25%
+              Color(0xFFD7AAFF), // 67.44%
+              Color(0xFFA19BFE), // 98.18%
             ],
+            stops: [0.0062, 0.3525, 0.6744, 0.9818],
           ),
-        ],
-      ),
+          description: Text(
+            clanDescription,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: AppColors.white,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          stats: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: Text(
+              '$clanMembersNumber/50',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                height: 1,
+                fontWeight: FontWeight.w600,
+                color: AppColors.gray[8],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
