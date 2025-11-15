@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
+import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/components/ui/vertical_section.dart';
 import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/diamond_screen/diamon_package_grid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/providers/wallet/recharge_packages_provider.dart';
+import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 
 class VexWalletScreen extends ConsumerWidget {
   const VexWalletScreen({super.key});
@@ -34,7 +36,10 @@ class VexWalletScreen extends ConsumerWidget {
               ),
             ),
             rechargePackagesAsync.when(
-              data: (packages) => DiamondPackagesGrid(packages: packages, currencyIcon: AppIcons.vexPng),
+              data: (packages) => DiamondPackagesGrid(
+                packages: packages,
+                currencyIcon: AppIcons.vexPng,
+              ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stackTrace) =>
                   Center(child: Text(error.toString())),
@@ -107,6 +112,9 @@ class VexWalletScreen extends ConsumerWidget {
                     _buildActionButton(
                       icon: AppIcons.moneyReceivePng,
                       label: 'Deposit',
+                      onTap: () {
+                        pushScreen(context, RouteConstants.deposit);
+                      },
                     ),
                     _buildActionButton(
                       icon: AppIcons.moneySendPng,
@@ -126,35 +134,42 @@ class VexWalletScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildActionButton({required String icon, required String label}) {
-    return Column(
-      children: [
-        Container(
-          width: 46,
-          height: 46,
-          decoration: BoxDecoration(
-            color: Color(0xFF3A3A4A),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Image.asset(
-              icon,
-              width: 28,
-              height: 28,
-              fit: BoxFit.contain,
+  Widget _buildActionButton({
+    required String icon,
+    required String label,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            width: 46,
+            height: 46,
+            decoration: BoxDecoration(
+              color: Color(0xFF3A3A4A),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Image.asset(
+                icon,
+                width: 28,
+                height: 28,
+                fit: BoxFit.contain,
+              ),
             ),
           ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
+          SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

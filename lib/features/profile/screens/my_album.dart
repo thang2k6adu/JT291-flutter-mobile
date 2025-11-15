@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jt291_flutter_mobile/components/layout/CustomAppBar.dart';
+import 'package:jt291_flutter_mobile/components/ui/save_button.dart';
 import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 
 class MyAlbumScreen extends ConsumerStatefulWidget {
@@ -159,29 +160,7 @@ class _MyAlbumScreenState extends ConsumerState<MyAlbumScreen> {
     
     return Scaffold(
       appBar: CustomAppBar(title: 'My Album'),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 24),
-        child: SizedBox(
-          width: double.infinity,
-          height: 56,
-          child: ElevatedButton(
-            onPressed: _isSaving ? null : _save,
-            child: _isSaving
-                ? const SizedBox(
-                    height: 22,
-                    width: 22,
-                    child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
-                  )
-                : const Text('Save'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.pinkAccent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ),
-      ),
+      bottomNavigationBar: SaveButton(isSaving: _isSaving, onPressed: _save),
       body: SafeArea(
         minimum: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
         child: SingleChildScrollView(
