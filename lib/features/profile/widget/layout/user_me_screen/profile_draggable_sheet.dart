@@ -30,7 +30,6 @@ class ProfileDraggableSheet extends ConsumerWidget {
         return ProfileContent(
           scrollController: scrollController,
           userId: userId,
-          sheetController: draggableState.draggableController!,
         );
       },
     );

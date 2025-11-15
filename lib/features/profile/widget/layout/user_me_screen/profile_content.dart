@@ -5,22 +5,25 @@ import 'package:jt291_flutter_mobile/features/profile/controllers/draggable_shee
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header_loading.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/user_header/user_header_error.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/profile_tab_content.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/sliver_tab_bar.dart';
 import 'package:jt291_flutter_mobile/features/profile/constants/profile_constants.dart';
 import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/general_tab_content/interests_section.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/general_tab_content/gifts_section.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/general_tab_content/supporters_section.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/general_tab_content/relationship_section.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/general_tab_content/clan_section.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_tab_content/general_tab_content/room_section.dart';
 
 /// Main content component cho Profile Screen
 class ProfileContent extends ConsumerStatefulWidget {
   final ScrollController scrollController;
   final String? userId;
-   final DraggableScrollableController sheetController;
 
   const ProfileContent({
     super.key,
     required this.scrollController,
     this.userId,
-    required this.sheetController,
   });
 
   @override
@@ -78,16 +81,16 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
             padding: _getTabBarPadding(draggableState.currentExtent),
           ),
 
-        // Tab Content
-        SliverFillRemaining(
-          hasScrollBody: true,
-          child: profileData.profileState.tabController != null
-              ? ProfileTabContent(
-                  tabController: profileData.profileState.tabController!,
-                  scrollController: widget.scrollController,
-                )
-              : const Center(child: CircularProgressIndicator()),
-        ),
+        // Tab Content - Render directly as sliver items
+        if (profileData.profileState.tabController != null)
+          _buildTabContentSliver(
+            profileData.profileState.tabController!,
+            ref.watch(userGeneralProvider),
+          )
+        else
+          const SliverToBoxAdapter(
+            child: Center(child: CircularProgressIndicator()),
+          ),
       ],
     );
   }
@@ -118,5 +121,72 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
     }
     
     return EdgeInsets.zero;
+  }
+
+  /// Build tab content as sliver based on current tab
+  Widget _buildTabContentSliver(TabController tabController, AsyncValue userAsync) {
+    return AnimatedBuilder(
+      animation: tabController,
+      builder: (context, child) {
+        final currentIndex = tabController.index;
+        
+        return userAsync.when(
+          data: (user) {
+            if (currentIndex == 0) {
+              // General Tab
+              return SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    const SizedBox(height: 24),
+                    InterestsSection(
+                      interests: [
+                        'Art',
+                        'Yoga',
+                        'Pet',
+                        'Music',
+                        'Gaming',
+                        'Dancing',
+                        'Reading',
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    const GiftsSection(),
+                    const SizedBox(height: 24),
+                    const TopSupporterSection(),
+                    const SizedBox(height: 24),
+                    const RelationshipSection(),
+                    const SizedBox(height: 24),
+                    const RoomSection(),
+                    const SizedBox(height: 24),
+                    const ClanSection(),
+                    const SizedBox(height: 24),
+                  ]),
+                ),
+              );
+            } else {
+              // Ports Tab
+              return const SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                sliver: SliverToBoxAdapter(
+                  child: Center(
+                    child: Text(
+                      'Ports Tab Content',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+              );
+            }
+          },
+          loading: () => const SliverToBoxAdapter(
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (error, stack) => SliverToBoxAdapter(
+            child: Center(child: Text('Error: $error')),
+          ),
+        );
+      },
+    );
   }
 }

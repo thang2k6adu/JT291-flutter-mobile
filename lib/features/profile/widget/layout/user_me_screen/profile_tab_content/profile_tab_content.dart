@@ -6,12 +6,10 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 
 class ProfileTabContent extends ConsumerWidget {
   final TabController tabController;
-  final ScrollController scrollController;
 
   const ProfileTabContent({
     super.key,
     required this.tabController,
-    required this.scrollController,
   });
 
   @override
@@ -22,7 +20,7 @@ class ProfileTabContent extends ConsumerWidget {
       data: (user) => TabBarView(
         controller: tabController,
         children: [
-          GeneralTabContent(user: user, scrollController: scrollController),
+          GeneralTabContent(user: user),
           const PortsTabContent(),
         ],
       ),
