@@ -3,8 +3,8 @@ import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
-class TopSupporterSection extends StatelessWidget {
-  const TopSupporterSection({super.key});
+class RoomSection extends StatelessWidget {
+  const RoomSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class TopSupporterSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Top Supporter',
+          'Room',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -22,14 +22,14 @@ class TopSupporterSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        const SupportersList(),
+        const RoomList(),
       ],
     );
   }
 }
 
-class SupportersList extends StatelessWidget {
-  const SupportersList({super.key});
+class RoomList extends StatelessWidget {
+  const RoomList({super.key});
 
   @override
   Widget build(BuildContext context) {

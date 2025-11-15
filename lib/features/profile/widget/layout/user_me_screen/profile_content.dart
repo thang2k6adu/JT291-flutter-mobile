@@ -14,11 +14,13 @@ import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.d
 class ProfileContent extends ConsumerStatefulWidget {
   final ScrollController scrollController;
   final String? userId;
+   final DraggableScrollableController sheetController;
 
   const ProfileContent({
     super.key,
     required this.scrollController,
     this.userId,
+    required this.sheetController,
   });
 
   @override
@@ -82,6 +84,7 @@ class _ProfileContentState extends ConsumerState<ProfileContent>
           child: profileData.profileState.tabController != null
               ? ProfileTabContent(
                   tabController: profileData.profileState.tabController!,
+                  scrollController: widget.scrollController,
                 )
               : const Center(child: CircularProgressIndicator()),
         ),

@@ -3,8 +3,8 @@ import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
-class TopSupporterSection extends StatelessWidget {
-  const TopSupporterSection({super.key});
+class RelationshipSection extends StatelessWidget {
+  const RelationshipSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,13 +13,32 @@ class TopSupporterSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          'Top Supporter',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: AppColors.gray[8],
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Relationship',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.gray[8],
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                // TODO: Implement follow action
+              },
+              child: Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.rotationY(3.14159), // 180 độ theo trục Y
+                child: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: AppColors.gray[5],
+                  size: 16,
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 12),
         const SupportersList(),
@@ -83,7 +102,7 @@ class SupportersList extends StatelessWidget {
       child: Row(
         children: [
           for (var i = 0; i < supporters.length; i++) ...[
-            SupporterItem(
+            RelationshipItem(
               name: supporters[i]['name'] as String,
               score: supporters[i]['score'] as String,
               color: supporters[i]['color'] as Color,
@@ -98,13 +117,13 @@ class SupportersList extends StatelessWidget {
   }
 }
 
-class SupporterItem extends StatelessWidget {
+class RelationshipItem extends StatelessWidget {
   final String name;
   final String score;
   final Color color;
   final String avatarUrl;
 
-  const SupporterItem({
+  const RelationshipItem({
     super.key,
     required this.name,
     required this.score,

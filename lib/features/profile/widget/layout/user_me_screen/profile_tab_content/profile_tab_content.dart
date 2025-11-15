@@ -6,21 +6,23 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 
 class ProfileTabContent extends ConsumerWidget {
   final TabController tabController;
-  
+  final ScrollController scrollController;
+
   const ProfileTabContent({
     super.key,
     required this.tabController,
+    required this.scrollController,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userGeneralAsync = ref.watch(userGeneralProvider);
-    
+
     return userGeneralAsync.when(
       data: (user) => TabBarView(
         controller: tabController,
         children: [
-          GeneralTabContent(user: user),
+          GeneralTabContent(user: user, scrollController: scrollController),
           const PortsTabContent(),
         ],
       ),

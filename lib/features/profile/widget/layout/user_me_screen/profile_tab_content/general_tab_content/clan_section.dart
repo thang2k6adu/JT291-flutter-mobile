@@ -3,8 +3,8 @@ import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
-class TopSupporterSection extends StatelessWidget {
-  const TopSupporterSection({super.key});
+class ClanSection extends StatelessWidget {
+  const ClanSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class TopSupporterSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Top Supporter',
+          'Clan',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -22,14 +22,14 @@ class TopSupporterSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        const SupportersList(),
+        const ClanList(),
       ],
     );
   }
 }
 
-class SupportersList extends StatelessWidget {
-  const SupportersList({super.key});
+class ClanList extends StatelessWidget {
+  const ClanList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class SupportersList extends StatelessWidget {
       child: Row(
         children: [
           for (var i = 0; i < supporters.length; i++) ...[
-            SupporterItem(
+            ClanItem(
               name: supporters[i]['name'] as String,
               score: supporters[i]['score'] as String,
               color: supporters[i]['color'] as Color,
@@ -98,13 +98,13 @@ class SupportersList extends StatelessWidget {
   }
 }
 
-class SupporterItem extends StatelessWidget {
+class ClanItem extends StatelessWidget {
   final String name;
   final String score;
   final Color color;
   final String avatarUrl;
 
-  const SupporterItem({
+  const ClanItem({
     super.key,
     required this.name,
     required this.score,
