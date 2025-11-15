@@ -34,7 +34,7 @@ class AvatarWidget extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white, width: 2),
+        border: showGlow ? Border.all(color: Colors.white, width: 2) : null,
         gradient: LinearGradient(
           colors: borderColors,
           begin: Alignment.topLeft,

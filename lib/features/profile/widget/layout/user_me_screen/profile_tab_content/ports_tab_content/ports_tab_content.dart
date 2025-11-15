@@ -5,9 +5,9 @@ class PortsTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: const Center(
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      child: Center(
         child: Text(
           'Ports Tab Content',
           style: TextStyle(fontSize: 18),

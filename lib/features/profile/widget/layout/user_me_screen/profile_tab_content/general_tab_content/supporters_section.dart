@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
+import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
 class TopSupporterSection extends StatelessWidget {
   const TopSupporterSection({super.key});
@@ -7,13 +9,15 @@ class TopSupporterSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           'Top Supporter',
           style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
             color: AppColors.gray[8],
           ),
         ),
@@ -30,24 +34,65 @@ class SupportersList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final supporters = [
-      {'name': 'User 1', 'score': '1200', 'color': AppColors.blue[4]},
-      {'name': 'User 2', 'score': '1000', 'color': AppColors.pink[4]},
-      {'name': 'User 3', 'score': '900', 'color': AppColors.green[4]},
-      {'name': 'User 4', 'score': '840', 'color': AppColors.orange[4]},
+      {
+        'name': 'User 1',
+        'score': '1200',
+        'color': AppColors.blue[4],
+        'avatarUrl':
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
+      },
+      {
+        'name': 'User 2',
+        'score': '1000',
+        'color': AppColors.pink[4],
+        'avatarUrl':
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
+      },
+      {
+        'name': 'User 3',
+        'score': '900',
+        'color': AppColors.green[4],
+        'avatarUrl':
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
+      },
+      {
+        'name': 'User 4',
+        'score': '840',
+        'color': AppColors.orange[4],
+        'avatarUrl':
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
+      },
+      {
+        'name': 'User 4',
+        'score': '840',
+        'color': AppColors.orange[4],
+        'avatarUrl':
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
+      },
+      {
+        'name': 'User 4',
+        'score': '840',
+        'color': AppColors.orange[4],
+        'avatarUrl':
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8JqnYLE6v_KgmejXbu0xk89bpHimSq7WyUQ&s',
+      },
     ];
 
-    return SizedBox(
-      height: 80,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: supporters.length,
-        itemBuilder: (context, index) {
-          return SupporterItem(
-            name: supporters[index]['name'] as String,
-            score: supporters[index]['score'] as String,
-            color: supporters[index]['color'] as Color,
-          );
-        },
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (var i = 0; i < supporters.length; i++) ...[
+            SupporterItem(
+              name: supporters[i]['name'] as String,
+              score: supporters[i]['score'] as String,
+              color: supporters[i]['color'] as Color,
+              avatarUrl: supporters[i]['avatarUrl'] as String,
+            ),
+            if (i != supporters.length - 1)
+              const SizedBox(width: 8), // khoảng cách giữa các item
+          ],
+        ],
       ),
     );
   }
@@ -57,51 +102,43 @@ class SupporterItem extends StatelessWidget {
   final String name;
   final String score;
   final Color color;
+  final String avatarUrl;
 
   const SupporterItem({
     super.key,
     required this.name,
     required this.score,
     required this.color,
+    required this.avatarUrl,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 16),
+    return Container(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 8),
+      decoration: BoxDecoration(
+        color: Color(0xFFF3F4F6),
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Column(
         children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [color, color.withOpacity(0.7)],
-              ),
-            ),
-            child: Center(
-              child: Text(
-                name.split(' ').last,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ),
+          AvatarWidget(
+            image: NetworkImage(avatarUrl),
+            size: 48,
+            showGlow: false,
+            borderWidth: 0,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.monetization_on, color: AppColors.amber[6], size: 12),
+              Image.asset(AppIcons.diamondPng, width: 15, height: 15),
               const SizedBox(width: 2),
               Text(
                 score,
                 style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
                   color: AppColors.gray[7],
                 ),
               ),

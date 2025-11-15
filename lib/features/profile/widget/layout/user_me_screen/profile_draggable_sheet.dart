@@ -9,15 +9,14 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 class ProfileDraggableSheet extends ConsumerWidget {
   final String? userId;
 
-  const ProfileDraggableSheet({
-    super.key,
-    this.userId,
-  });
+  const ProfileDraggableSheet({super.key, this.userId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final draggableState = ref.watch(draggableSheetControllerProvider);
-    final draggableController = ref.read(draggableSheetControllerProvider.notifier);
+    final draggableController = ref.read(
+      draggableSheetControllerProvider.notifier,
+    );
 
     return ReusableDraggableSheet(
       controller: draggableState.draggableController,

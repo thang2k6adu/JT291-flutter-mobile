@@ -13,11 +13,11 @@ class DraggableSheetController extends AutoDisposeNotifier<ProfileState> {
   ProfileState build() {
     _draggableController = DraggableScrollableController();
     _scrollController = ScrollController();
-    
+
     // Add listeners
     _draggableController.addListener(_onExtentChanged);
     _scrollController.addListener(_onScrollChanged);
-    
+
     return ProfileState(
       currentExtent: ProfileConstants.initialChildSize,
       draggableController: _draggableController,
@@ -33,15 +33,11 @@ class DraggableSheetController extends AutoDisposeNotifier<ProfileState> {
 
   void _onExtentChanged() {
     if (_isSyncing) return;
-    
+
     _isSyncing = true;
     final newExtent = _draggableController.size;
-    
-    state = state.copyWith(
-      currentExtent: newExtent,
-      isDragging: true,
-    );
-    
+
+    state = state.copyWith(currentExtent: newExtent, isDragging: true);
     // Sync scroll position
     _syncScrollFromDraggable();
     _isSyncing = false;
@@ -49,24 +45,17 @@ class DraggableSheetController extends AutoDisposeNotifier<ProfileState> {
 
   /// Update extent from external source
   void updateExtent(double extent) {
-    state = state.copyWith(
-      currentExtent: extent,
-      isDragging: true,
-    );
+    state = state.copyWith(currentExtent: extent, isDragging: true);
   }
-
 
   void _onScrollChanged() {
     if (_isSyncing) return;
-    
+
     _isSyncing = true;
     final newOffset = _scrollController.offset;
-    
-    state = state.copyWith(
-      scrollOffset: newOffset,
-      isDragging: false,
-    );
-    
+
+    state = state.copyWith(scrollOffset: newOffset, isDragging: false);
+
     // Sync draggable sheet
     _syncDraggableFromScroll();
     _isSyncing = false;
@@ -74,16 +63,17 @@ class DraggableSheetController extends AutoDisposeNotifier<ProfileState> {
 
   void _syncScrollFromDraggable() {
     if (!_scrollController.hasClients || _isSyncing) return;
-    
     final extent = _draggableController.size;
     final maxScrollExtent = _scrollController.position.maxScrollExtent;
-    
+
     if (maxScrollExtent > 0) {
-      final normalizedExtent = (extent - ProfileConstants.minChildSize) / 
+      final normalizedExtent =
+          (extent - ProfileConstants.minChildSize) /
           (ProfileConstants.maxChildSize - ProfileConstants.minChildSize);
       final targetOffset = normalizedExtent * maxScrollExtent;
-      
-      if ((_scrollController.offset - targetOffset).abs() > ProfileConstants.gestureThreshold) {
+
+      if ((_scrollController.offset - targetOffset).abs() >
+          ProfileConstants.gestureThreshold) {
         _scrollController.jumpTo(targetOffset);
       }
     }
@@ -91,30 +81,37 @@ class DraggableSheetController extends AutoDisposeNotifier<ProfileState> {
 
   void _syncDraggableFromScroll() {
     if (!_scrollController.hasClients || _isSyncing) return;
-    
+
     final scrollOffset = _scrollController.offset;
     final maxScrollExtent = _scrollController.position.maxScrollExtent;
-    
+
     if (maxScrollExtent > 0) {
       final normalizedOffset = scrollOffset / maxScrollExtent;
-      final targetExtent = ProfileConstants.minChildSize + 
-          normalizedOffset * (ProfileConstants.maxChildSize - ProfileConstants.minChildSize);
-      
-      if ((_draggableController.size - targetExtent).abs() > ProfileConstants.scrollThreshold) {
-        _draggableController.jumpTo(targetExtent.clamp(
-          ProfileConstants.minChildSize, 
-          ProfileConstants.maxChildSize
-        ));
+      final targetExtent =
+          ProfileConstants.minChildSize +
+          normalizedOffset *
+              (ProfileConstants.maxChildSize - ProfileConstants.minChildSize);
+
+      if ((_draggableController.size - targetExtent).abs() >
+          ProfileConstants.scrollThreshold) {
+        _draggableController.jumpTo(
+          targetExtent.clamp(
+            ProfileConstants.minChildSize,
+            ProfileConstants.maxChildSize,
+          ),
+        );
       }
     }
   }
 
   /// Jump to specific extent
   void jumpToExtent(double extent) {
-    _draggableController.jumpTo(extent.clamp(
-      ProfileConstants.minChildSize,
-      ProfileConstants.maxChildSize,
-    ));
+    _draggableController.jumpTo(
+      extent.clamp(
+        ProfileConstants.minChildSize,
+        ProfileConstants.maxChildSize,
+      ),
+    );
   }
 
   /// Animate to specific extent
@@ -140,6 +137,7 @@ class DraggableSheetController extends AutoDisposeNotifier<ProfileState> {
 }
 
 /// Provider cho DraggableSheetController
-final draggableSheetControllerProvider = 
+final draggableSheetControllerProvider =
     AutoDisposeNotifierProvider<DraggableSheetController, ProfileState>(
-        DraggableSheetController.new);
+      DraggableSheetController.new,
+    );

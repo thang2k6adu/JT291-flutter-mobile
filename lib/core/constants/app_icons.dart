@@ -2,7 +2,6 @@
 class AppIcons {
   static const String male = 'lib/assets/icons/male1.svg';
   static const String shield = 'lib/assets/icons/shield-security.svg';
-  static const String levelBadge1 = 'lib/assets/icons/level_badge_1.svg';
   static const String levelBadge2 = 'lib/assets/icons/level_badge_2.svg';
   static const String yellowDiamond = 'lib/assets/icons/yellow_diamond.png';
   static const String art = 'lib/assets/icons/art.svg';
@@ -17,7 +16,6 @@ class AppIcons {
   static const String flower = 'lib/assets/icons/flower.png';
   static const String malePng = 'lib/assets/icons/male.png';
   static const String femalePng = 'lib/assets/icons/female.png';
-  static const String badge1Png = 'lib/assets/icons/badge1.png';
   static const String scanner = 'lib/assets/icons/scanner.svg';
   static const String setting = 'lib/assets/icons/setting.svg';
   static const String eye = 'lib/assets/icons/eye.svg';
@@ -49,4 +47,15 @@ class AppIcons {
   static const String moneyReceivePng = 'lib/assets/icons/money_receive.png';
   static const String moneySendPng = 'lib/assets/icons/money_send.png';
   static const String cardSendPng = 'lib/assets/icons/card_send.png';
+
+   static const String fighterOctopusPng = 'lib/assets/icons/fighter_octopus.png';
+   static const String fighterShipPng = 'lib/assets/icons/fighter_ship.png';
+   static const String fighterTurtlePng = 'lib/assets/icons/fighter_turtle.png';
+
+   static const String badge1Png = 'lib/assets/icons/badge1.png';
+   static const String badge2Png = 'lib/assets/icons/badge2.png';
+   static const String badge3Png = 'lib/assets/icons/badge3.png';
+   static const String badge4Png = 'lib/assets/icons/badge4.png';
+
+   static const String relationshipBgPng = 'lib/assets/icons/relationship_bg.png';
 }
