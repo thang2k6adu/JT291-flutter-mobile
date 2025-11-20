@@ -10,7 +10,7 @@ class AnimatedCustomTopBar extends StatelessWidget {
   final String? nickname;
   final String? uid;
   final bool isMe;
-  
+
   const AnimatedCustomTopBar({
     super.key,
     required this.extent,
@@ -46,15 +46,15 @@ class AnimatedCustomTopBar extends StatelessWidget {
                 // Back button (always visible, no animation)
                 _buildBackButton(context),
                 const SizedBox(width: 12),
-                 // User Info (avatar, nickname, uid)
-                 if (shouldShowContent)
-                   AnimatedOpacity(
-                     opacity: shouldShowContent ? 1.0 : 0.0,
-                     duration: const Duration(milliseconds: 200),
-                     child: _buildUserInfo(),
-                   )
-                 else
-                   const Spacer(),
+                // User Info (avatar, nickname, uid)
+                if (shouldShowContent)
+                  AnimatedOpacity(
+                    opacity: shouldShowContent ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 200),
+                    child: _buildUserInfo(),
+                  )
+                else
+                  const Spacer(),
                 const Spacer(),
                 // Menu button (always visible)
                 isMe ? _buildMenuButton(context) : const SizedBox.shrink(),
@@ -112,6 +112,7 @@ class AnimatedCustomTopBar extends StatelessWidget {
           children: [
             Text(
               nickname ?? 'Unknown',
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -121,6 +122,7 @@ class AnimatedCustomTopBar extends StatelessWidget {
             const SizedBox(height: 0.5),
             Text(
               uid != null ? '@$uid' : '@unknown',
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w400,

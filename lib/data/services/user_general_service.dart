@@ -202,7 +202,6 @@ class UserGeneralService {
           'page': page,
           'limit': limit,
           'search': search,
-          'type': 'following',
         },
       );
 
@@ -212,7 +211,7 @@ class UserGeneralService {
         (data) => PaginatedData.fromJson(
           data as Map<String, dynamic>,
           (item) => UserModel.fromJson(item as Map<String, dynamic>),
-          dataKey: 'users',
+          dataKey: 'items',
           metaKey: 'meta',
         ),
       );
@@ -262,7 +261,6 @@ class UserGeneralService {
           'page': page,
           'limit': limit,
           'search': search,
-          'type': 'followers',
         },
       );
       print('getFollowerList response: $response');
@@ -381,7 +379,7 @@ class UserGeneralService {
       print('Remove follower $followerId');
       return true;
 
-      // final response = await _apiService.delete('/v1/users/$userId/followers/$followerId');
+      // final response = await _apiService.delete('/connections/followers/$followerId');
       // return response['error'] == false;
     } catch (e) {
       print("removeFollower failed: $e");
@@ -397,7 +395,7 @@ class UserGeneralService {
       // return true;
 
       final response = await _apiService.delete(
-        '/users/$mockUserId/friends/$friendId',
+        '/connections/friends/$friendId',
       );
       return response['error'] == false;
     } catch (e) {
