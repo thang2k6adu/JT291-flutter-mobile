@@ -137,16 +137,18 @@ class UserGeneralService {
         );
       }
 
+      print('uploadAttachments formData: $formData');
+
       final response = await _apiService.post(
-        '/v1/users/attachments/upload',
+        '/upload/images',
         data: formData,
         headers: {'Content-Type': 'multipart/form-data'},
       );
+      
+      print('uploadAttachments response: $response');
 
-      final List<dynamic> urls = response['data'];
-      return urls
-          .map((e) => (e as Map<String, dynamic>)['source_url'] as String)
-          .toList();
+      final List<dynamic> urls = response['data']['urls'];
+      return urls.map((e) => e as String).toList();
     } catch (e) {
       print("uploadAttachments failed: $e");
       return [];
@@ -346,7 +348,7 @@ class UserGeneralService {
       // return true;
 
       final response = await _apiService.post(
-        '/users/$mockUserId/following/$targetId',
+        '/connections/following/$targetId',
       );
       return response['error'] == false;
     } catch (e) {
@@ -409,7 +411,7 @@ class UserGeneralService {
       // await Future.delayed(const Duration(milliseconds: 300));
       // return userStatsMock;
 
-      final response = await _apiService.get('/profile/$mockUserId/stats');
+      final response = await _apiService.get('/users/$mockUserId/stats');
 
       print('getUserStats response: $response');
       return UserStatsModel.fromJson(response['data']);
@@ -637,7 +639,7 @@ class UserGeneralService {
         (data) => PaginatedData.fromJson(
           data as Map<String, dynamic>,
           (item) => UserModel.fromJson(item as Map<String, dynamic>),
-          dataKey: 'users',
+          dataKey: 'items',
           metaKey: 'meta',
         ),
       );

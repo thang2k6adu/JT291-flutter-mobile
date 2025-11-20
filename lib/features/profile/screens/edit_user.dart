@@ -190,17 +190,23 @@ Future<void> _pickAndUploadAvatar(BuildContext context, WidgetRef ref) async {
   final helper = ImageHelper();
   try {
     final files = await helper.pickImages(multiple: false, limit: 1);
-    if (files.isEmpty) return;
+    print('Picked files: ${files.map((f) => f.path).join(', ')}');
 
-    // Optional: crop square for avatar
-    final cropped = await helper.cropImages(
-      file: files.first,
-      cropStyle: CropStyle.circle,
-    );
-    final useFile = cropped ?? files.first;
+    if (files.isEmpty) return;
+    print('Files are not empty, proceeding with cropping and uploading.');
+
+    // // Optional: crop square for avatar
+    // final cropped = await helper.cropImages(
+    //   file: files.first,
+    //   cropStyle: CropStyle.circle,
+    // );
+    // print('Cropped file: ${cropped?.path}');
+    // final useFile = cropped ?? files.first;
+
+    print('Uploading avatar from file: ${files.first.path}');
 
     final urls = await ref.read(userGeneralProvider.notifier).uploadAttachments(
-      [File(useFile.path)],
+      [File(files.first.path)],
     );
     if (urls.isEmpty) {
       _snack(context, 'Upload failed');
