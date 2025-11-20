@@ -269,7 +269,7 @@ class UserGeneralService {
         (data) => PaginatedData.fromJson(
           data as Map<String, dynamic>,
           (item) => UserModel.fromJson(item as Map<String, dynamic>),
-          dataKey: 'users',
+          dataKey: 'items',
           metaKey: 'meta',
         ),
       );
@@ -330,7 +330,7 @@ class UserGeneralService {
         (data) => PaginatedData.fromJson(
           data as Map<String, dynamic>,
           (item) => UserModel.fromJson(item as Map<String, dynamic>),
-          dataKey: 'users',
+          dataKey: 'items',
           metaKey: 'meta',
         ),
       );
