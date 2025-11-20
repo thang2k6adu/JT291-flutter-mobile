@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TokenModel {
 
-@JsonKey(name: 'access_token') String get accessToken;@JsonKey(name: 'refresh_token') String? get refreshToken;@JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expired_at') DateTime? get expiredAt;
+@JsonKey(name: 'access_token') String get accessToken;@JsonKey(name: 'refresh_token') String? get refreshToken;@JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expires_at') DateTime? get expiredAt;
 /// Create a copy of TokenModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $TokenModelCopyWith<$Res>  {
   factory $TokenModelCopyWith(TokenModel value, $Res Function(TokenModel) _then) = _$TokenModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'refresh_token') String? refreshToken,@JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expired_at') DateTime? expiredAt
+@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'refresh_token') String? refreshToken,@JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expires_at') DateTime? expiredAt
 });
 
 
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'refresh_token')  String? refreshToken, @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expired_at')  DateTime? expiredAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'refresh_token')  String? refreshToken, @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expires_at')  DateTime? expiredAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TokenModel() when $default != null:
 return $default(_that.accessToken,_that.refreshToken,_that.expiredAt);case _:
@@ -176,7 +176,7 @@ return $default(_that.accessToken,_that.refreshToken,_that.expiredAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'refresh_token')  String? refreshToken, @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expired_at')  DateTime? expiredAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'refresh_token')  String? refreshToken, @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expires_at')  DateTime? expiredAt)  $default,) {final _that = this;
 switch (_that) {
 case _TokenModel():
 return $default(_that.accessToken,_that.refreshToken,_that.expiredAt);case _:
@@ -196,7 +196,7 @@ return $default(_that.accessToken,_that.refreshToken,_that.expiredAt);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'refresh_token')  String? refreshToken, @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expired_at')  DateTime? expiredAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'refresh_token')  String? refreshToken, @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expires_at')  DateTime? expiredAt)?  $default,) {final _that = this;
 switch (_that) {
 case _TokenModel() when $default != null:
 return $default(_that.accessToken,_that.refreshToken,_that.expiredAt);case _:
@@ -211,12 +211,12 @@ return $default(_that.accessToken,_that.refreshToken,_that.expiredAt);case _:
 @JsonSerializable()
 
 class _TokenModel implements TokenModel {
-  const _TokenModel({@JsonKey(name: 'access_token') required this.accessToken, @JsonKey(name: 'refresh_token') this.refreshToken, @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expired_at') this.expiredAt});
+  const _TokenModel({@JsonKey(name: 'access_token') required this.accessToken, @JsonKey(name: 'refresh_token') this.refreshToken, @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expires_at') this.expiredAt});
   factory _TokenModel.fromJson(Map<String, dynamic> json) => _$TokenModelFromJson(json);
 
 @override@JsonKey(name: 'access_token') final  String accessToken;
 @override@JsonKey(name: 'refresh_token') final  String? refreshToken;
-@override@JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expired_at') final  DateTime? expiredAt;
+@override@JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expires_at') final  DateTime? expiredAt;
 
 /// Create a copy of TokenModel
 /// with the given fields replaced by the non-null parameter values.
@@ -251,7 +251,7 @@ abstract mixin class _$TokenModelCopyWith<$Res> implements $TokenModelCopyWith<$
   factory _$TokenModelCopyWith(_TokenModel value, $Res Function(_TokenModel) _then) = __$TokenModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'refresh_token') String? refreshToken,@JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expired_at') DateTime? expiredAt
+@JsonKey(name: 'access_token') String accessToken,@JsonKey(name: 'refresh_token') String? refreshToken,@JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)@JsonKey(name: 'expires_at') DateTime? expiredAt
 });
 
 

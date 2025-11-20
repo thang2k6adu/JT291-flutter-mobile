@@ -28,7 +28,7 @@ PaginationModel buildPagination(Map<String, dynamic>? json) {
 
 class UserGeneralService {
   final ApiService _apiService = ApiService();
-  final mockUserId = 'fa541f1d-a162-45cc-85a7-f16838408142';
+  final mockUserId = 'bb335450-d70f-4f7c-913d-2145006eb973';
 
   UserGeneralService();
 
@@ -36,7 +36,7 @@ class UserGeneralService {
   FutureOr<UserModel?> getCurrentUser() async {
     try {
       // final response = await _apiService.get('/v1/users/me');
-      final response = await _apiService.get('/users/profile/$mockUserId');
+      final response = await _apiService.get('/auth/me');
       return UserModel.fromJson(response['data']);
     } catch (e) {
       print("getCurrentUser failed: $e");
@@ -49,7 +49,7 @@ class UserGeneralService {
   FutureOr<bool> updateCurrentUser(Map<String, dynamic> data) async {
     try {
       print('updateCurrentUser: $data');
-      final response = await _apiService.put('/users/$mockUserId', data: data);
+      final response = await _apiService.put('/auth/me', data: data);
       return response['success'] as bool;
     } catch (e) {
       print("updateCurrentUser failed: $e");
@@ -98,7 +98,7 @@ class UserGeneralService {
       // );
 
       // Khi có API thật:
-      final response = await _apiService.get('/users/profile/$userId');
+      final response = await _apiService.get('/users/$userId');
 
       print('getUserProfile response: $response');
       return UserModel.fromJson(response['data']);
@@ -409,7 +409,7 @@ class UserGeneralService {
       // await Future.delayed(const Duration(milliseconds: 300));
       // return userStatsMock;
 
-      final response = await _apiService.get('/users/$mockUserId/stats');
+      final response = await _apiService.get('/profile/$mockUserId/stats');
 
       print('getUserStats response: $response');
       return UserStatsModel.fromJson(response['data']);
@@ -627,7 +627,7 @@ class UserGeneralService {
       // Khi có API thật, parse và return ApiResponse:
       // TODO: Data bên be nên trả về meta data (pagination)
       final response = await _apiService.get(
-        '/users/search/$mockUserId',
+        '/users',
         queryParameters: {'search': query, 'page': page, 'limit': limit},
       );
 

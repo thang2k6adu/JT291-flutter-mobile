@@ -9,7 +9,7 @@ abstract class TokenModel with _$TokenModel {
     @JsonKey(name: 'access_token') required String accessToken,
     @JsonKey(name: 'refresh_token') String? refreshToken,
     @JsonKey(fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
-    @JsonKey(name: 'expired_at') DateTime? expiredAt,
+    @JsonKey(name: 'expires_at') DateTime? expiredAt,
   }) = _TokenModel;
 
   factory TokenModel.fromJson(Map<String, Object?> json) =>

@@ -46,7 +46,7 @@ class AuthService {
 
   Future<UserModel?> getCurrentUser() async {
     try {
-      final response = await _apiService.get('/v1/users/me');
+      final response = await _apiService.get('/auth/me');
       return UserModel.fromJson(response['data']);
     } catch (e) {
       print("getCurrentUser fail: $e");
@@ -71,8 +71,10 @@ class AuthService {
   }
 
   // /auth/login
-  Future<UserModel?> loginWithEmailAndPassword(String email, String password) async {
+  Future<TokenModel?> loginWithEmailAndPassword(String email, String password) async {
     try {
+
+      print("loginWithEmailAndPassword email: $email");
       final response = await _apiService.post(
         '/auth/login',
         data: {'ref_id': email, 'password': password},
@@ -82,11 +84,11 @@ class AuthService {
 
       if (response['error'] == false) {
         final authToken = TokenModel.fromJson(response['data']);
-        final user = UserModel.fromJson(response['data']['user']);
-        print("loginWithEmailAndPassword authToken: ${authToken}");
+        print("loginWithEmailAndPassword authToken parsed: ${authToken}");
         await _saveTokens(authToken);
+        print("loginWithEmailAndPassword authToken: ${authToken}");
         print("loginWithEmailAndPassword saveTokens success");
-        return user;
+        return authToken;
 
       } else {
         throw Exception(response['message']);

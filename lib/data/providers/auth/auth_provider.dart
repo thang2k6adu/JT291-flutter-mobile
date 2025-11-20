@@ -17,7 +17,14 @@ class UserAuthNotifier extends AsyncNotifier<UserModel?> {
 
     // fetch firebase user
     final firebaseUser = FirebaseAuth.instance.currentUser;
+    print('UserAuthNotifier build firebaseUser: $firebaseUser');
     if (firebaseUser == null) {
+      final me = await _authService.getCurrentUser();
+      print('UserAuthNotifier build no firebase user, me=$me');
+      if (me != null) {
+        return me;
+      }
+
       await Future.delayed(Duration(seconds: 2));
       return null;
     }
@@ -48,7 +55,9 @@ class UserAuthNotifier extends AsyncNotifier<UserModel?> {
   Future<UserModel?> loginWithEmailAndPassword(String username, String password) async {
     state = const AsyncLoading();
     try {
-      final user = await _authService.loginWithEmailAndPassword(username, password);
+      await _authService.loginWithEmailAndPassword(username, password);
+      final user = await _authService.getCurrentUser();
+      print('loginWithEmailAndPassword user: $user');
       if (user != null) {
         state = AsyncData(user);
         return user;

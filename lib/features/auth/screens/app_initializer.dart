@@ -29,6 +29,7 @@ class AppInitializerState extends ConsumerState<AppInitializer> {
         return SplashScreen();
       },
       data: (user) {
+        print('AppInitializer user: $user');
         if (user != null) {
           return widget.child;
           // return StreamReadyScreen(child: widget.child);
@@ -40,6 +41,7 @@ class AppInitializerState extends ConsumerState<AppInitializer> {
         }
       },
       error: (e, st) {
+        print('AppInitializer error: $e');
         WidgetsBinding.instance.addPostFrameCallback((_) {
           router.go(RouteConstants.login);
         });
