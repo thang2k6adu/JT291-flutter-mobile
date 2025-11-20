@@ -213,6 +213,8 @@ Future<void> _pickAndUploadAvatar(BuildContext context, WidgetRef ref) async {
       return;
     }
 
+    print('Uploaded avatar URL: ${urls.first}');
+
     await ref.read(userGeneralProvider.notifier).updateProfile({
       'avatar': urls.first,
     });

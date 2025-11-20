@@ -4,12 +4,32 @@ import 'package:jt291_flutter_mobile/data/models/wallet/wallet_summary_model.dar
 import 'package:jt291_flutter_mobile/data/models/wallet/recharge_package_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/monthly_card_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/transaction_model.dart';
+import 'package:jt291_flutter_mobile/data/models/wallet/diamond_balance_model.dart';
+import 'package:jt291_flutter_mobile/data/models/wallet/vex_balance_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/mock_api_response.dart';
 
 final walletSummaryMock = WalletSummaryModel(
   totalDiamondBalance: 54292.79,
   vexBalance: 5000,
   monthlyCardStatus: "active",
+);
+
+final diamondBalanceMock = DiamondBalanceModel(
+  diamondBalance: 54292.79,
+);
+
+final vexBalanceMock = VexBalanceModel(
+  vexBalance: 54292.79,
+  vexBalanceUsd: 900.00,
+  exchangeRate: ExchangeRate(
+    vexToUsd: 0.01657,
+    lastUpdated: DateTime.parse("2025-11-20T07:59:59Z"),
+  ),
+  dailyLimits: DailyLimits(
+    depositRemaining: 4500.00,
+    withdrawRemaining: 2000.00,
+    transferRemaining: 1000.00,
+  ),
 );
 
 final rechargePackagesMock = [
@@ -180,6 +200,18 @@ final mockTransactionHistoryResponse = TransactionHistoryResponse(
 final mockWalletSummaryApiResponse = mockSuccessResponse<WalletSummaryModel>(
   walletSummaryMock,
   message: 'Wallet summary fetched successfully',
+);
+
+/// Mock API Response for Diamond Balance
+final mockDiamondBalanceApiResponse = mockSuccessResponse<DiamondBalanceModel>(
+  diamondBalanceMock,
+  message: 'Diamond balance fetched successfully',
+);
+
+/// Mock API Response for VEX Balance
+final mockVexBalanceApiResponse = mockSuccessResponse<VexBalanceModel>(
+  vexBalanceMock,
+  message: 'VEX balance fetched successfully',
 );
 
 /// Mock API Response for Recharge Packages (List)

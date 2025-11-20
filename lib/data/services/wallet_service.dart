@@ -16,11 +16,11 @@ class WalletService {
   Future<WalletSummaryModel> getWalletSummary(String userId) async {
     print('getWalletSummary: $userId');
     // Mock
-    await Future.delayed(const Duration(milliseconds: 300));
-    return walletSummaryMock;
-    // TODO: Implement this
-    // final response = await _apiService.get('/v1/users/$userId/wallet/summary');
-    // return WalletSummaryModel.fromJson(response['data']);
+    // await Future.delayed(const Duration(milliseconds: 300));
+    // return walletSummaryMock;
+    // // TODO: Implement this
+    final response = await _apiService.get('/wallet/summary');
+    return WalletSummaryModel.fromJson(response['data']);
   }
 
   // GET /users/{user_id}/recharge/packages

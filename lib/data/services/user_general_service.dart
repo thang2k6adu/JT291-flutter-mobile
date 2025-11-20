@@ -49,7 +49,8 @@ class UserGeneralService {
   FutureOr<bool> updateCurrentUser(Map<String, dynamic> data) async {
     try {
       print('updateCurrentUser: $data');
-      final response = await _apiService.put('/auth/me', data: data);
+      final response = await _apiService.patch('/profile/me', data: data);
+      print('updateCurrentUser response: $response');
       return response['success'] as bool;
     } catch (e) {
       print("updateCurrentUser failed: $e");
@@ -196,7 +197,7 @@ class UserGeneralService {
       );
 
       final response = await _apiService.get(
-        '/users/$mockUserId/connections',
+        '/connections/following',
         queryParameters: {
           'page': page,
           'limit': limit,
@@ -256,7 +257,7 @@ class UserGeneralService {
       //   ),
       // );
       final response = await _apiService.get(
-        '/users/$mockUserId/connections',
+        '/connections/followers',
         queryParameters: {
           'page': page,
           'limit': limit,
@@ -322,7 +323,7 @@ class UserGeneralService {
       // );
 
       final response = await _apiService.get(
-        '/users/$mockUserId/connections',
+        '/connections/friends',
         queryParameters: {'page': page, 'limit': limit, 'search': search},
       );
       // Xây pagination (tự tính hasNext)
@@ -364,7 +365,7 @@ class UserGeneralService {
       // return true;
 
       final response = await _apiService.delete(
-        '/users/$mockUserId/following/$followingId',
+        '/connections/following/$followingId',
       );
       return response['error'] == false;
     } catch (e) {
@@ -411,7 +412,7 @@ class UserGeneralService {
       // await Future.delayed(const Duration(milliseconds: 300));
       // return userStatsMock;
 
-      final response = await _apiService.get('/users/$mockUserId/stats');
+      final response = await _apiService.get('/connections/stats');
 
       print('getUserStats response: $response');
       return UserStatsModel.fromJson(response['data']);

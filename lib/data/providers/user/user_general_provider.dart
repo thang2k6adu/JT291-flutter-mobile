@@ -47,6 +47,7 @@ class UserGeneralNotifier extends AsyncNotifier<UserModel?> {
   Future<bool> updateProfile(Map<String, dynamic> data) async {
     state = const AsyncLoading();
     try {
+      print('updateProfile data: $data');
       final updatedUser = await _userService.updateCurrentUser(data);
       print('updatedUser: $updatedUser');
       return updatedUser;
