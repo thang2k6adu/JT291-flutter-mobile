@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
+import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
+import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 import 'package:jt291_flutter_mobile/features/profile/controllers/gift_controller.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_header.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_tab_bar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_grid_view.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_bottom_bar.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/inventory_bottom_sheet.dart';
 
 class GiftBottomSheet extends ConsumerStatefulWidget {
   final String userId;
@@ -78,7 +80,7 @@ class _GiftBottomSheetState extends ConsumerState<GiftBottomSheet>
               setState(() => _selectedQuantity = quantity);
             },
             onSendPressed: _handleSendGift,
-            onWalletTap: _handleWalletTap,
+            onWalletTap: () => handleWalletTap(context),
           ),
         ],
       ),
@@ -86,11 +88,22 @@ class _GiftBottomSheetState extends ConsumerState<GiftBottomSheet>
   }
 
   void _handleBackpackTap() {
-    // TODO: Navigate to backpack screen
+    // Close current bottom sheet and show inventory bottom sheet
+    Navigator.pop(context);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => InventoryBottomSheet(
+        userId: widget.userId,
+        userName: widget.userName,
+      ),
+    );
   }
 
-  void _handleWalletTap() {
-    // TODO: Navigate to wallet/recharge screen
+  void handleWalletTap(BuildContext context) {
+    pushScreen(context, RouteConstants.diamonds);
   }
 
   Future<void> _handleSendGift() async {

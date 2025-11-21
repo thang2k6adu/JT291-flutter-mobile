@@ -7,12 +7,16 @@ class GiftItemWidget extends StatelessWidget {
   final GiftModel gift;
   final bool isSelected;
   final VoidCallback onTap;
+  final int? quantity; // If provided, show quantity instead of price
+  final bool showQuantity; // Whether to show quantity or price
 
   const GiftItemWidget({
     super.key,
     required this.gift,
     required this.isSelected,
     required this.onTap,
+    this.quantity,
+    this.showQuantity = false,
   });
 
   @override
@@ -78,21 +82,31 @@ class GiftItemWidget extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 2),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(AppIcons.diamondPng, width: 12, height: 12),
-                const SizedBox(width: 2),
-                Text(
-                  '${convertToCompactFormNumber(gift.price)}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w600,
-                  ),
+            if (showQuantity && quantity != null)
+              Text(
+                'x$quantity',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.w600,
                 ),
-              ],
-            ),
+              )
+            else
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(AppIcons.diamondPng, width: 12, height: 12),
+                  const SizedBox(width: 2),
+                  Text(
+                    '${convertToCompactFormNumber(gift.price)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
