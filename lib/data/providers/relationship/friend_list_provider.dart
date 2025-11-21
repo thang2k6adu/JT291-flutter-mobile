@@ -1,27 +1,27 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/base/base_pagination_notifier.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
-import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
 import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
-import 'package:jt291_flutter_mobile/data/providers/user/user_stats_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/relationship/social_connection_manager_provider.dart';
 
+/// Provider that manages the list of friend user IDs
+/// Actual user data is stored in socialConnectionManagerProvider
 final friendListProvider =
-    AsyncNotifierProvider<FriendListNotifier, List<UserModel>>(
+    AsyncNotifierProvider<FriendListNotifier, List<String>>(
       FriendListNotifier.new,
     );
 
-class FriendListNotifier extends BasePaginatedNotifier<UserModel>
-    with ListItemUpdateMixin<UserModel> {
+class FriendListNotifier extends BasePaginatedNotifier<String> {
   late final UserGeneralService _service;
 
   @override
-  Future<List<UserModel>> build() async {
+  Future<List<String>> build() async {
     _service = ref.read(userGeneralServiceProvider);
     return super.build();
   }
 
   @override
-  Future<PaginatedResponse<UserModel>> fetchPage({
+  Future<PaginatedResponse<String>> fetchPage({
     required int page,
     required int limit,
     String? search,
@@ -31,68 +31,44 @@ class FriendListNotifier extends BasePaginatedNotifier<UserModel>
       limit: limit,
       search: search,
     );
-    return ApiPaginatedResponse<UserModel>(response!);
+    
+    final userResponse = ApiPaginatedResponse<UserModel>(response!);
+    
+    // Add users to central store
+    ref.read(socialConnectionManagerProvider.notifier).addUsers(userResponse.data);
+    
+    // Return only IDs
+    return _UserIdPaginatedResponse(userResponse);
   }
 
-  /// Unfriend a user
+  /// Get full user models from IDs
+  List<UserModel> getUsers() {
+    final userIds = state.value ?? [];
+    return ref.read(socialConnectionManagerProvider.notifier).getUsers(userIds);
+  }
+
+  /// Unfriend a user - delegates to central manager
   Future<void> unfriendUser(String userId, String friendId) async {
-    await updateItemAsync(
-      (user) => user.id == friendId,
-      (user) {
-        ref.read(userStatsProvider.notifier).decrementFriends();
-
-        return user.copyWith(
-          isFollowing: false,
-          followStatus: "not_following",
-          isPending: true,
-        );
-      },
-      () async => await _service.unfriend(userId, friendId),
-      (user, success) {
-        if (!success) {
-          // rollback
-          ref.read(userStatsProvider.notifier).incrementFriends();
-
-          return user.copyWith(
-            isFollowing: true,
-            followStatus: 'following',
-            isPending: false,
-          );
-        }
-
-        return user.copyWith(isPending: false);
-      },
-    );
+    await ref.read(socialConnectionManagerProvider.notifier)
+        .unfriendUser(userId, friendId);
   }
 
-  /// Follow a user (after unfriending)
+  /// Follow a user (after unfriending) - delegates to central manager
   Future<void> followUser(String userId, String friendId) async {
-    await updateItemAsync(
-      (user) => user.id == friendId,
-      (user) {
-        ref.read(userStatsProvider.notifier).incrementFriends();
-
-        return user.copyWith(
-          isFollowing: true,
-          followStatus: "following",
-          isPending: true,
-        );
-      },
-      () async => await _service.followUser(userId, friendId),
-      (user, success) {
-        if (!success) {
-          // rollback
-          ref.read(userStatsProvider.notifier).decrementFriends();
-
-          return user.copyWith(
-            isFollowing: false,
-            followStatus: 'not_following',
-            isPending: false,
-          );
-        }
-
-        return user.copyWith(isPending: false);
-      },
-    );
+    await ref.read(socialConnectionManagerProvider.notifier)
+        .followUser(userId, friendId);
   }
+}
+
+/// Helper class to convert UserModel pagination to String (ID) pagination
+class _UserIdPaginatedResponse implements PaginatedResponse<String> {
+  final PaginatedResponse<UserModel> _userResponse;
+
+  _UserIdPaginatedResponse(this._userResponse);
+
+  @override
+  List<String> get data => _userResponse.data.map((user) => user.id).toList();
+
+  @override
+  bool get hasNext => _userResponse.hasNext;
 }
