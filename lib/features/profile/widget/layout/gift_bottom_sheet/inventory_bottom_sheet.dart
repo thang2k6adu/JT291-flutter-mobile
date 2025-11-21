@@ -62,7 +62,7 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
                         ),
                         SizedBox(height: 16),
                         Text(
-                          'Túi quà trống',
+                          'No items available',
                           style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                       ],
