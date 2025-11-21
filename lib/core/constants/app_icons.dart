@@ -58,4 +58,9 @@ class AppIcons {
    static const String badge4Png = 'lib/assets/icons/badge4.png';
 
    static const String relationshipBgPng = 'lib/assets/icons/relationship_bg.png';
+
+   static const String homePng = 'lib/assets/icons/home.png';
+   static const String menuPng = 'lib/assets/icons/menu.png';
+   static const String messagePng = 'lib/assets/icons/message.png';
+   static const String networkPng = 'lib/assets/icons/network.png';
 }

@@ -24,7 +24,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 
   return GoRouter(
-    initialLocation: RouteConstants.home,
+    initialLocation: RouteConstants.main,
     debugLogDiagnostics: true,
     refreshListenable: routerRefreshNotifier,
     routes: [

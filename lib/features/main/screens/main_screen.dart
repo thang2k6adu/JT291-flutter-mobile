@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/data/providers/auth/auth_provider.dart';
 import 'package:jt291_flutter_mobile/features/auth/screens/splash_screen.dart';
-import 'package:jt291_flutter_mobile/features/profile/screens/user_me_screen.dart';
+import 'package:jt291_flutter_mobile/features/profile/screens/profile_screen.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -28,11 +29,12 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       const SplashScreen(title: "Home"),
       const SplashScreen(title: "Messages"),
       const SplashScreen(title: "Reels"),
-      UserMeScreen(),
+      const SplashScreen(title: "Explore"),
+      ProfileScreen(),
     ];
 
     return asyncAuth.when(
-      data: (currentUer) {
+      data: (currentUser) {
         return Scaffold(
           body: children[selectedIndex],
           bottomNavigationBar: BottomNavigationBar(
@@ -42,47 +44,80 @@ class _MainScreenState extends ConsumerState<MainScreen> {
             type: BottomNavigationBarType.fixed,
             showSelectedLabels: false,
             showUnselectedLabels: false,
+            elevation: 8,
             items: [
+              // Home icon
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
+                icon: Image.asset(
+                  AppIcons.homePng,
+                  width: 28,
+                  height: 28,
                   color: selectedIndex == 0
                       ? AppColors.primary
-                      : AppColors.gray[3],
+                      : AppColors.black,
                 ),
                 label: "Home",
               ),
+              // Grid/Apps icon
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
-                  color: selectedIndex == 1
-                      ? AppColors.primary
-                      : AppColors.gray[3],
+                icon: Image.asset(
+                  AppIcons.menuPng,
+                  width: 28,
+                  height: 28,
+                  color: selectedIndex == 1 ? AppColors.primary : AppColors.black,
                 ),
                 label: "Messages",
               ),
+              // Messages/Chat icon
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home,
-                  color: selectedIndex == 2
-                      ? AppColors.primary
-                      : AppColors.gray[3],
+                icon: Image.asset(
+                  AppIcons.messagePng,
+                  width: 28,
+                  height: 28,
+                  color: selectedIndex == 2 ? AppColors.primary : AppColors.black,
                 ),
                 label: "Reels",
               ),
+              // Globe/Explore icon
               BottomNavigationBarItem(
-                icon: currentUer?.avatar != null
-                    ? SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: Image.network(currentUer?.avatar ?? ""),
-                      )
-                    : Icon(
-                        Icons.home,
-                        color: selectedIndex == 2
-                            ? AppColors.primary
-                            : AppColors.gray[3],
-                      ),
+                icon: Image.asset(
+                  AppIcons.networkPng,
+                  width: 28,
+                  height: 28,
+                  color: selectedIndex == 3 ? AppColors.primary : AppColors.black,
+                ),
+                label: "Explore",
+              ),
+              // Profile avatar
+              BottomNavigationBarItem(
+                icon: Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(shape: BoxShape.circle),
+                  child: ClipOval(
+                    child: currentUser?.avatar != null
+                        ? Image.network(
+                            currentUser?.avatar ?? "",
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Icon(
+                                Icons.account_circle,
+                                color: selectedIndex == 4
+                                    ? AppColors.primary
+                                    : AppColors.gray[3],
+                                size: 28,
+                              );
+                            },
+                          )
+                        : Icon(
+                            Icons.account_circle,
+                            color: selectedIndex == 4
+                                ? AppColors.primary
+                                : AppColors.gray[3],
+                            size: 28,
+                          ),
+                  ),
+                ),
                 label: "Me",
               ),
             ],

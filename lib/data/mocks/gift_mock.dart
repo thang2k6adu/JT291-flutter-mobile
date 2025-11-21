@@ -1,17 +1,16 @@
 import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
-import 'package:jt291_flutter_mobile/data/models/gift/gift_list_response.dart';
 import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
 
 /// Mock data cho gifts catalog
 class GiftMock {
   /// Mock danh sách gifts theo category
-  static ApiResponse<GiftListResponse> getGiftList({
+  static PaginatedData<GiftModel> getGiftList({
     String category = 'all',
     int page = 1,
     int limit = 20,
   }) {
     final gifts = _getGiftsByCategory(category);
-    
+
     // Pagination logic
     final startIndex = (page - 1) * limit;
     final endIndex = startIndex + limit;
@@ -20,21 +19,15 @@ class GiftMock {
       endIndex > gifts.length ? gifts.length : endIndex,
     );
 
-    return ApiResponse<GiftListResponse>(
-      error: false,
-      code: 0,
-      message: 'Success',
-      data: GiftListResponse(
-        items: paginatedGifts,
-        meta: PaginationMeta(
-          itemCount: paginatedGifts.length,
-          totalItems: gifts.length,
-          itemsPerPage: limit,
-          totalPages: (gifts.length / limit).ceil(),
-          currentPage: page,
-        ),
+    return PaginatedData<GiftModel>(
+      items: paginatedGifts,
+      meta: PaginationMeta(
+        itemCount: paginatedGifts.length,
+        totalItems: gifts.length,
+        itemsPerPage: limit,
+        totalPages: (gifts.length / limit).ceil(),
+        currentPage: page,
       ),
-      traceId: 'GIFT_${DateTime.now().millisecondsSinceEpoch}',
     );
   }
 
@@ -256,7 +249,7 @@ class GiftMock {
     int limit = 20,
   }) {
     final gifts = _getGiftsByCategory(category);
-    
+
     // Pagination logic
     final startIndex = (page - 1) * limit;
     final endIndex = startIndex + limit;
@@ -283,15 +276,24 @@ class GiftMock {
   }
 
   /// Mock error response (with GiftListResponse)
-  static ApiResponse<GiftListResponse> getErrorResponse({
+  static ApiResponse<PaginatedData<GiftModel>> getErrorResponse({
     int code = 40001,
     String message = 'Invalid category',
   }) {
-    return ApiResponse<GiftListResponse>(
+    return ApiResponse<PaginatedData<GiftModel>>(
       error: true,
       code: code,
       message: message,
-      data: null,
+      data: PaginatedData<GiftModel>(
+        items: [],
+        meta: PaginationMeta(
+          itemCount: 0,
+          totalItems: 0,
+          itemsPerPage: 0,
+          totalPages: 0,
+          currentPage: 0,
+        ),
+      ),
       traceId: 'ERROR_${DateTime.now().millisecondsSinceEpoch}',
     );
   }
@@ -305,9 +307,17 @@ class GiftMock {
       error: true,
       code: code,
       message: message,
-      data: null,
+      data: PaginatedData<GiftModel>(
+        items: [],
+        meta: PaginationMeta(
+          itemCount: 0,
+          totalItems: 0,
+          itemsPerPage: 0,
+          totalPages: 0,
+          currentPage: 0,
+        ),
+      ),
       traceId: 'ERROR_${DateTime.now().millisecondsSinceEpoch}',
     );
   }
 }
-

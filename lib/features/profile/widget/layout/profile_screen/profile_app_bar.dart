@@ -3,7 +3,12 @@ import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
 class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const ProfileAppBar({super.key, required this.title, this.scannerOnPressed, this.settingOnPressed });
+  const ProfileAppBar({
+    super.key,
+    required this.title,
+    this.scannerOnPressed,
+    this.settingOnPressed,
+  });
   final String title;
   final VoidCallback? scannerOnPressed;
   final VoidCallback? settingOnPressed;
@@ -11,6 +16,7 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false, // Thêm dòng này
       backgroundColor: Colors.white,
       elevation: 0,
       title: Text(

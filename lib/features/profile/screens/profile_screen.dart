@@ -4,7 +4,6 @@ import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/core/utils/number_utils.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/profile_app_bar.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/profile_bottom_navbar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/profile_header.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/wallet_card.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/profile_screen/quick_access_row.dart';
@@ -39,22 +38,6 @@ class ProfileScreen extends ConsumerWidget {
     (SvgIconSimple.asset(AppIcons.helpCenter), 'Help center'),
     (SvgIconSimple.asset(AppIcons.feedback), 'Feedback'),
     (SvgIconSimple.asset(AppIcons.contractUs), 'Contract Us'),
-  ];
-
-  static final List<BottomNavigationBarItem> profileNavItems = [
-    BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: ''),
-    BottomNavigationBarItem(icon: Icon(Icons.grid_view_outlined), label: ''),
-    BottomNavigationBarItem(icon: Icon(Icons.chat_bubble_outline), label: ''),
-    BottomNavigationBarItem(icon: Icon(Icons.language), label: ''),
-    BottomNavigationBarItem(
-      icon: CircleAvatar(
-        radius: 15,
-        backgroundImage: Image.network(
-          'https://statictuoitre.mediacdn.vn/thumb_w/640/2017/7-1512755474943.jpg',
-        ).image,
-      ),
-      label: '',
-    ),
   ];
 
   @override
@@ -119,17 +102,13 @@ class ProfileScreen extends ConsumerWidget {
             ],
           ),
         ),
-        bottomNavigationBar: ProfileBottomNavBar(
-          currentIndex: 4,
-          onTap: (index) {},
-          profileNavItems: profileNavItems,
-          image: user?.avatar != null
-              ? Image.network(user!.avatar).image
-              : null,
-        ),
       ),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(child: Text('Error: $error')),
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, stack) => Scaffold(
+        body: Center(child: Text('Error: $error')),
+      ),
     );
   }
 }
