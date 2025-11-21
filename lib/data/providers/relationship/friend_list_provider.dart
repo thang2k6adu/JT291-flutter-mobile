@@ -31,12 +31,19 @@ class FriendListNotifier extends BasePaginatedNotifier<String> {
       limit: limit,
       search: search,
     );
-    
+
     final userResponse = ApiPaginatedResponse<UserModel>(response!);
-    
+
+    // add isFriend to each user
+    final usersWithIsFriend = userResponse.data
+        .map((user) => user.copyWith(isFollower: true))
+        .toList();
+
     // Add users to central store
-    ref.read(socialConnectionManagerProvider.notifier).addUsers(userResponse.data);
-    
+    ref
+        .read(socialConnectionManagerProvider.notifier)
+        .addUsers(usersWithIsFriend);
+
     // Return only IDs
     return _UserIdPaginatedResponse(userResponse);
   }
@@ -49,13 +56,15 @@ class FriendListNotifier extends BasePaginatedNotifier<String> {
 
   /// Unfriend a user - delegates to central manager
   Future<void> unfriendUser(String userId, String friendId) async {
-    await ref.read(socialConnectionManagerProvider.notifier)
+    await ref
+        .read(socialConnectionManagerProvider.notifier)
         .unfriendUser(userId, friendId);
   }
 
   /// Follow a user (after unfriending) - delegates to central manager
   Future<void> followUser(String userId, String friendId) async {
-    await ref.read(socialConnectionManagerProvider.notifier)
+    await ref
+        .read(socialConnectionManagerProvider.notifier)
         .followUser(userId, friendId);
   }
 }

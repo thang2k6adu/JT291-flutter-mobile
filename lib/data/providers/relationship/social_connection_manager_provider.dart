@@ -68,6 +68,9 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
           isPending: true,
         ));
     ref.read(userStatsProvider.notifier).incrementFollowing();
+    if (user.isFollower) {
+      ref.read(userStatsProvider.notifier).incrementFriends();
+    }
 
     try {
       final success = await _service.followUser(currentUserId, targetUserId);
@@ -84,6 +87,9 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
               isPending: false,
             ));
         ref.read(userStatsProvider.notifier).decrementFollowing();
+        if (user.isFollower) {
+          ref.read(userStatsProvider.notifier).decrementFriends();
+        }
         return false;
       }
     } catch (e) {
@@ -110,7 +116,9 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
           isPending: true,
         ));
     ref.read(userStatsProvider.notifier).decrementFollowing();
-
+    if (user.isFriend) {
+      ref.read(userStatsProvider.notifier).decrementFriends();
+    }
     try {
       final success = await _service.unfollowUser(currentUserId, targetUserId);
       
@@ -126,6 +134,9 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
               isPending: false,
             ));
         ref.read(userStatsProvider.notifier).incrementFollowing();
+        if (user.isFriend) {
+          ref.read(userStatsProvider.notifier).incrementFriends();
+        }
         return false;
       }
     } catch (e) {

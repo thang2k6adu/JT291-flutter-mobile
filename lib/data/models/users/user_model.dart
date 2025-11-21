@@ -41,6 +41,8 @@ abstract class UserModel with _$UserModel {
     // Relationship Status (for other users)
     // ========================================
     @Default(false) @JsonKey(name: 'is_following') bool isFollowing,
+    @Default(false) @JsonKey(name: 'is_follower') bool isFollower,
+    @Default(false) @JsonKey(name: 'is_friend') bool isFriend,
     @Default('not_following')
     @JsonKey(name: 'follow_status')
     String followStatus,

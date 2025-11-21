@@ -31,12 +31,19 @@ class FollowerListNotifier extends BasePaginatedNotifier<String> {
       limit: limit,
       search: search,
     );
-    
+
     final userResponse = ApiPaginatedResponse<UserModel>(response!);
-    
+
+    // add isFollower to each user
+    final usersWithIsFollower = userResponse.data
+        .map((user) => user.copyWith(isFollower: true))
+        .toList();
+
     // Add users to central store
-    ref.read(socialConnectionManagerProvider.notifier).addUsers(userResponse.data);
-    
+    ref
+        .read(socialConnectionManagerProvider.notifier)
+        .addUsers(usersWithIsFollower);
+  
     // Return only IDs
     return _UserIdPaginatedResponse(userResponse);
   }
@@ -49,13 +56,15 @@ class FollowerListNotifier extends BasePaginatedNotifier<String> {
 
   /// Follow back a follower - delegates to central manager
   Future<void> followBackUser(String userId, String followerId) async {
-    await ref.read(socialConnectionManagerProvider.notifier)
+    await ref
+        .read(socialConnectionManagerProvider.notifier)
         .followUser(userId, followerId);
   }
 
   /// Unfollow a follower - delegates to central manager
   Future<void> unfollowUser(String userId, String followerId) async {
-    await ref.read(socialConnectionManagerProvider.notifier)
+    await ref
+        .read(socialConnectionManagerProvider.notifier)
         .unfollowUser(userId, followerId);
   }
 }
