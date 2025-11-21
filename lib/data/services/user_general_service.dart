@@ -347,7 +347,7 @@ class UserGeneralService {
       // return true;
 
       final response = await _apiService.post(
-        '/connections/folloing/$targetId',
+        '/connections/following/$targetId',
       );
       if (response['error'] == false) {
         return true;

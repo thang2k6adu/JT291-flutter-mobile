@@ -79,6 +79,8 @@ class SocialConnectionController extends AutoDisposeNotifier<void> {
 
   /// Hiển thị error snackbar
   void _showErrorSnackBar(BuildContext context, String message) {
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),

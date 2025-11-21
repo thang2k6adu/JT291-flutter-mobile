@@ -8,8 +8,8 @@ import 'package:jt291_flutter_mobile/data/providers/user/user_stats_provider.dar
 /// and provides methods to update user states synchronously across all lists
 final socialConnectionManagerProvider =
     NotifierProvider<SocialConnectionManager, Map<String, UserModel>>(
-  SocialConnectionManager.new,
-);
+      SocialConnectionManager.new,
+    );
 
 class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
   late final UserGeneralService _service;
@@ -63,47 +63,65 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
       throw Exception('User not found');
     }
 
-
     // Optimistic update - update both user state and stats
-    updateUser(targetUserId, (user) => user.copyWith(
-          isFollowing: true,
-          followStatus: "following",
-          isPending: true,
-        ));
+    updateUser(
+      targetUserId,
+      (user) => user.copyWith(
+        isFollowing: true,
+        followStatus: "following",
+        isPending: true,
+      ),
+    );
     ref.read(userStatsProvider.notifier).incrementFollowing();
     if (user.isFollower) {
       ref.read(userStatsProvider.notifier).incrementFriends();
     }
 
+    print('followUser user is follower: ${user.isFollower}');
+
     try {
-    print('followUser user: $user');
+      print('followUser user: $user');
       final success = await _service.followUser(currentUserId, targetUserId);
-      
+      print('followUser success: $success');
+
       if (success) {
+        print('followUser success: true, update user: ${user.copyWith(isPending: false)}');
         // Confirm the update
         updateUser(targetUserId, (user) => user.copyWith(isPending: false));
         return true;
       } else {
         // Rollback both user state and stats
-        updateUser(targetUserId, (user) => user.copyWith(
-              isFollowing: false,
-              followStatus: 'not_following',
-              isPending: false,
-            ));
+        updateUser(
+          targetUserId,
+          (user) => user.copyWith(
+            isFollowing: false,
+            followStatus: 'not_following',
+            isPending: false,
+          ),
+        );
+
+        print('followUser decrement following: ${user}');
         ref.read(userStatsProvider.notifier).decrementFollowing();
         if (user.isFollower) {
+          print('followUser user is follower: $user');
           ref.read(userStatsProvider.notifier).decrementFriends();
         }
         throw Exception('Follow user failed');
       }
     } catch (e) {
       // Rollback both user state and stats on error
-      updateUser(targetUserId, (user) => user.copyWith(
-            isFollowing: false,
-            followStatus: 'not_following',
-            isPending: false,
-          ));
+      updateUser(
+        targetUserId,
+        (user) => user.copyWith(
+          isFollowing: false,
+          followStatus: 'not_following',
+          isPending: false,
+        ),
+      );
       ref.read(userStatsProvider.notifier).decrementFollowing();
+      if (user.isFollower) {
+        ref.read(userStatsProvider.notifier).decrementFriends();
+      }
       throw Exception('Follow user failed: $e');
     }
   }
@@ -114,29 +132,35 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
     if (user == null) return false;
 
     // Optimistic update - update both user state and stats
-    updateUser(targetUserId, (user) => user.copyWith(
-          isFollowing: false,
-          followStatus: "not_following",
-          isPending: true,
-        ));
+    updateUser(
+      targetUserId,
+      (user) => user.copyWith(
+        isFollowing: false,
+        followStatus: "not_following",
+        isPending: true,
+      ),
+    );
     ref.read(userStatsProvider.notifier).decrementFollowing();
     if (user.isFriend) {
       ref.read(userStatsProvider.notifier).decrementFriends();
     }
     try {
       final success = await _service.unfollowUser(currentUserId, targetUserId);
-      
+
       if (success) {
         // Confirm the update
         updateUser(targetUserId, (user) => user.copyWith(isPending: false));
         return true;
       } else {
         // Rollback both user state and stats
-        updateUser(targetUserId, (user) => user.copyWith(
-              isFollowing: true,
-              followStatus: 'following',
-              isPending: false,
-            ));
+        updateUser(
+          targetUserId,
+          (user) => user.copyWith(
+            isFollowing: true,
+            followStatus: 'following',
+            isPending: false,
+          ),
+        );
         ref.read(userStatsProvider.notifier).incrementFollowing();
         if (user.isFriend) {
           ref.read(userStatsProvider.notifier).incrementFriends();
@@ -145,12 +169,18 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
       }
     } catch (e) {
       // Rollback both user state and stats on error
-      updateUser(targetUserId, (user) => user.copyWith(
-            isFollowing: true,
-            followStatus: 'following',
-            isPending: false,
-          ));
+      updateUser(
+        targetUserId,
+        (user) => user.copyWith(
+          isFollowing: true,
+          followStatus: 'following',
+          isPending: false,
+        ),
+      );
       ref.read(userStatsProvider.notifier).incrementFollowing();
+      if (user.isFollower) {
+        ref.read(userStatsProvider.notifier).incrementFriends();
+      }
       throw Exception('Unfollow user failed: $e');
     }
   }
@@ -161,40 +191,51 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
     if (user == null) return false;
 
     // Optimistic update - update both user state and stats
-    updateUser(targetUserId, (user) => user.copyWith(
-          isFollowing: false,
-          followStatus: "not_following",
-          isPending: true,
-        ));
+    updateUser(
+      targetUserId,
+      (user) => user.copyWith(
+        isFollowing: false,
+        followStatus: "not_following",
+        isPending: true,
+      ),
+    );
     ref.read(userStatsProvider.notifier).decrementFriends();
     ref.read(userStatsProvider.notifier).decrementFollowing();
 
     try {
       final success = await _service.unfriend(currentUserId, targetUserId);
-      
+
       if (success) {
         // Confirm the update
         updateUser(targetUserId, (user) => user.copyWith(isPending: false));
         return true;
       } else {
         // Rollback both user state and stats
-        updateUser(targetUserId, (user) => user.copyWith(
-              isFollowing: true,
-              followStatus: 'following',
-              isPending: false,
-            ));
+        updateUser(
+          targetUserId,
+          (user) => user.copyWith(
+            isFollowing: true,
+            followStatus: 'following',
+            isPending: false,
+          ),
+        );
         ref.read(userStatsProvider.notifier).incrementFriends();
         throw Exception('Unfriend user failed');
       }
     } catch (e) {
       // Rollback both user state and stats on error
-      updateUser(targetUserId, (user) => user.copyWith(
-            isFollowing: true,
-            followStatus: 'following',
-            isPending: false,
-          ));
+      updateUser(
+        targetUserId,
+        (user) => user.copyWith(
+          isFollowing: true,
+          followStatus: 'following',
+          isPending: false,
+        ),
+      );
       ref.read(userStatsProvider.notifier).incrementFriends();
-      
+      if (user.isFollower) {
+        ref.read(userStatsProvider.notifier).incrementFollowing();
+      }
       throw Exception('Unfriend user failed: $e');
     }
   }
@@ -204,4 +245,3 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
     state = {};
   }
 }
-
