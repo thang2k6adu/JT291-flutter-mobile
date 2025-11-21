@@ -7,4 +7,6 @@ class AppImages {
 
   static const String clanBg = 'lib/assets/images/background/clan.png';
   static const String roomBg = 'lib/assets/images/background/room.png';
+
+  static const String giftBottomSheetBg = 'lib/assets/images/background/gift_bottom_sheet_bg.png';
 }

@@ -5,7 +5,6 @@ class RouteConstants {
   static const String splash = '/splash';
   static const String main = '/main';
   static const String onboarding = '/onboarding';
-  static const String home = '/home';
 
   static const String userQrCode = "/user/qr-code";
   static const String userScanner = "/user/scanner";

@@ -63,4 +63,7 @@ class AppIcons {
    static const String menuPng = 'lib/assets/icons/menu.png';
    static const String messagePng = 'lib/assets/icons/message.png';
    static const String networkPng = 'lib/assets/icons/network.png';
+
+   static const String giftDemoPng = 'lib/assets/icons/gift_demo.png';
+   static const String eventTagPng = 'lib/assets/icons/event_tag.png';
 }

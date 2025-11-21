@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color white = Color(0xFFffffff);
   static const Color black = Color(0xFF000000);
-  static const Color primary =  Color(0xFF0ea5e9);
+  static const Color primary =  Color(0xFFE65983);
   static const Color submain = Color(0xFFF4DBF0);
 
   static const List<Color> slate = [

@@ -1,6 +1,7 @@
 // lib/features/profile/screens/user_me_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_bottom_sheet.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_background.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_background_indicator.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_draggable_sheet.dart';
@@ -127,8 +128,16 @@ class UserMeScreen extends ConsumerWidget {
               // TODO: Navigate to message screen
             },
             onGiftPressed: () {
-              print('Gift to user: $userId');
-              // TODO: Open gift dialog
+              // Mở Gift Bottom Sheet
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => GiftBottomSheet(
+                  userId: userId!,
+                  userName: profileState.user?.nickname ?? 'User',
+                ),
+              );
             },
           ),
         ),
