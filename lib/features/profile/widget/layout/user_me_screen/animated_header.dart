@@ -106,30 +106,36 @@ class AnimatedCustomTopBar extends StatelessWidget {
         ),
         const SizedBox(width: 6),
         // Nickname and UID
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              nickname ?? 'Unknown',
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
+        // Giả sử Column nằm trong Row hoặc muốn giới hạn chiều ngang
+        SizedBox(
+          width: 150, // chiều ngang tối đa cho Column
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                nickname ?? 'Unknown',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
               ),
-            ),
-            const SizedBox(height: 0.5),
-            Text(
-              uid != null ? '@$uid' : '@unknown',
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: Colors.grey.shade600,
+              const SizedBox(height: 0.5),
+              Text(
+                uid != null ? '@$uid' : '@unknown',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey.shade600,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
