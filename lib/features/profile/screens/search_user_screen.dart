@@ -7,6 +7,8 @@ import 'package:jt291_flutter_mobile/components/ui/app_search_field.dart';
 import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/data/providers/search/search_user_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/relationship/social_connection_manager_provider.dart';
+import 'package:jt291_flutter_mobile/features/profile/controllers/search_user_controller.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_relation_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/user_item_widget.dart';
@@ -77,19 +79,16 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
   void _handleUserButtonPressed(UserRelationItem user, UserButtonType type) {
     // Xác định userId hiện tại (có thể lấy từ auth provider)
     final currentUserId = 'current_user_id'; // TODO: get from auth provider
+    final controller = ref.read(searchUserControllerProvider.notifier);
 
     switch (type) {
       case UserButtonType.follow:
       case UserButtonType.followBack:
-        ref
-            .read(searchUserProvider.notifier)
-            .followUser(currentUserId, user.id);
+        controller.followUser(context, currentUserId, user.id);
         break;
       case UserButtonType.following:
       case UserButtonType.unfollow:
-        ref
-            .read(searchUserProvider.notifier)
-            .unfollowUser(currentUserId, user.id);
+        controller.unfollowUser(context, currentUserId, user.id);
         break;
       case UserButtonType.friends:
         // Unfriend logic - có thể delegate sang friend provider
@@ -112,6 +111,9 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Watch the central connection manager for user updates
+    ref.watch(socialConnectionManagerProvider);
+    
     final searchState = ref.watch(searchUserProvider);
     final searchNotifier = ref.read(searchUserProvider.notifier);
 
@@ -127,7 +129,11 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
           ),
           Expanded(
             child: searchState.when(
-              data: (users) {
+              data: (userIds) {
+                // Get full user models from central store
+                final connectionManager = ref.read(socialConnectionManagerProvider.notifier);
+                final users = connectionManager.getUsers(userIds);
+                
                 // Nếu chưa search gì (query rỗng) và list rỗng
                 if (_currentQuery.isEmpty && users.isEmpty) {
                   return Center(

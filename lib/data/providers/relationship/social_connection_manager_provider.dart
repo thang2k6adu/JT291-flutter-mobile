@@ -59,7 +59,10 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
   /// Follow a user - updates user state and calls API
   Future<bool> followUser(String currentUserId, String targetUserId) async {
     final user = state[targetUserId];
-    if (user == null) return false;
+    if (user == null) {
+      throw Exception('User not found');
+    }
+
 
     // Optimistic update - update both user state and stats
     updateUser(targetUserId, (user) => user.copyWith(
@@ -73,6 +76,7 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
     }
 
     try {
+    print('followUser user: $user');
       final success = await _service.followUser(currentUserId, targetUserId);
       
       if (success) {
@@ -90,7 +94,7 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
         if (user.isFollower) {
           ref.read(userStatsProvider.notifier).decrementFriends();
         }
-        return false;
+        throw Exception('Follow user failed');
       }
     } catch (e) {
       // Rollback both user state and stats on error
@@ -100,7 +104,7 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
             isPending: false,
           ));
       ref.read(userStatsProvider.notifier).decrementFollowing();
-      return false;
+      throw Exception('Follow user failed: $e');
     }
   }
 
@@ -137,7 +141,7 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
         if (user.isFriend) {
           ref.read(userStatsProvider.notifier).incrementFriends();
         }
-        return false;
+        throw Exception('Unfollow user failed');
       }
     } catch (e) {
       // Rollback both user state and stats on error
@@ -147,7 +151,7 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
             isPending: false,
           ));
       ref.read(userStatsProvider.notifier).incrementFollowing();
-      return false;
+      throw Exception('Unfollow user failed: $e');
     }
   }
 
@@ -180,7 +184,7 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
               isPending: false,
             ));
         ref.read(userStatsProvider.notifier).incrementFriends();
-        return false;
+        throw Exception('Unfriend user failed');
       }
     } catch (e) {
       // Rollback both user state and stats on error
@@ -190,7 +194,8 @@ class SocialConnectionManager extends Notifier<Map<String, UserModel>> {
             isPending: false,
           ));
       ref.read(userStatsProvider.notifier).incrementFriends();
-      return false;
+      
+      throw Exception('Unfriend user failed: $e');
     }
   }
 

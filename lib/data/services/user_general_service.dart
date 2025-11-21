@@ -40,7 +40,7 @@ class UserGeneralService {
       return UserModel.fromJson(response['data']);
     } catch (e) {
       print("getCurrentUser failed: $e");
-      return null;
+      throw Exception('Get current user failed: $e');
     }
   }
 
@@ -54,7 +54,7 @@ class UserGeneralService {
       return response['success'] as bool;
     } catch (e) {
       print("updateCurrentUser failed: $e");
-      return false;
+      throw Exception('Update current user failed: $e');
     }
   }
 
@@ -105,7 +105,7 @@ class UserGeneralService {
       return UserModel.fromJson(response['data']);
     } catch (e) {
       print("getUserProfile failed: $e");
-      return null;
+      throw Exception('Get user profile failed: $e');
     }
   }
 
@@ -116,7 +116,7 @@ class UserGeneralService {
       return response['data']['token'] as String;
     } catch (e) {
       print("getStreamToken failed: $e");
-      return null;
+      throw Exception('Get stream token failed: $e');
     }
   }
 
@@ -152,7 +152,7 @@ class UserGeneralService {
       return urls.map((e) => e as String).toList();
     } catch (e) {
       print("uploadAttachments failed: $e");
-      return [];
+      throw Exception('Upload attachments failed: $e');
     }
   }
 
@@ -217,7 +217,7 @@ class UserGeneralService {
       );
     } catch (e) {
       print("getFollowingList failed: $e");
-      return null;
+      throw Exception('Get following list failed: $e');
     }
   }
 
@@ -275,7 +275,7 @@ class UserGeneralService {
       );
     } catch (e) {
       print("getFollowerList failed: $e");
-      return null;
+      throw Exception('Get follower list failed: $e');
     }
   }
 
@@ -336,7 +336,7 @@ class UserGeneralService {
       );
     } catch (e) {
       print("getFriendList failed: $e");
-      return null;
+      throw Exception('Get friend list failed: $e');
     }
   }
 
@@ -347,12 +347,16 @@ class UserGeneralService {
       // return true;
 
       final response = await _apiService.post(
-        '/connections/following/$targetId',
+        '/connections/folloing/$targetId',
       );
-      return response['error'] == false;
+      if (response['error'] == false) {
+        return true;
+      } else {
+        throw Exception('Follow user failed: ${response['message']}');
+      }
     } catch (e) {
       print("followUser failed: $e");
-      return false;
+      throw Exception('Follow user failed: $e');
     }
   }
 
@@ -365,25 +369,35 @@ class UserGeneralService {
       final response = await _apiService.delete(
         '/connections/following/$followingId',
       );
-      return response['error'] == false;
+      if (response['error'] == false) {
+        return true;
+      } else {
+        throw Exception('Unfollow user failed: ${response['message']}');
+      }
     } catch (e) {
       print("unfollowUser failed: $e");
-      return false;
+      throw Exception('Unfollow user failed: $e');
     }
   }
 
   /// Hủy follower (xóa người đang follow mình)
   FutureOr<bool> removeFollower(String userId, String followerId) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 300));
+      // await Future.delayed(const Duration(milliseconds: 300));
+      final response = await _apiService.delete(
+        '/connections/followers/$followerId',
+      );
       print('Remove follower $followerId');
-      return true;
+      if (response['error'] == false) {
+        return true;
+      } else {
+        throw Exception('Remove follower failed: ${response['message']}');
+      }
 
       // final response = await _apiService.delete('/connections/followers/$followerId');
-      // return response['error'] == false;
     } catch (e) {
       print("removeFollower failed: $e");
-      return false;
+      throw Exception('Remove follower failed: $e');
     }
   }
 
@@ -397,10 +411,14 @@ class UserGeneralService {
       final response = await _apiService.delete(
         '/connections/friends/$friendId',
       );
-      return response['error'] == false;
+      if (response['error'] == false) {
+        return true;
+      } else {
+        throw Exception('Unfriend failed: ${response['message']}');
+      }
     } catch (e) {
       print("unfriend failed: $e");
-      return false;
+      throw Exception('Unfriend failed: $e');
     }
   }
 
@@ -416,7 +434,7 @@ class UserGeneralService {
       return UserStatsModel.fromJson(response['data']);
     } catch (e) {
       print("getUserStats failed: $e");
-      return null;
+      throw Exception('Get user stats failed: $e');
     }
   }
 
@@ -452,7 +470,7 @@ class UserGeneralService {
       // return UserListResponse.fromJson(response);
     } catch (e) {
       print('searchFollowing failed: $e');
-      return const UserListResponse(data: []);
+      throw Exception('Search following failed: $e');
     }
   }
 
@@ -486,7 +504,7 @@ class UserGeneralService {
       // return UserListResponse.fromJson(response);
     } catch (e) {
       print('searchFollower failed: $e');
-      return const UserListResponse(data: []);
+      throw Exception('Search follower failed: $e');
     }
   }
 
@@ -520,7 +538,7 @@ class UserGeneralService {
       // return UserListResponse.fromJson(response);
     } catch (e) {
       print('searchFriend failed: $e');
-      return const UserListResponse(data: []);
+      throw Exception('Search friend failed: $e');
     }
   }
 
@@ -557,7 +575,7 @@ class UserGeneralService {
       // );
     } catch (e) {
       print('getProfileViews failed: $e');
-      return null;
+      throw Exception('Get profile views failed: $e');
     }
   }
 
@@ -606,7 +624,7 @@ class UserGeneralService {
       // return UserRelationshipModel.fromJson(response['data']);
     } catch (e) {
       print("getUserRelationship failed: $e");
-      return const UserRelationshipModel();
+      throw Exception('Get user relationship failed: $e');
     }
   }
 
@@ -644,22 +662,7 @@ class UserGeneralService {
       );
     } catch (e) {
       print("searchUsers failed: $e");
-      // Return error response
-      return ApiResponse<PaginatedData<UserModel>>(
-        error: true,
-        code: 500,
-        message: 'Failed to search users: $e',
-        data: PaginatedData<UserModel>(
-          items: const [],
-          meta: PaginationMeta(
-            itemCount: 0,
-            totalItems: 0,
-            itemsPerPage: limit,
-            totalPages: 0,
-            currentPage: page,
-          ),
-        ),
-      );
+      throw Exception('Search users failed: $e');
     }
   }
 }

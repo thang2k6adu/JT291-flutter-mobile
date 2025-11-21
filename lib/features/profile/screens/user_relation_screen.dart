@@ -8,6 +8,7 @@ import 'package:jt291_flutter_mobile/data/providers/relationship/following_list_
 import 'package:jt291_flutter_mobile/data/providers/relationship/follower_list_provider.dart';
 import 'package:jt291_flutter_mobile/data/providers/relationship/friend_list_provider.dart';
 import 'package:jt291_flutter_mobile/data/providers/relationship/social_connection_manager_provider.dart';
+import 'package:jt291_flutter_mobile/features/profile/controllers/social_connection_controller.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
 import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
 import 'package:jt291_flutter_mobile/core/utils/string_utils.dart';
@@ -79,20 +80,20 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
   }
 
   void _handleUserButtonPressed(UserRelationItem user, UserButtonType type) {
-    final connectionManager = ref.read(socialConnectionManagerProvider.notifier);
+    final controller = ref.read(socialConnectionControllerProvider.notifier);
 
-    // All actions now go through the central manager for synchronized updates
+    // All actions now go through the controller for error handling
     switch (type) {
       case UserButtonType.follow:
       case UserButtonType.followBack:
-        connectionManager.followUser(user.id, user.id);
+        controller.followUser(context, user.id, user.id);
         break;
       case UserButtonType.following:
       case UserButtonType.unfollow:
-        connectionManager.unfollowUser(user.id, user.id);
+        controller.unfollowUser(context, user.id, user.id);
         break;
       case UserButtonType.friends:
-        connectionManager.unfriendUser(user.id, user.id);
+        controller.unfriendUser(context, user.id, user.id);
         break;
     }
   }
