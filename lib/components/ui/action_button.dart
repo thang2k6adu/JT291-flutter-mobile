@@ -45,21 +45,27 @@ class ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
-      child: GestureDetector(
-        onTap: isLoading ? null : onPressed,
-        child: Text(
-          text,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: textColor,
-          ),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: 80),
+      child: Container(
+        padding: padding,
+        decoration: BoxDecoration(
+          color: isLoading ? Colors.grey[300] : backgroundColor,
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        child: GestureDetector(
+          onTap: isLoading ? () => {} : onPressed,
+          child: isLoading
+              ? const Text('...', textAlign: TextAlign.center)
+              : Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: textColor,
+                  ),
+                ),
         ),
       ),
     );
