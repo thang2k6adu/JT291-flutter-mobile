@@ -16,6 +16,11 @@ abstract class GiftModel with _$GiftModel {
     @JsonKey(name: 'event_end_date') DateTime? eventEndDate,
     String? description,
     String? category,
+
+    @JsonKey(name: 'quantity') @Default(0) int quantity,
+
+    @JsonKey(name: 'required_count') @Default(0) int requiredCount,
+    @JsonKey(name: 'current_count') @Default(0) int currentCount,
   }) = _GiftModel;
 
   factory GiftModel.fromJson(Map<String, Object?> json) =>

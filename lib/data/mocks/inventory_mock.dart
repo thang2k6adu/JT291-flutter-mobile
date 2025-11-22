@@ -1,10 +1,10 @@
 import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
-import 'package:jt291_flutter_mobile/data/models/gift/inventory_item_model.dart';
+import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
 
 /// Mock data for user inventory
 class InventoryMock {
   /// Get inventory for current user (me)
-  static ApiResponse<PaginatedData<InventoryItemModel>> getMyInventory({
+  static ApiResponse<PaginatedData<GiftModel>> getMyInventory({
     int page = 1,
     int limit = 20,
   }) {
@@ -26,25 +26,25 @@ class InventoryMock {
       currentPage: page,
     );
 
-    return ApiResponse<PaginatedData<InventoryItemModel>>(
+    return ApiResponse<PaginatedData<GiftModel>>(
       error: false,
       code: 0,
       message: 'Success',
-      data: PaginatedData<InventoryItemModel>(items: paginatedItems, meta: meta),
+      data: PaginatedData<GiftModel>(items: paginatedItems, meta: meta),
       traceId: 'INVENTORY_${DateTime.now().millisecondsSinceEpoch}',
     );
   }
 
   /// Mock error response
-  static ApiResponse<PaginatedData<InventoryItemModel>> getErrorResponse({
+  static ApiResponse<PaginatedData<GiftModel>> getErrorResponse({
     int code = 40001,
     String message = 'User not found',
   }) {
-    return ApiResponse<PaginatedData<InventoryItemModel>>(
+    return ApiResponse<PaginatedData<GiftModel>>(
       error: true,
       code: code,
       message: message,
-      data: PaginatedData<InventoryItemModel>(
+      data: PaginatedData<GiftModel>(
         items: [],
         meta: PaginationMeta(
           itemCount: 0,
@@ -59,7 +59,7 @@ class InventoryMock {
   }
 
   /// My inventory (current user)
-  static final List<InventoryItemModel> _myInventory = [
+  static final List<GiftModel> _myInventory = [
     // InventoryItemModel(
     //   id: 1,
     //   name: 'Rose',

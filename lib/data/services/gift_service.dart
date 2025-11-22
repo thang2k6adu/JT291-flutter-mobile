@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
-import 'package:jt291_flutter_mobile/data/models/gift/inventory_item_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/gift_mock.dart';
 import 'package:jt291_flutter_mobile/data/mocks/inventory_mock.dart';
 // import 'package:jt291_flutter_mobile/data/services/api_service.dart'; // TODO: uncomment when API ready
@@ -82,7 +81,7 @@ class GiftService {
   /// Parameters:
   /// - [page]: số trang, default: 1
   /// - [limit]: số items/page, default: 20, max: 50
-  Future<ApiResponse<PaginatedData<InventoryItemModel>>?> getMyInventory({
+  Future<ApiResponse<PaginatedData<GiftModel>>?> getMyInventory({
     int page = 1,
     int limit = 20,
   }) async {
@@ -102,7 +101,7 @@ class GiftService {
     //     response,
     //     (json) => PaginatedData.fromJson(
     //       json as Map<String, dynamic>,
-    //       (item) => InventoryItemModel.fromJson(item as Map<String, dynamic>),
+    //       (item) => GiftModel.fromJson(item as Map<String, dynamic>),
     //     ),
     //   );
     // } catch (e) {

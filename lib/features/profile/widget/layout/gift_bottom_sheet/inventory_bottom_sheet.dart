@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
-import 'package:jt291_flutter_mobile/data/models/gift/inventory_item_model.dart';
 import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
 import 'package:jt291_flutter_mobile/data/providers/gift/inventory_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/controllers/inventory_controller.dart';
@@ -28,7 +27,7 @@ class InventoryBottomSheet extends ConsumerStatefulWidget {
 
 class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
   int _selectedQuantity = 1;
-  InventoryItemModel? _selectedItem;
+  GiftModel? _selectedItem;
 
   final List<int> _quickQuantities = [1, 9, 99];
 
@@ -82,21 +81,8 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
                   itemCount: items.length,
                   itemBuilder: (context, index) {
                     final item = items[index];
-                    // Convert InventoryItemModel to GiftModel for display
-                    final giftModel = GiftModel(
-                      id: item.id,
-                      name: item.name,
-                      imageUrl: item.imageUrl,
-                      price: item.price,
-                      type: item.type,
-                      isEvent: item.isEvent,
-                      eventEndDate: item.eventEndDate,
-                      description: item.description,
-                      category: item.category,
-                    );
-
                     return GiftItemWidget(
-                      gift: giftModel,
+                      gift: item,
                       isSelected: _selectedItem?.id == item.id,
                       quantity: item.quantity,
                       showQuantity: true, // Show quantity instead of price

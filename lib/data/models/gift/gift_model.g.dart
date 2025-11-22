@@ -18,6 +18,9 @@ _GiftModel _$GiftModelFromJson(Map<String, dynamic> json) => _GiftModel(
       : DateTime.parse(json['event_end_date'] as String),
   description: json['description'] as String?,
   category: json['category'] as String?,
+  quantity: (json['quantity'] as num?)?.toInt() ?? 0,
+  requiredCount: (json['required_count'] as num?)?.toInt() ?? 0,
+  currentCount: (json['current_count'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$GiftModelToJson(_GiftModel instance) =>
@@ -31,4 +34,7 @@ Map<String, dynamic> _$GiftModelToJson(_GiftModel instance) =>
       'event_end_date': instance.eventEndDate?.toIso8601String(),
       'description': instance.description,
       'category': instance.category,
+      'quantity': instance.quantity,
+      'required_count': instance.requiredCount,
+      'current_count': instance.currentCount,
     };
