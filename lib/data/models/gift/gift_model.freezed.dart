@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GiftModel {
 
- String get id; String get name;@JsonKey(name: 'image_url') String get imageUrl; double? get price; String get type;@JsonKey(name: 'is_event') bool get isEvent;@JsonKey(name: 'event_end_date') DateTime? get eventEndDate; String? get description; String? get category;@JsonKey(name: 'quantity') int get quantity;@JsonKey(name: 'required_count') int get requiredCount;@JsonKey(name: 'current_count') int get currentCount;
+ String get id;@JsonKey(name: 'item_id') String? get itemId; String get name;@JsonKey(name: 'image_url') String get imageUrl; double? get price; String get type;@JsonKey(name: 'is_event') bool get isEvent;@JsonKey(name: 'event_end_date') DateTime? get eventEndDate; String? get description; String? get category;@JsonKey(name: 'quantity') int get quantity;@JsonKey(name: 'required_count') int get requiredCount;@JsonKey(name: 'current_count') int get currentCount;
 /// Create a copy of GiftModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $GiftModelCopyWith<GiftModel> get copyWith => _$GiftModelCopyWithImpl<GiftModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GiftModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.price, price) || other.price == price)&&(identical(other.type, type) || other.type == type)&&(identical(other.isEvent, isEvent) || other.isEvent == isEvent)&&(identical(other.eventEndDate, eventEndDate) || other.eventEndDate == eventEndDate)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.requiredCount, requiredCount) || other.requiredCount == requiredCount)&&(identical(other.currentCount, currentCount) || other.currentCount == currentCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GiftModel&&(identical(other.id, id) || other.id == id)&&(identical(other.itemId, itemId) || other.itemId == itemId)&&(identical(other.name, name) || other.name == name)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.price, price) || other.price == price)&&(identical(other.type, type) || other.type == type)&&(identical(other.isEvent, isEvent) || other.isEvent == isEvent)&&(identical(other.eventEndDate, eventEndDate) || other.eventEndDate == eventEndDate)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.requiredCount, requiredCount) || other.requiredCount == requiredCount)&&(identical(other.currentCount, currentCount) || other.currentCount == currentCount));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,imageUrl,price,type,isEvent,eventEndDate,description,category,quantity,requiredCount,currentCount);
+int get hashCode => Object.hash(runtimeType,id,itemId,name,imageUrl,price,type,isEvent,eventEndDate,description,category,quantity,requiredCount,currentCount);
 
 @override
 String toString() {
-  return 'GiftModel(id: $id, name: $name, imageUrl: $imageUrl, price: $price, type: $type, isEvent: $isEvent, eventEndDate: $eventEndDate, description: $description, category: $category, quantity: $quantity, requiredCount: $requiredCount, currentCount: $currentCount)';
+  return 'GiftModel(id: $id, itemId: $itemId, name: $name, imageUrl: $imageUrl, price: $price, type: $type, isEvent: $isEvent, eventEndDate: $eventEndDate, description: $description, category: $category, quantity: $quantity, requiredCount: $requiredCount, currentCount: $currentCount)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $GiftModelCopyWith<$Res>  {
   factory $GiftModelCopyWith(GiftModel value, $Res Function(GiftModel) _then) = _$GiftModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String name,@JsonKey(name: 'image_url') String imageUrl, double? price, String type,@JsonKey(name: 'is_event') bool isEvent,@JsonKey(name: 'event_end_date') DateTime? eventEndDate, String? description, String? category,@JsonKey(name: 'quantity') int quantity,@JsonKey(name: 'required_count') int requiredCount,@JsonKey(name: 'current_count') int currentCount
+ String id,@JsonKey(name: 'item_id') String? itemId, String name,@JsonKey(name: 'image_url') String imageUrl, double? price, String type,@JsonKey(name: 'is_event') bool isEvent,@JsonKey(name: 'event_end_date') DateTime? eventEndDate, String? description, String? category,@JsonKey(name: 'quantity') int quantity,@JsonKey(name: 'required_count') int requiredCount,@JsonKey(name: 'current_count') int currentCount
 });
 
 
@@ -65,10 +65,11 @@ class _$GiftModelCopyWithImpl<$Res>
 
 /// Create a copy of GiftModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? imageUrl = null,Object? price = freezed,Object? type = null,Object? isEvent = null,Object? eventEndDate = freezed,Object? description = freezed,Object? category = freezed,Object? quantity = null,Object? requiredCount = null,Object? currentCount = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? itemId = freezed,Object? name = null,Object? imageUrl = null,Object? price = freezed,Object? type = null,Object? isEvent = null,Object? eventEndDate = freezed,Object? description = freezed,Object? category = freezed,Object? quantity = null,Object? requiredCount = null,Object? currentCount = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,itemId: freezed == itemId ? _self.itemId : itemId // ignore: cast_nullable_to_non_nullable
+as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,imageUrl: null == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double?,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -164,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name, @JsonKey(name: 'image_url')  String imageUrl,  double? price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category, @JsonKey(name: 'quantity')  int quantity, @JsonKey(name: 'required_count')  int requiredCount, @JsonKey(name: 'current_count')  int currentCount)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'item_id')  String? itemId,  String name, @JsonKey(name: 'image_url')  String imageUrl,  double? price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category, @JsonKey(name: 'quantity')  int quantity, @JsonKey(name: 'required_count')  int requiredCount, @JsonKey(name: 'current_count')  int currentCount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GiftModel() when $default != null:
-return $default(_that.id,_that.name,_that.imageUrl,_that.price,_that.type,_that.isEvent,_that.eventEndDate,_that.description,_that.category,_that.quantity,_that.requiredCount,_that.currentCount);case _:
+return $default(_that.id,_that.itemId,_that.name,_that.imageUrl,_that.price,_that.type,_that.isEvent,_that.eventEndDate,_that.description,_that.category,_that.quantity,_that.requiredCount,_that.currentCount);case _:
   return orElse();
 
 }
@@ -185,10 +186,10 @@ return $default(_that.id,_that.name,_that.imageUrl,_that.price,_that.type,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name, @JsonKey(name: 'image_url')  String imageUrl,  double? price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category, @JsonKey(name: 'quantity')  int quantity, @JsonKey(name: 'required_count')  int requiredCount, @JsonKey(name: 'current_count')  int currentCount)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'item_id')  String? itemId,  String name, @JsonKey(name: 'image_url')  String imageUrl,  double? price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category, @JsonKey(name: 'quantity')  int quantity, @JsonKey(name: 'required_count')  int requiredCount, @JsonKey(name: 'current_count')  int currentCount)  $default,) {final _that = this;
 switch (_that) {
 case _GiftModel():
-return $default(_that.id,_that.name,_that.imageUrl,_that.price,_that.type,_that.isEvent,_that.eventEndDate,_that.description,_that.category,_that.quantity,_that.requiredCount,_that.currentCount);case _:
+return $default(_that.id,_that.itemId,_that.name,_that.imageUrl,_that.price,_that.type,_that.isEvent,_that.eventEndDate,_that.description,_that.category,_that.quantity,_that.requiredCount,_that.currentCount);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +206,10 @@ return $default(_that.id,_that.name,_that.imageUrl,_that.price,_that.type,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name, @JsonKey(name: 'image_url')  String imageUrl,  double? price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category, @JsonKey(name: 'quantity')  int quantity, @JsonKey(name: 'required_count')  int requiredCount, @JsonKey(name: 'current_count')  int currentCount)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'item_id')  String? itemId,  String name, @JsonKey(name: 'image_url')  String imageUrl,  double? price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category, @JsonKey(name: 'quantity')  int quantity, @JsonKey(name: 'required_count')  int requiredCount, @JsonKey(name: 'current_count')  int currentCount)?  $default,) {final _that = this;
 switch (_that) {
 case _GiftModel() when $default != null:
-return $default(_that.id,_that.name,_that.imageUrl,_that.price,_that.type,_that.isEvent,_that.eventEndDate,_that.description,_that.category,_that.quantity,_that.requiredCount,_that.currentCount);case _:
+return $default(_that.id,_that.itemId,_that.name,_that.imageUrl,_that.price,_that.type,_that.isEvent,_that.eventEndDate,_that.description,_that.category,_that.quantity,_that.requiredCount,_that.currentCount);case _:
   return null;
 
 }
@@ -220,10 +221,11 @@ return $default(_that.id,_that.name,_that.imageUrl,_that.price,_that.type,_that.
 @JsonSerializable()
 
 class _GiftModel implements GiftModel {
-  const _GiftModel({required this.id, required this.name, @JsonKey(name: 'image_url') required this.imageUrl, this.price = 0.0, this.type = 'normal', @JsonKey(name: 'is_event') this.isEvent = false, @JsonKey(name: 'event_end_date') this.eventEndDate, this.description, this.category, @JsonKey(name: 'quantity') this.quantity = 0, @JsonKey(name: 'required_count') this.requiredCount = 0, @JsonKey(name: 'current_count') this.currentCount = 0});
+  const _GiftModel({required this.id, @JsonKey(name: 'item_id') this.itemId, required this.name, @JsonKey(name: 'image_url') required this.imageUrl, this.price = 0.0, this.type = 'normal', @JsonKey(name: 'is_event') this.isEvent = false, @JsonKey(name: 'event_end_date') this.eventEndDate, this.description, this.category, @JsonKey(name: 'quantity') this.quantity = 0, @JsonKey(name: 'required_count') this.requiredCount = 0, @JsonKey(name: 'current_count') this.currentCount = 0});
   factory _GiftModel.fromJson(Map<String, dynamic> json) => _$GiftModelFromJson(json);
 
 @override final  String id;
+@override@JsonKey(name: 'item_id') final  String? itemId;
 @override final  String name;
 @override@JsonKey(name: 'image_url') final  String imageUrl;
 @override@JsonKey() final  double? price;
@@ -249,16 +251,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GiftModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.price, price) || other.price == price)&&(identical(other.type, type) || other.type == type)&&(identical(other.isEvent, isEvent) || other.isEvent == isEvent)&&(identical(other.eventEndDate, eventEndDate) || other.eventEndDate == eventEndDate)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.requiredCount, requiredCount) || other.requiredCount == requiredCount)&&(identical(other.currentCount, currentCount) || other.currentCount == currentCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GiftModel&&(identical(other.id, id) || other.id == id)&&(identical(other.itemId, itemId) || other.itemId == itemId)&&(identical(other.name, name) || other.name == name)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.price, price) || other.price == price)&&(identical(other.type, type) || other.type == type)&&(identical(other.isEvent, isEvent) || other.isEvent == isEvent)&&(identical(other.eventEndDate, eventEndDate) || other.eventEndDate == eventEndDate)&&(identical(other.description, description) || other.description == description)&&(identical(other.category, category) || other.category == category)&&(identical(other.quantity, quantity) || other.quantity == quantity)&&(identical(other.requiredCount, requiredCount) || other.requiredCount == requiredCount)&&(identical(other.currentCount, currentCount) || other.currentCount == currentCount));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,imageUrl,price,type,isEvent,eventEndDate,description,category,quantity,requiredCount,currentCount);
+int get hashCode => Object.hash(runtimeType,id,itemId,name,imageUrl,price,type,isEvent,eventEndDate,description,category,quantity,requiredCount,currentCount);
 
 @override
 String toString() {
-  return 'GiftModel(id: $id, name: $name, imageUrl: $imageUrl, price: $price, type: $type, isEvent: $isEvent, eventEndDate: $eventEndDate, description: $description, category: $category, quantity: $quantity, requiredCount: $requiredCount, currentCount: $currentCount)';
+  return 'GiftModel(id: $id, itemId: $itemId, name: $name, imageUrl: $imageUrl, price: $price, type: $type, isEvent: $isEvent, eventEndDate: $eventEndDate, description: $description, category: $category, quantity: $quantity, requiredCount: $requiredCount, currentCount: $currentCount)';
 }
 
 
@@ -269,7 +271,7 @@ abstract mixin class _$GiftModelCopyWith<$Res> implements $GiftModelCopyWith<$Re
   factory _$GiftModelCopyWith(_GiftModel value, $Res Function(_GiftModel) _then) = __$GiftModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name,@JsonKey(name: 'image_url') String imageUrl, double? price, String type,@JsonKey(name: 'is_event') bool isEvent,@JsonKey(name: 'event_end_date') DateTime? eventEndDate, String? description, String? category,@JsonKey(name: 'quantity') int quantity,@JsonKey(name: 'required_count') int requiredCount,@JsonKey(name: 'current_count') int currentCount
+ String id,@JsonKey(name: 'item_id') String? itemId, String name,@JsonKey(name: 'image_url') String imageUrl, double? price, String type,@JsonKey(name: 'is_event') bool isEvent,@JsonKey(name: 'event_end_date') DateTime? eventEndDate, String? description, String? category,@JsonKey(name: 'quantity') int quantity,@JsonKey(name: 'required_count') int requiredCount,@JsonKey(name: 'current_count') int currentCount
 });
 
 
@@ -286,10 +288,11 @@ class __$GiftModelCopyWithImpl<$Res>
 
 /// Create a copy of GiftModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? imageUrl = null,Object? price = freezed,Object? type = null,Object? isEvent = null,Object? eventEndDate = freezed,Object? description = freezed,Object? category = freezed,Object? quantity = null,Object? requiredCount = null,Object? currentCount = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? itemId = freezed,Object? name = null,Object? imageUrl = null,Object? price = freezed,Object? type = null,Object? isEvent = null,Object? eventEndDate = freezed,Object? description = freezed,Object? category = freezed,Object? quantity = null,Object? requiredCount = null,Object? currentCount = null,}) {
   return _then(_GiftModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,itemId: freezed == itemId ? _self.itemId : itemId // ignore: cast_nullable_to_non_nullable
+as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,imageUrl: null == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double?,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable

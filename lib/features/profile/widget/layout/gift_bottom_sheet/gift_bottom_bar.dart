@@ -131,7 +131,8 @@ class GiftBottomBar extends StatelessWidget {
         ),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (isLoading) ...[
             const SizedBox(
@@ -142,7 +143,6 @@ class GiftBottomBar extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
             ),
-            const SizedBox(width: 8),
           ],
           Text(
             isLoading ? '' : 'Send',

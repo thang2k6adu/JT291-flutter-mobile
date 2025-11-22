@@ -13,11 +13,24 @@ import 'package:jt291_flutter_mobile/data/providers/wallet/wallet_summary_provid
 import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/diamond_screen/monthly_card_section.dart';
 import 'package:jt291_flutter_mobile/data/providers/wallet/recharge_packages_provider.dart';
 
-class DiamondScreen extends ConsumerWidget {
+class DiamondScreen extends ConsumerStatefulWidget {
   const DiamondScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DiamondScreen> createState() => _DiamondScreenState();
+}
+
+class _DiamondScreenState extends ConsumerState<DiamondScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(walletSummaryProvider.notifier).refresh();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final walletSummaryAsync = ref.watch(walletSummaryProvider);
     final rechargePackagesAsync = ref.watch(rechargePackagesProvider);
 

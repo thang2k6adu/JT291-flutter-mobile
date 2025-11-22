@@ -48,7 +48,7 @@ class GiftController extends AutoDisposeNotifier<void> {
           .read(giftServiceProvider)
           .sendGift(
             recipientId: recipientId,
-            itemId: itemId,
+            giftItemId: itemId,
             quantity: quantity,
           );
 

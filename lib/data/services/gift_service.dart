@@ -142,7 +142,8 @@ class GiftService {
   /// ```
   Future<ApiResponse<Map<String, dynamic>>?> sendGift({
     required String recipientId,
-    required String itemId,
+    String? itemId,
+    String? giftItemId,
     required int quantity,
   }) async {
     print(
@@ -156,7 +157,8 @@ class GiftService {
         '/gifts',
         data: {
           'receiver_id': recipientId,
-          'gift_item_id': itemId,
+          'gift_item_id': giftItemId ?? '',
+          'item_id': itemId ?? '',
           'quantity': quantity,
           'message': "Test Message",
         },

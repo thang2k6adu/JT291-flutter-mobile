@@ -8,6 +8,7 @@ part of 'gift_model.dart';
 
 _GiftModel _$GiftModelFromJson(Map<String, dynamic> json) => _GiftModel(
   id: json['id'] as String,
+  itemId: json['item_id'] as String?,
   name: json['name'] as String,
   imageUrl: json['image_url'] as String,
   price: (json['price'] as num?)?.toDouble() ?? 0.0,
@@ -26,6 +27,7 @@ _GiftModel _$GiftModelFromJson(Map<String, dynamic> json) => _GiftModel(
 Map<String, dynamic> _$GiftModelToJson(_GiftModel instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'item_id': instance.itemId,
       'name': instance.name,
       'image_url': instance.imageUrl,
       'price': instance.price,

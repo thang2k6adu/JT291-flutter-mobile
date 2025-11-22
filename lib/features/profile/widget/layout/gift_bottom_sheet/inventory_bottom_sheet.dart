@@ -9,6 +9,7 @@ import 'package:jt291_flutter_mobile/features/profile/controllers/inventory_cont
 import 'package:jt291_flutter_mobile/features/profile/widget/ui/gift_item.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_bottom_bar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_bottom_sheet.dart';
+import 'package:jt291_flutter_mobile/data/providers/wallet/wallet_summary_provider.dart';
 
 class InventoryBottomSheet extends ConsumerStatefulWidget {
   final String userId;
@@ -43,6 +44,7 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final inventoryState = ref.watch(myInventoryProvider);
+    final walletSummaryState = ref.watch(walletSummaryProvider);
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
@@ -139,13 +141,14 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
 
           // Bottom bar with send button
           GiftBottomBar(
-            walletBalance: 10000, // This is just for UI, not used for inventory
+            walletBalance: walletSummaryState.value?.totalDiamondBalance.toInt() ?? 0, // This is just for UI, not used for inventory
             quickQuantities: _quickQuantities,
             selectedQuantity: _selectedQuantity,
             isLoading: _isSending,
             selectedGift: _selectedItem != null
                 ? GiftModel(
                     id: _selectedItem!.id,
+                    itemId: _selectedItem!.itemId,
                     name: _selectedItem!.name,
                     imageUrl: _selectedItem!.imageUrl,
                     price: _selectedItem!.price,

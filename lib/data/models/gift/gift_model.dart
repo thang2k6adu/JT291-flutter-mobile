@@ -8,6 +8,7 @@ part 'gift_model.g.dart';
 abstract class GiftModel with _$GiftModel {
   const factory GiftModel({
     required String id,
+    @JsonKey(name: 'item_id') String? itemId,
     required String name,
     @JsonKey(name: 'image_url') required String imageUrl,
     @Default(0.0) double? price,
