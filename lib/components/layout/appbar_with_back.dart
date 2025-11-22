@@ -58,7 +58,7 @@ class AppBarWithBack extends StatelessWidget
         style: TextStyle(
           color: textColor,
           fontSize: 18,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
         ),
       ),
       centerTitle: centerTitle,

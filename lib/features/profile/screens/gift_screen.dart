@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
+import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
 class GiftScreen extends StatefulWidget {
   const GiftScreen({super.key});
@@ -13,15 +15,78 @@ class _GiftScreenState extends State<GiftScreen>
   late TabController _tabController;
 
   final List<GiftItem> gifts = [
-    GiftItem(id: 1, name: 'Quà tặng 1', progress: 5, total: 10, icon: '🐷', isUnlocked: true),
-    GiftItem(id: 2, name: 'Quà tặng 2', progress: 1, total: 10, icon: '🎁', isUnlocked: true),
-    GiftItem(id: 3, name: 'Quà tặng 3', progress: 1, total: 10, icon: '✊', isUnlocked: true),
-    GiftItem(id: 4, name: 'Quà tặng 4', progress: 1, total: 10, icon: '🥦', isUnlocked: true),
-    GiftItem(id: 5, name: 'Quà tặng 5', progress: 0, total: 10, icon: '🔫', isUnlocked: false),
-    GiftItem(id: 6, name: 'Quà tặng 6', progress: 1, total: 10, icon: '🐥', isUnlocked: true),
-    GiftItem(id: 7, name: 'Quà tặng 7', progress: 1, total: 10, icon: '🎫', isUnlocked: true),
-    GiftItem(id: 8, name: 'Quà tặng 8', progress: 0, total: 10, icon: '🍪', isUnlocked: false),
-    GiftItem(id: 9, name: 'Quà tặng 9', progress: 0, total: 10, icon: '🐥', isUnlocked: false),
+    GiftItem(
+      id: 1,
+      name: 'Quà tặng 1',
+      progress: 5,
+      total: 10,
+      icon: '🐷',
+      isUnlocked: true,
+    ),
+    GiftItem(
+      id: 2,
+      name: 'Quà tặng 2',
+      progress: 1,
+      total: 10,
+      icon: '🎁',
+      isUnlocked: true,
+    ),
+    GiftItem(
+      id: 3,
+      name: 'Quà tặng 3',
+      progress: 1,
+      total: 10,
+      icon: '✊',
+      isUnlocked: true,
+    ),
+    GiftItem(
+      id: 4,
+      name: 'Quà tặng 4',
+      progress: 1,
+      total: 10,
+      icon: '🥦',
+      isUnlocked: true,
+    ),
+    GiftItem(
+      id: 5,
+      name: 'Quà tặng 5',
+      progress: 0,
+      total: 10,
+      icon: '🔫',
+      isUnlocked: false,
+    ),
+    GiftItem(
+      id: 6,
+      name: 'Quà tặng 6',
+      progress: 1,
+      total: 10,
+      icon: '🐥',
+      isUnlocked: true,
+    ),
+    GiftItem(
+      id: 7,
+      name: 'Quà tặng 7',
+      progress: 1,
+      total: 10,
+      icon: '🎫',
+      isUnlocked: true,
+    ),
+    GiftItem(
+      id: 8,
+      name: 'Quà tặng 8',
+      progress: 0,
+      total: 10,
+      icon: '🍪',
+      isUnlocked: false,
+    ),
+    GiftItem(
+      id: 9,
+      name: 'Quà tặng 9',
+      progress: 0,
+      total: 10,
+      icon: '🐥',
+      isUnlocked: false,
+    ),
   ];
 
   @override
@@ -42,6 +107,8 @@ class _GiftScreenState extends State<GiftScreen>
       backgroundColor: Colors.black,
       appBar: AppBarWithBack(
         title: 'Gift',
+        backgroundColor: Colors.transparent,
+        textColor: Colors.white,
       ),
       body: Column(
         children: [
@@ -49,86 +116,63 @@ class _GiftScreenState extends State<GiftScreen>
           Container(
             padding: const EdgeInsets.all(20),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Avatar
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                    image: const DecorationImage(
-                      image: NetworkImage('https://via.placeholder.com/80'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                // User Info
+                // Left: User Detail (Column)
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Avatar
+                      AvatarWidget(
+                        image: NetworkImage(
+                          'https://bom.edu.vn/public/upload/2024/12/meme-buaa-17.webp',
+                        ),
+                        size: 62,
+                        borderWidth: 1.38,
+                        showGlow: true,
+                      ),
+                      const SizedBox(height: 12),
+                      // User Info
                       const Text(
                         'Darlene Bears',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
+                      Text(
                         'Help me light up the Gift Wall.',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: Colors.grey[400] , fontSize: 14, fontWeight: FontWeight.w500  ),
                       ),
                     ],
                   ),
                 ),
-                // Level Badge
+                const SizedBox(width: 16),
+                // Right: Level Badge
                 Column(
                   children: [
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [Colors.orange.shade300, Colors.orange.shade700],
-                        ),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          '👑',
-                          style: TextStyle(fontSize: 30),
-                        ),
-                      ),
-                    ),
+                    Image.asset(AppIcons.badge1Png, width: 74, height: 74),
                     const SizedBox(height: 4),
                     const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.star, color: Colors.yellow, size: 16),
                         Text(
-                          ' 112/200',
+                          '112/200',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
                     const Text(
                       'Level 34',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),
@@ -199,10 +243,7 @@ class _GiftScreenState extends State<GiftScreen>
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.1),
-          width: 1,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.1), width: 1),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -256,10 +297,7 @@ class _GiftScreenState extends State<GiftScreen>
                 ),
                 TextSpan(
                   text: '/${gift.total}',
-                  style: const TextStyle(
-                    color: Colors.white54,
-                    fontSize: 14,
-                  ),
+                  style: const TextStyle(color: Colors.white54, fontSize: 14),
                 ),
               ],
             ),

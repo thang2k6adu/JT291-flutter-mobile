@@ -29,7 +29,7 @@ class UserAvatarSection extends StatelessWidget {
         image: imageProvider,
         size: 90,
         borderWidth: 1,
-        showGlow: false,
+        showGlow: true,
       ),
     );
   }
