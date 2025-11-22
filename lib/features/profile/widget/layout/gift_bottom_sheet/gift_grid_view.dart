@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
 import 'package:jt291_flutter_mobile/data/providers/gift/gift_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/controllers/gift_controller.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_item.dart';
+import 'package:jt291_flutter_mobile/core/utils/number_utils.dart';
 
 class GiftGridView extends ConsumerWidget {
   final TabController tabController;
@@ -49,6 +51,20 @@ class GiftGridView extends ConsumerWidget {
                 return GiftItemWidget(
                   gift: gift,
                   isSelected: isSelected,
+                  contentWidget: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(AppIcons.diamondPng, width: 10, height: 10),
+                      Text(
+                        ' ${convertToCompactFormNumber(gift.price ?? 0)}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
                   onTap: () => onGiftSelected(gift),
                 );
               },
@@ -74,10 +90,7 @@ class GiftGridView extends ConsumerWidget {
           const SizedBox(height: 16),
           Text(
             'No gifts available',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade500,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey.shade500),
           ),
         ],
       ),
@@ -86,9 +99,7 @@ class GiftGridView extends ConsumerWidget {
 
   Widget _buildLoadingState() {
     return const Center(
-      child: CircularProgressIndicator(
-        color: Color(0xFFFF6B9D),
-      ),
+      child: CircularProgressIndicator(color: Color(0xFFFF6B9D)),
     );
   }
 
@@ -97,18 +108,11 @@ class GiftGridView extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red.shade300,
-          ),
+          Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
           const SizedBox(height: 16),
           Text(
             'Error loading gifts',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade700,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
           ),
           const SizedBox(height: 8),
           TextButton(

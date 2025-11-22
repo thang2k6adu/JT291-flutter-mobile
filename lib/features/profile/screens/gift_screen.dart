@@ -1,93 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
 import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
+import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
+import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
+import 'package:jt291_flutter_mobile/data/providers/gift/gift_wall_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
+import 'package:jt291_flutter_mobile/features/profile/controllers/gift_wall_controller.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_item.dart';
 
-class GiftScreen extends StatefulWidget {
+class GiftScreen extends ConsumerStatefulWidget {
   const GiftScreen({super.key});
 
   @override
-  State<GiftScreen> createState() => _GiftScreenState();
+  ConsumerState<GiftScreen> createState() => _GiftScreenState();
 }
 
-class _GiftScreenState extends State<GiftScreen>
+class _GiftScreenState extends ConsumerState<GiftScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  final List<GiftItem> gifts = [
-    GiftItem(
-      id: 1,
-      name: 'Quà tặng 1',
-      progress: 5,
-      total: 10,
-      icon: '🐷',
-      isUnlocked: true,
-    ),
-    GiftItem(
-      id: 2,
-      name: 'Quà tặng 2',
-      progress: 1,
-      total: 10,
-      icon: '🎁',
-      isUnlocked: true,
-    ),
-    GiftItem(
-      id: 3,
-      name: 'Quà tặng 3',
-      progress: 1,
-      total: 10,
-      icon: '✊',
-      isUnlocked: true,
-    ),
-    GiftItem(
-      id: 4,
-      name: 'Quà tặng 4',
-      progress: 1,
-      total: 10,
-      icon: '🥦',
-      isUnlocked: true,
-    ),
-    GiftItem(
-      id: 5,
-      name: 'Quà tặng 5',
-      progress: 0,
-      total: 10,
-      icon: '🔫',
-      isUnlocked: false,
-    ),
-    GiftItem(
-      id: 6,
-      name: 'Quà tặng 6',
-      progress: 1,
-      total: 10,
-      icon: '🐥',
-      isUnlocked: true,
-    ),
-    GiftItem(
-      id: 7,
-      name: 'Quà tặng 7',
-      progress: 1,
-      total: 10,
-      icon: '🎫',
-      isUnlocked: true,
-    ),
-    GiftItem(
-      id: 8,
-      name: 'Quà tặng 8',
-      progress: 0,
-      total: 10,
-      icon: '🍪',
-      isUnlocked: false,
-    ),
-    GiftItem(
-      id: 9,
-      name: 'Quà tặng 9',
-      progress: 0,
-      total: 10,
-      icon: '🐥',
-      isUnlocked: false,
-    ),
-  ];
 
   @override
   void initState() {
@@ -103,6 +35,8 @@ class _GiftScreenState extends State<GiftScreen>
 
   @override
   Widget build(BuildContext context) {
+    final userAsync = ref.watch(userGeneralProvider);
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBarWithBack(
@@ -110,111 +44,71 @@ class _GiftScreenState extends State<GiftScreen>
         backgroundColor: Colors.transparent,
         textColor: Colors.white,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          // Profile Section
-          Container(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Left: User Detail (Column)
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Avatar
-                      AvatarWidget(
-                        image: NetworkImage(
-                          'https://bom.edu.vn/public/upload/2024/12/meme-buaa-17.webp',
-                        ),
-                        size: 62,
-                        borderWidth: 1.38,
-                        showGlow: true,
-                      ),
-                      const SizedBox(height: 12),
-                      // User Info
-                      const Text(
-                        'Darlene Bears',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Help me light up the Gift Wall.',
-                        style: TextStyle(color: Colors.grey[400] , fontSize: 14, fontWeight: FontWeight.w500  ),
-                      ),
-                    ],
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bg_image.png', // đường dẫn đến ảnh của bạn
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          userAsync.when(
+            data: (user) {
+              if (user == null) {
+                return const Center(
+                  child: Text(
+                    'Không thể tải thông tin người dùng',
+                    style: TextStyle(color: Colors.white54),
                   ),
-                ),
-                const SizedBox(width: 16),
-                // Right: Level Badge
-                Column(
-                  children: [
-                    Image.asset(AppIcons.badge1Png, width: 74, height: 74),
-                    const SizedBox(height: 4),
-                    const Row(
-                      mainAxisSize: MainAxisSize.min,
+                );
+              }
+
+              return Column(
+                children: [
+                  // Profile Section
+                  _buildProfileSection(user),
+                  // Tab Bar
+                  _buildTabBar(),
+                  // Gift Grid
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
                       children: [
-                        Icon(Icons.star, color: Colors.yellow, size: 16),
-                        Text(
-                          '112/200',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
+                        _buildGiftWallTab(),
+                        const Center(
+                          child: Text(
+                            'Quà tặng gần đây',
+                            style: TextStyle(color: Colors.white54),
                           ),
                         ),
                       ],
                     ),
-                    const Text(
-                      'Level 34',
-                      style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          // Tab Bar
-          Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: Colors.white12, width: 1),
-              ),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              indicatorColor: Colors.pink,
-              indicatorWeight: 3,
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white54,
-              labelStyle: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-              tabs: const [
-                Tab(text: 'Tường quà tặng'),
-                Tab(text: 'Quà tặng gần đây'),
-              ],
-            ),
-          ),
-          // Gift Grid
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildGiftGrid(),
-                const Center(
-                  child: Text(
-                    'Quà tặng gần đây',
-                    style: TextStyle(color: Colors.white54),
                   ),
-                ),
-              ],
+                ],
+              );
+            },
+            loading: () => const Center(
+              child: CircularProgressIndicator(color: Colors.pink),
+            ),
+            error: (error, stack) => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Lỗi: $error',
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      ref.invalidate(userGeneralProvider);
+                    },
+                    child: const Text('Thử lại'),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -222,7 +116,168 @@ class _GiftScreenState extends State<GiftScreen>
     );
   }
 
-  Widget _buildGiftGrid() {
+  Widget _buildProfileSection(user) {
+    final level = user.level;
+    final currentLevel = level?.currentLevel ?? 0;
+    final currentExp = level?.currentExp ?? 0;
+    final nextLevelExp = level?.nextLevelExp ?? 50;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Left: User Detail (Column)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Avatar
+                AvatarWidget(
+                  image: user.avatar.isNotEmpty
+                      ? NetworkImage(user.avatar)
+                      : const AssetImage('assets/images/default_avatar.png')
+                            as ImageProvider,
+                  size: 62,
+                  borderWidth: 1.38,
+                  showGlow: true,
+                ),
+                const SizedBox(height: 12),
+                // User Info
+                Text(
+                  user.nickname,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  user.bio ?? 'Help me light up the Gift Wall.',
+                  style: TextStyle(
+                    color: Colors.grey[400],
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 16),
+          // Right: Level Badge
+          Column(
+            children: [
+              Image.asset(AppIcons.badge1Png, width: 74, height: 74),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.star, color: Colors.yellow, size: 16),
+                  Text(
+                    '$currentExp/$nextLevelExp',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                'Level $currentLevel',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTabBar() {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.white12, width: 1)),
+      ),
+      child: TabBar(
+        controller: _tabController,
+        indicatorColor: Colors.pink,
+        indicatorWeight: 3,
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.white54,
+        labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        tabs: const [
+          Tab(text: 'Tường quà tặng'),
+          Tab(text: 'Quà tặng gần đây'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGiftWallTab() {
+    final giftWallAsync = ref.watch(myGiftWallProvider);
+    final controller = ref.read(giftWallControllerProvider.notifier);
+
+    return giftWallAsync.when(
+      data: (gifts) {
+        if (gifts.isEmpty) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              await controller.refresh();
+            },
+            child: ListView(
+              children: const [
+                SizedBox(height: 200),
+                Center(
+                  child: Text(
+                    'Chưa có quà tặng nào',
+                    style: TextStyle(color: Colors.white54),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            await controller.refresh();
+          },
+          child: _buildGiftGrid(gifts),
+        );
+      },
+      loading: () =>
+          const Center(child: CircularProgressIndicator(color: Colors.pink)),
+      error: (error, stack) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Lỗi: $error',
+              style: const TextStyle(color: Colors.red),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                controller.refresh();
+              },
+              child: const Text('Thử lại'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGiftGrid(List<GiftModel> gifts) {
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -233,95 +288,38 @@ class _GiftScreenState extends State<GiftScreen>
       ),
       itemCount: gifts.length,
       itemBuilder: (context, index) {
-        return _buildGiftCard(gifts[index]);
+        return GiftItemWidget(
+          gift: gifts[index],
+          color: Colors.white.withValues(alpha: 0.1),
+          nameStyle: const TextStyle(
+            fontSize: 12,
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+          height: 6,
+          contentWidget: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '${gifts[index].currentCount}',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary,
+                ),
+              ),
+              Text(
+                '/${gifts[index].requiredCount}',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
-
-  Widget _buildGiftCard(GiftItem gift) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1), width: 1),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Gift Icon
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: gift.isUnlocked
-                    ? [Colors.purple.shade400, Colors.blue.shade600]
-                    : [Colors.grey.shade800, Colors.grey.shade900],
-              ),
-            ),
-            child: Center(
-              child: Text(
-                gift.icon,
-                style: TextStyle(
-                  fontSize: 35,
-                  color: gift.isUnlocked ? Colors.white : Colors.white24,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          // Gift Name
-          Text(
-            gift.name,
-            style: TextStyle(
-              color: gift.isUnlocked ? Colors.white : Colors.white38,
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 2),
-          // Progress
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: '${gift.progress}',
-                  style: TextStyle(
-                    color: gift.progress > 0 ? Colors.pink : Colors.white38,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextSpan(
-                  text: '/${gift.total}',
-                  style: const TextStyle(color: Colors.white54, fontSize: 14),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class GiftItem {
-  final int id;
-  final String name;
-  final int progress;
-  final int total;
-  final String icon;
-  final bool isUnlocked;
-
-  GiftItem({
-    required this.id,
-    required this.name,
-    required this.progress,
-    required this.total,
-    required this.icon,
-    required this.isUnlocked,
-  });
 }

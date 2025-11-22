@@ -84,11 +84,15 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
                     return GiftItemWidget(
                       gift: item,
                       isSelected: _selectedItem?.id == item.id,
-                      quantity: item.quantity,
-                      showQuantity: true, // Show quantity instead of price
-                      onTap: () {
-                        setState(() => _selectedItem = item);
-                      },
+                      contentWidget: Text(
+                        'x${item.quantity}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      onTap: () => setState(() => _selectedItem = item),
                     );
                   },
                 );
@@ -162,7 +166,6 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
       ),
     );
   }
-  
 
   Widget _buildHeader() {
     return Container(
@@ -198,10 +201,8 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => GiftBottomSheet(
-        userId: widget.userId,
-        userName: widget.userName,
-      ),
+      builder: (context) =>
+          GiftBottomSheet(userId: widget.userId, userName: widget.userName),
     );
   }
 
