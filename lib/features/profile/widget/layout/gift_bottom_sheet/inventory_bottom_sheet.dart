@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 import 'package:jt291_flutter_mobile/data/models/gift/inventory_item_model.dart';
@@ -51,14 +52,14 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
             child: inventoryState.when(
               data: (items) {
                 if (items.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.inventory_2_outlined,
-                          size: 64,
-                          color: Colors.grey,
+                        Image.asset(
+                          AppIcons.noItemAvailablePng,
+                          width: 100,
+                          height: 100,
                         ),
                         SizedBox(height: 16),
                         Text(
@@ -244,7 +245,7 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
 
     final success = await controller.sendGift(
       context,
-      recipientId: int.parse(widget.userId),
+      recipientId: widget.userId,
       itemId: _selectedItem!.id,
       quantity: _selectedQuantity,
     );

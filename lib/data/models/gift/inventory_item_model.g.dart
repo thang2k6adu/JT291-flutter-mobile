@@ -8,10 +8,10 @@ part of 'inventory_item_model.dart';
 
 _InventoryItemModel _$InventoryItemModelFromJson(Map<String, dynamic> json) =>
     _InventoryItemModel(
-      id: (json['id'] as num).toInt(),
+      id: json['id'] as String,
       name: json['name'] as String,
       imageUrl: json['image_url'] as String,
-      price: (json['price'] as num).toInt(),
+      price: (json['price'] as num).toDouble(),
       type: json['type'] as String? ?? 'normal',
       quantity: (json['quantity'] as num).toInt(),
       isEvent: json['is_event'] as bool? ?? false,

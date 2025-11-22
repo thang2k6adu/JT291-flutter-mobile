@@ -8,10 +8,10 @@ part 'inventory_item_model.g.dart';
 @freezed
 abstract class InventoryItemModel with _$InventoryItemModel {
   const factory InventoryItemModel({
-    required int id,
+    required String id,
     required String name,
     @JsonKey(name: 'image_url') required String imageUrl,
-    required int price,
+    required double price,
     @Default('normal') String type,
     required int quantity,
     @JsonKey(name: 'is_event') @Default(false) bool isEvent,

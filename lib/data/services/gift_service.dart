@@ -144,8 +144,8 @@ class GiftService {
   /// }
   /// ```
   Future<ApiResponse<Map<String, dynamic>>?> sendGift({
-    required int recipientId,
-    required int itemId,
+    required String recipientId,
+    required String itemId,
     required int quantity,
   }) async {
     print('GiftService.sendGift: recipientId=$recipientId, itemId=$itemId, quantity=$quantity');
@@ -172,7 +172,8 @@ class GiftService {
 
     // Mock data
     await Future.delayed(const Duration(milliseconds: 800));
-
+  
+    print('GiftService.sendGift: recipientId=$recipientId, itemId=$itemId, quantity=$quantity');
     // Validation
     if (quantity <= 0) {
       return InventoryMock.sendGiftError(
@@ -181,19 +182,18 @@ class GiftService {
       );
     }
 
-    if (recipientId <= 0) {
-      return InventoryMock.sendGiftError(
-        code: 40005,
-        message: 'Invalid recipient ID',
-      );
-    }
+    print('GiftService.sendGift: sending gift success');
 
     // Simulate success
-    return InventoryMock.sendGiftSuccess(
+    final response = InventoryMock.sendGiftSuccess(
       recipientId: recipientId,
       itemId: itemId,
       quantity: quantity,
     );
+
+    print('GiftService.sendGift: response=$response');
+
+    return response;
   }
 }
 

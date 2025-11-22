@@ -132,8 +132,8 @@ class InventoryMock {
 
   /// Mock send gift response
   static ApiResponse<Map<String, dynamic>> sendGiftSuccess({
-    required int recipientId,
-    required int itemId,
+    required String recipientId,
+    required String itemId,
     required int quantity,
   }) {
     return ApiResponse<Map<String, dynamic>>(

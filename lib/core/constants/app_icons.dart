@@ -66,4 +66,6 @@ class AppIcons {
 
    static const String giftDemoPng = 'lib/assets/icons/gift_demo.png';
    static const String eventTagPng = 'lib/assets/icons/event_tag.png';
+   
+   static const String noItemAvailablePng = 'lib/assets/icons/no_item_available.png';
 }

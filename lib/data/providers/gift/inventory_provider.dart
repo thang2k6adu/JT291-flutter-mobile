@@ -47,7 +47,7 @@ class MyInventoryNotifier extends BasePaginatedNotifier<InventoryItemModel>
   }
 
   /// Update item quantity after sending gift
-  void updateItemQuantity(int itemId, int quantitySent) {
+  void updateItemQuantity(String itemId, int quantitySent) {
     updateItem(
       (item) => item.id == itemId,
       (item) {

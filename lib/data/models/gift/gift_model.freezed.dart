@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GiftModel {
 
- int get id; String get name;@JsonKey(name: 'image_url') String get imageUrl; int get price; String get type;@JsonKey(name: 'is_event') bool get isEvent;@JsonKey(name: 'event_end_date') DateTime? get eventEndDate; String? get description; String? get category;
+ String get id; String get name;@JsonKey(name: 'image_url') String get imageUrl; double get price; String get type;@JsonKey(name: 'is_event') bool get isEvent;@JsonKey(name: 'event_end_date') DateTime? get eventEndDate; String? get description; String? get category;
 /// Create a copy of GiftModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $GiftModelCopyWith<$Res>  {
   factory $GiftModelCopyWith(GiftModel value, $Res Function(GiftModel) _then) = _$GiftModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String name,@JsonKey(name: 'image_url') String imageUrl, int price, String type,@JsonKey(name: 'is_event') bool isEvent,@JsonKey(name: 'event_end_date') DateTime? eventEndDate, String? description, String? category
+ String id, String name,@JsonKey(name: 'image_url') String imageUrl, double price, String type,@JsonKey(name: 'is_event') bool isEvent,@JsonKey(name: 'event_end_date') DateTime? eventEndDate, String? description, String? category
 });
 
 
@@ -68,10 +68,10 @@ class _$GiftModelCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? imageUrl = null,Object? price = null,Object? type = null,Object? isEvent = null,Object? eventEndDate = freezed,Object? description = freezed,Object? category = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,imageUrl: null == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
-as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as double,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,isEvent: null == isEvent ? _self.isEvent : isEvent // ignore: cast_nullable_to_non_nullable
 as bool,eventEndDate: freezed == eventEndDate ? _self.eventEndDate : eventEndDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -161,7 +161,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: 'image_url')  String imageUrl,  int price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name, @JsonKey(name: 'image_url')  String imageUrl,  double price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GiftModel() when $default != null:
 return $default(_that.id,_that.name,_that.imageUrl,_that.price,_that.type,_that.isEvent,_that.eventEndDate,_that.description,_that.category);case _:
@@ -182,7 +182,7 @@ return $default(_that.id,_that.name,_that.imageUrl,_that.price,_that.type,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name, @JsonKey(name: 'image_url')  String imageUrl,  int price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name, @JsonKey(name: 'image_url')  String imageUrl,  double price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category)  $default,) {final _that = this;
 switch (_that) {
 case _GiftModel():
 return $default(_that.id,_that.name,_that.imageUrl,_that.price,_that.type,_that.isEvent,_that.eventEndDate,_that.description,_that.category);case _:
@@ -202,7 +202,7 @@ return $default(_that.id,_that.name,_that.imageUrl,_that.price,_that.type,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name, @JsonKey(name: 'image_url')  String imageUrl,  int price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name, @JsonKey(name: 'image_url')  String imageUrl,  double price,  String type, @JsonKey(name: 'is_event')  bool isEvent, @JsonKey(name: 'event_end_date')  DateTime? eventEndDate,  String? description,  String? category)?  $default,) {final _that = this;
 switch (_that) {
 case _GiftModel() when $default != null:
 return $default(_that.id,_that.name,_that.imageUrl,_that.price,_that.type,_that.isEvent,_that.eventEndDate,_that.description,_that.category);case _:
@@ -220,10 +220,10 @@ class _GiftModel implements GiftModel {
   const _GiftModel({required this.id, required this.name, @JsonKey(name: 'image_url') required this.imageUrl, required this.price, this.type = 'normal', @JsonKey(name: 'is_event') this.isEvent = false, @JsonKey(name: 'event_end_date') this.eventEndDate, this.description, this.category});
   factory _GiftModel.fromJson(Map<String, dynamic> json) => _$GiftModelFromJson(json);
 
-@override final  int id;
+@override final  String id;
 @override final  String name;
 @override@JsonKey(name: 'image_url') final  String imageUrl;
-@override final  int price;
+@override final  double price;
 @override@JsonKey() final  String type;
 @override@JsonKey(name: 'is_event') final  bool isEvent;
 @override@JsonKey(name: 'event_end_date') final  DateTime? eventEndDate;
@@ -263,7 +263,7 @@ abstract mixin class _$GiftModelCopyWith<$Res> implements $GiftModelCopyWith<$Re
   factory _$GiftModelCopyWith(_GiftModel value, $Res Function(_GiftModel) _then) = __$GiftModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name,@JsonKey(name: 'image_url') String imageUrl, int price, String type,@JsonKey(name: 'is_event') bool isEvent,@JsonKey(name: 'event_end_date') DateTime? eventEndDate, String? description, String? category
+ String id, String name,@JsonKey(name: 'image_url') String imageUrl, double price, String type,@JsonKey(name: 'is_event') bool isEvent,@JsonKey(name: 'event_end_date') DateTime? eventEndDate, String? description, String? category
 });
 
 
@@ -283,10 +283,10 @@ class __$GiftModelCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? imageUrl = null,Object? price = null,Object? type = null,Object? isEvent = null,Object? eventEndDate = freezed,Object? description = freezed,Object? category = freezed,}) {
   return _then(_GiftModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,imageUrl: null == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
-as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as double,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String,isEvent: null == isEvent ? _self.isEvent : isEvent // ignore: cast_nullable_to_non_nullable
 as bool,eventEndDate: freezed == eventEndDate ? _self.eventEndDate : eventEndDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable

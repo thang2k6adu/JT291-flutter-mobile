@@ -7,10 +7,10 @@ part 'gift_model.g.dart';
 @freezed
 abstract class GiftModel with _$GiftModel {
   const factory GiftModel({
-    required int id,
+    required String id,
     required String name,
     @JsonKey(name: 'image_url') required String imageUrl,
-    required int price,
+    required double price,
     @Default('normal') String type,
     @JsonKey(name: 'is_event') @Default(false) bool isEvent,
     @JsonKey(name: 'event_end_date') DateTime? eventEndDate,

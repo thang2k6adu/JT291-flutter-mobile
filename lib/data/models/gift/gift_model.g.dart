@@ -7,10 +7,10 @@ part of 'gift_model.dart';
 // **************************************************************************
 
 _GiftModel _$GiftModelFromJson(Map<String, dynamic> json) => _GiftModel(
-  id: (json['id'] as num).toInt(),
+  id: json['id'] as String,
   name: json['name'] as String,
   imageUrl: json['image_url'] as String,
-  price: (json['price'] as num).toInt(),
+  price: (json['price'] as num).toDouble(),
   type: json['type'] as String? ?? 'normal',
   isEvent: json['is_event'] as bool? ?? false,
   eventEndDate: json['event_end_date'] == null

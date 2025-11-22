@@ -107,6 +107,7 @@ class _GiftBottomSheetState extends ConsumerState<GiftBottomSheet>
   }
 
   Future<void> _handleSendGift() async {
+
     if (_selectedGift == null) return;
 
     final totalCost = _selectedGift!.price * _selectedQuantity;
@@ -118,11 +119,29 @@ class _GiftBottomSheetState extends ConsumerState<GiftBottomSheet>
     print('  Total cost: $totalCost diamonds');
     print('  Recipient: ${widget.userName} (${widget.userId})');
 
-    await controller.sendGift(
-      context,
-      giftId: _selectedGift!.id,
+    final result = await controller.sendGift(
+      itemId: _selectedGift!.id.toString(),
       recipientId: widget.userId,
       quantity: _selectedQuantity,
     );
+
+    if (!mounted) return;
+
+    if (result.success) {
+      // Close bottom sheet after successful send
+      if (mounted) {
+        Navigator.pop(context);
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(result.message)));
+    }
+
+    if (!result.success) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(result.message)));
+    }
   }
 }

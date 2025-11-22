@@ -62,9 +62,10 @@ class GiftMock {
   /// Hot gifts
   static final List<GiftModel> _hotGifts = [
     GiftModel(
-      id: 1,
+      id: '1',
       name: 'Rose',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 10,
       type: 'normal',
       isEvent: false,
@@ -72,9 +73,10 @@ class GiftMock {
       description: 'A beautiful red rose',
     ),
     GiftModel(
-      id: 2,
+      id: '2',
       name: 'Chocolate Box',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 20,
       type: 'normal',
       isEvent: false,
@@ -82,9 +84,10 @@ class GiftMock {
       description: 'Sweet chocolate box',
     ),
     GiftModel(
-      id: 3,
+      id: '3',
       name: 'Teddy Bear',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 50,
       type: 'normal',
       isEvent: false,
@@ -96,9 +99,10 @@ class GiftMock {
   /// Event gifts
   static final List<GiftModel> _eventGifts = [
     GiftModel(
-      id: 101,
+      id: '101',
       name: 'Christmas Tree',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 100,
       type: 'normal',
       isEvent: true,
@@ -107,9 +111,10 @@ class GiftMock {
       description: 'Limited Christmas edition',
     ),
     GiftModel(
-      id: 102,
+      id: '102',
       name: 'Fireworks',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 150,
       type: 'normal',
       isEvent: true,
@@ -118,9 +123,10 @@ class GiftMock {
       description: 'New Year special',
     ),
     GiftModel(
-      id: 103,
+      id: '103',
       name: 'Santa Hat',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 30,
       type: 'normal',
       isEvent: true,
@@ -133,9 +139,10 @@ class GiftMock {
   /// Lucky gifts
   static final List<GiftModel> _luckyGifts = [
     GiftModel(
-      id: 201,
+      id: '201',
       name: 'Four Leaf Clover',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 40,
       type: 'normal',
       isEvent: false,
@@ -143,9 +150,10 @@ class GiftMock {
       description: 'Bring good luck',
     ),
     GiftModel(
-      id: 202,
+      id: '202',
       name: 'Lucky Cat',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 60,
       type: 'normal',
       isEvent: false,
@@ -153,9 +161,10 @@ class GiftMock {
       description: 'Japanese fortune cat',
     ),
     GiftModel(
-      id: 203,
+      id: '203',
       name: 'Horseshoe',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 25,
       type: 'normal',
       isEvent: false,
@@ -167,9 +176,10 @@ class GiftMock {
   /// Friendship gifts
   static final List<GiftModel> _friendshipGifts = [
     GiftModel(
-      id: 301,
+      id: '301',
       name: 'Friendship Bracelet',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 35,
       type: 'normal',
       isEvent: false,
@@ -177,9 +187,10 @@ class GiftMock {
       description: 'Best friends forever',
     ),
     GiftModel(
-      id: 302,
+      id: '302',
       name: 'Heart Balloon',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 15,
       type: 'normal',
       isEvent: false,
@@ -187,9 +198,10 @@ class GiftMock {
       description: 'Share the love',
     ),
     GiftModel(
-      id: 303,
+      id: '303',
       name: 'Photo Frame',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 45,
       type: 'normal',
       isEvent: false,
@@ -201,19 +213,21 @@ class GiftMock {
   /// VIP gifts
   static final List<GiftModel> _vipGifts = [
     GiftModel(
-      id: 401,
+      id: '401',
       name: 'Diamond Ring',
-        imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 1000,
-      type: 'VIP',
+      type: 'vip',
       isEvent: false,
       category: 'vip',
       description: 'Luxury diamond ring',
     ),
     GiftModel(
-      id: 402,
+      id: '402',
       name: 'Golden Crown',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 2000,
       type: 'VIP',
       isEvent: false,
@@ -221,9 +235,10 @@ class GiftMock {
       description: 'Royal crown',
     ),
     GiftModel(
-      id: 403,
+      id: '403',
       name: 'Luxury Car',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 5000,
       type: 'VIP',
       isEvent: false,
@@ -231,9 +246,10 @@ class GiftMock {
       description: 'Sports car',
     ),
     GiftModel(
-      id: 404,
+      id: '404',
       name: 'Private Jet',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(1).png',
       price: 10000,
       type: 'VIP',
       isEvent: false,

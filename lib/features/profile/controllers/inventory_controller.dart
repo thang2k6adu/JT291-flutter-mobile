@@ -31,8 +31,8 @@ class InventoryController extends AutoDisposeNotifier<void> {
   /// Send gift from inventory to another user
   Future<bool> sendGift(
     BuildContext context, {
-    required int recipientId,
-    required int itemId,
+    required String recipientId,
+    required String itemId,
     required int quantity,
   }) async {
     try {
