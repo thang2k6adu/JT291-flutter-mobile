@@ -336,4 +336,61 @@ class GiftMock {
       traceId: 'ERROR_${DateTime.now().millisecondsSinceEpoch}',
     );
   }
+
+  /// Mock gift wall milestones data
+  static final List<GiftModel> _giftWallMilestones = [
+    GiftModel(
+      id: '1',
+      name: 'Quà tặng 1',
+      imageUrl: '/images/gift_milestone_1.png',
+      requiredCount: 10,
+      currentCount: 5,
+    ),
+    GiftModel(
+      id: '2',
+      name: 'Quà tặng 2',
+      imageUrl: '/images/gift_milestone_2.png',
+      requiredCount: 10,
+      currentCount: 1,
+    ),
+    GiftModel(
+      id: '3',
+      name: 'Quà tặng 3',
+      imageUrl: '/images/gift_milestone_3.png',
+      requiredCount: 5,
+      currentCount: 5,
+    ),
+  ];
+
+  /// Mock gift wall milestones response
+  /// GET /users/{user_id}/gift-wall-milestones
+  static ApiResponse<PaginatedData<GiftModel>> getGiftWallMilestones({
+    required String userId,
+    int page = 1,
+    int limit = 10,
+  }) {
+    // Pagination logic
+    final startIndex = (page - 1) * limit;
+    final endIndex = startIndex + limit;
+    final paginatedItems = _giftWallMilestones.sublist(
+      startIndex,
+      endIndex > _giftWallMilestones.length ? _giftWallMilestones.length : endIndex,
+    );
+
+    final meta = PaginationMeta(
+      itemCount: paginatedItems.length,
+      totalItems: _giftWallMilestones.length,
+      itemsPerPage: limit,
+      totalPages: (_giftWallMilestones.length / limit).ceil(),
+      currentPage: page,
+    );
+
+    return ApiResponse<PaginatedData<GiftModel>>(
+      error: false,
+      code: 0,
+      message: 'Success',
+      data: PaginatedData<GiftModel>(items: paginatedItems, meta: meta),
+      traceId: 'VIHOLaKaWe',
+    );
+  }
 }

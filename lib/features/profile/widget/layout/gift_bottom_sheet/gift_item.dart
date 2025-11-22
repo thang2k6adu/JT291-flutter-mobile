@@ -98,7 +98,7 @@ class GiftItemWidget extends StatelessWidget {
                   Image.asset(AppIcons.diamondPng, width: 12, height: 12),
                   const SizedBox(width: 2),
                   Text(
-                    '${convertToCompactFormNumber(gift.price)}',
+                    '${convertToCompactFormNumber(gift.price!)}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[600],

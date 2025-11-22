@@ -194,6 +194,60 @@ class GiftService {
 
     return response;
   }
+
+  /// GET /users/{user_id}/gift-wall-milestones
+  /// Lấy danh sách gift milestones trên tường quà của một user
+  /// 
+  /// Parameters:
+  /// - [userId]: ID của user cần xem gift wall
+  /// - [page]: số trang, default: 1
+  /// - [limit]: số items/page, default: 10, max: 50
+  Future<ApiResponse<PaginatedData<GiftModel>>?> getGiftWallMilestones({
+    required String userId,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    print('GiftService.getGiftWallMilestones: userId=$userId, page=$page, limit=$limit');
+
+    // TODO: Implement API call when ready
+    // Uncomment khi API ready:
+    // try {
+    //   final response = await _apiService.get(
+    //     '/users/$userId/gift-wall-milestones',
+    //     queryParameters: {
+    //       'page': page,
+    //       'limit': limit,
+    //     },
+    //   );
+    //   return ApiResponse.fromJson(
+    //     response,
+    //     (json) => PaginatedData.fromJson(
+    //       json as Map<String, dynamic>,
+    //       (item) => GiftModel.fromJson(item as Map<String, dynamic>),
+    //     ),
+    //   );
+    // } catch (e) {
+    //   print('GiftService.getGiftWallMilestones error: $e');
+    //   rethrow;
+    // }
+
+    // Mock data
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // Validate limit
+    if (limit > 50) {
+      return GiftMock.getPaginatedErrorResponse(
+        code: 40002,
+        message: 'Limit cannot exceed 50',
+      );
+    }
+
+    return GiftMock.getGiftWallMilestones(
+      userId: userId,
+      page: page,
+      limit: limit,
+    );
+  }
 }
 
 /// Provider cho GiftService

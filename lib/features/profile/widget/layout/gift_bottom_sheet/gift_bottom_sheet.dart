@@ -110,7 +110,7 @@ class _GiftBottomSheetState extends ConsumerState<GiftBottomSheet>
 
     if (_selectedGift == null) return;
 
-    final totalCost = _selectedGift!.price * _selectedQuantity;
+    final totalCost = _selectedGift!.price! * _selectedQuantity;
     final controller = ref.read(giftControllerProvider.notifier);
 
     print('Sending gift:');
