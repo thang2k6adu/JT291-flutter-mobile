@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
+import 'package:jt291_flutter_mobile/data/models/gift/gift_transaction_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/gift_mock.dart';
 import 'package:jt291_flutter_mobile/data/mocks/inventory_mock.dart';
+import 'package:jt291_flutter_mobile/data/mocks/gift_transaction_mock.dart';
 // import 'package:jt291_flutter_mobile/data/services/api_service.dart'; // TODO: uncomment when API ready
 
 /// Service for Gift-related operations
@@ -243,6 +245,60 @@ class GiftService {
     }
 
     return GiftMock.getGiftWallMilestones(
+      userId: userId,
+      page: page,
+      limit: limit,
+    );
+  }
+
+  /// GET /users/{user_id}/gift/recent-gifts
+  /// Lấy lịch sử quà tặng gần đây của một user
+  /// 
+  /// Parameters:
+  /// - [userId]: ID của user cần xem lịch sử quà
+  /// - [page]: số trang, default: 1
+  /// - [limit]: số items/page, default: 20, max: 50
+  Future<ApiResponse<PaginatedData<GiftTransactionModel>>?> getRecentGifts({
+    required String userId,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    print('GiftService.getRecentGifts: userId=$userId, page=$page, limit=$limit');
+
+    // TODO: Implement API call when ready
+    // Uncomment khi API ready:
+    // try {
+    //   final response = await _apiService.get(
+    //     '/users/$userId/gift/recent-gifts',
+    //     queryParameters: {
+    //       'page': page,
+    //       'limit': limit,
+    //     },
+    //   );
+    //   return ApiResponse.fromJson(
+    //     response,
+    //     (json) => PaginatedData.fromJson(
+    //       json as Map<String, dynamic>,
+    //       (item) => GiftTransactionModel.fromJson(item as Map<String, dynamic>),
+    //     ),
+    //   );
+    // } catch (e) {
+    //   print('GiftService.getRecentGifts error: $e');
+    //   rethrow;
+    // }
+
+    // Mock data
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // Validate limit
+    if (limit > 50) {
+      return GiftTransactionMock.getErrorResponse(
+        code: 40002,
+        message: 'Limit cannot exceed 50',
+      );
+    }
+
+    return GiftTransactionMock.getRecentGifts(
       userId: userId,
       page: page,
       limit: limit,
