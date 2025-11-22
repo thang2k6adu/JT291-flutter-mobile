@@ -32,6 +32,14 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
   final List<int> _quickQuantities = [1, 9, 99];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(inventoryControllerProvider.notifier).refresh();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final inventoryState = ref.watch(myInventoryProvider);
 
