@@ -10,20 +10,18 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   id: json['id'] as String,
   unionId: json['union_id'] as String?,
   nickname: json['nickname'] as String,
-  avatar: json['avatar'] as String? ?? '',
-  bio: json['bio'] as String?,
-  gender: json['gender'] as String?,
+  avatar: json['avatar'] == null ? '' : _stringFromJson(json['avatar']),
+  bio: _nullableString(json['bio']),
+  gender: _nullableString(json['gender']),
   birthday: json['birthday'] == null
       ? null
       : DateTime.parse(json['birthday'] as String),
-  profileUrls:
-      (json['profile_urls'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ??
-      const [],
-  interests:
-      (json['interests'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const [],
+  profileUrls: json['profile_urls'] == null
+      ? const []
+      : _listStringFromJson(json['profile_urls']),
+  interests: json['interests'] == null
+      ? const []
+      : _listStringFromJsonNullable(json['interests']),
   followingCount: (json['following_count'] as num?)?.toInt(),
   followersCount: (json['followers_count'] as num?)?.toInt(),
   viewsCount: (json['views_count'] as num?)?.toInt(),

@@ -28,8 +28,8 @@ class RecentGiftItem extends StatelessWidget {
           children: [
             // Avatar người gửi
             AvatarWidget(
-              image: transaction.sender.avatar.isNotEmpty
-                  ? NetworkImage(transaction.sender.avatar)
+              image: transaction.sender.avatar?.isNotEmpty ?? false
+                  ? NetworkImage(transaction.sender.avatar ?? '')
                   : const AssetImage('assets/images/default_avatar.png')
                       as ImageProvider,
               size: 48,

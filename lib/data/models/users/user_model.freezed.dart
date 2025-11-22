@@ -21,20 +21,20 @@ mixin _$UserModel {
  String get id;@JsonKey(name: 'union_id') String? get unionId; String get nickname;// ========================================
 // Profile Info
 // ========================================
-@JsonKey(name: 'avatar') String get avatar; String? get bio; String? get gender;@JsonKey(name: 'birthday') DateTime? get birthday;// ========================================
-// Additional Profile Data (full profile only)
+@JsonKey(name: 'avatar', fromJson: _stringFromJson) String? get avatar;@JsonKey(fromJson: _nullableString) String? get bio;@JsonKey(fromJson: _nullableString) String? get gender;@JsonKey(name: 'birthday') DateTime? get birthday;// ========================================
+// Additional Profile Data
 // ========================================
-@JsonKey(name: 'profile_urls') List<String> get profileUrls; List<String>? get interests;// ========================================
-// Stats & Counts
+@JsonKey(name: 'profile_urls', fromJson: _listStringFromJson) List<String> get profileUrls;@JsonKey(fromJson: _listStringFromJsonNullable) List<String>? get interests;// ========================================
+// Stats
 // ========================================
 @JsonKey(name: 'following_count') int? get followingCount;@JsonKey(name: 'followers_count') int? get followersCount;@JsonKey(name: 'views_count') int? get viewsCount;// ========================================
-// Relationship Status (for other users)
+// Relationship Status
 // ========================================
 @JsonKey(name: 'is_following') bool get isFollowing;@JsonKey(name: 'is_follower') bool get isFollower;@JsonKey(name: 'is_friend') bool get isFriend;@JsonKey(name: 'follow_status') String get followStatus;@JsonKey(name: 'mutual_followers_count') int get mutualFollowersCount;// ========================================
-// Status & Flags
+// Flags
 // ========================================
 @JsonKey(name: 'role') String get role;@JsonKey(name: 'is_deleted') bool get isDeleted;@JsonKey(name: 'is_blocked') bool get isBlocked; bool get isPending;// ========================================
-// Level System (full profile only)
+// Level
 // ========================================
  UserLevelModel? get level;
 /// Create a copy of UserModel
@@ -69,7 +69,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'union_id') String? unionId, String nickname,@JsonKey(name: 'avatar') String avatar, String? bio, String? gender,@JsonKey(name: 'birthday') DateTime? birthday,@JsonKey(name: 'profile_urls') List<String> profileUrls, List<String>? interests,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'views_count') int? viewsCount,@JsonKey(name: 'is_following') bool isFollowing,@JsonKey(name: 'is_follower') bool isFollower,@JsonKey(name: 'is_friend') bool isFriend,@JsonKey(name: 'follow_status') String followStatus,@JsonKey(name: 'mutual_followers_count') int mutualFollowersCount,@JsonKey(name: 'role') String role,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'is_blocked') bool isBlocked, bool isPending, UserLevelModel? level
+ String id,@JsonKey(name: 'union_id') String? unionId, String nickname,@JsonKey(name: 'avatar', fromJson: _stringFromJson) String? avatar,@JsonKey(fromJson: _nullableString) String? bio,@JsonKey(fromJson: _nullableString) String? gender,@JsonKey(name: 'birthday') DateTime? birthday,@JsonKey(name: 'profile_urls', fromJson: _listStringFromJson) List<String> profileUrls,@JsonKey(fromJson: _listStringFromJsonNullable) List<String>? interests,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'views_count') int? viewsCount,@JsonKey(name: 'is_following') bool isFollowing,@JsonKey(name: 'is_follower') bool isFollower,@JsonKey(name: 'is_friend') bool isFriend,@JsonKey(name: 'follow_status') String followStatus,@JsonKey(name: 'mutual_followers_count') int mutualFollowersCount,@JsonKey(name: 'role') String role,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'is_blocked') bool isBlocked, bool isPending, UserLevelModel? level
 });
 
 
@@ -86,13 +86,13 @@ class _$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? unionId = freezed,Object? nickname = null,Object? avatar = null,Object? bio = freezed,Object? gender = freezed,Object? birthday = freezed,Object? profileUrls = null,Object? interests = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? viewsCount = freezed,Object? isFollowing = null,Object? isFollower = null,Object? isFriend = null,Object? followStatus = null,Object? mutualFollowersCount = null,Object? role = null,Object? isDeleted = null,Object? isBlocked = null,Object? isPending = null,Object? level = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? unionId = freezed,Object? nickname = null,Object? avatar = freezed,Object? bio = freezed,Object? gender = freezed,Object? birthday = freezed,Object? profileUrls = null,Object? interests = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? viewsCount = freezed,Object? isFollowing = null,Object? isFollower = null,Object? isFriend = null,Object? followStatus = null,Object? mutualFollowersCount = null,Object? role = null,Object? isDeleted = null,Object? isBlocked = null,Object? isPending = null,Object? level = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,unionId: freezed == unionId ? _self.unionId : unionId // ignore: cast_nullable_to_non_nullable
 as String?,nickname: null == nickname ? _self.nickname : nickname // ignore: cast_nullable_to_non_nullable
-as String,avatar: null == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
-as String,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
+as String,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
+as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
 as String?,birthday: freezed == birthday ? _self.birthday : birthday // ignore: cast_nullable_to_non_nullable
 as DateTime?,profileUrls: null == profileUrls ? _self.profileUrls : profileUrls // ignore: cast_nullable_to_non_nullable
@@ -207,7 +207,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'union_id')  String? unionId,  String nickname, @JsonKey(name: 'avatar')  String avatar,  String? bio,  String? gender, @JsonKey(name: 'birthday')  DateTime? birthday, @JsonKey(name: 'profile_urls')  List<String> profileUrls,  List<String>? interests, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'views_count')  int? viewsCount, @JsonKey(name: 'is_following')  bool isFollowing, @JsonKey(name: 'is_follower')  bool isFollower, @JsonKey(name: 'is_friend')  bool isFriend, @JsonKey(name: 'follow_status')  String followStatus, @JsonKey(name: 'mutual_followers_count')  int mutualFollowersCount, @JsonKey(name: 'role')  String role, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'is_blocked')  bool isBlocked,  bool isPending,  UserLevelModel? level)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'union_id')  String? unionId,  String nickname, @JsonKey(name: 'avatar', fromJson: _stringFromJson)  String? avatar, @JsonKey(fromJson: _nullableString)  String? bio, @JsonKey(fromJson: _nullableString)  String? gender, @JsonKey(name: 'birthday')  DateTime? birthday, @JsonKey(name: 'profile_urls', fromJson: _listStringFromJson)  List<String> profileUrls, @JsonKey(fromJson: _listStringFromJsonNullable)  List<String>? interests, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'views_count')  int? viewsCount, @JsonKey(name: 'is_following')  bool isFollowing, @JsonKey(name: 'is_follower')  bool isFollower, @JsonKey(name: 'is_friend')  bool isFriend, @JsonKey(name: 'follow_status')  String followStatus, @JsonKey(name: 'mutual_followers_count')  int mutualFollowersCount, @JsonKey(name: 'role')  String role, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'is_blocked')  bool isBlocked,  bool isPending,  UserLevelModel? level)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.unionId,_that.nickname,_that.avatar,_that.bio,_that.gender,_that.birthday,_that.profileUrls,_that.interests,_that.followingCount,_that.followersCount,_that.viewsCount,_that.isFollowing,_that.isFollower,_that.isFriend,_that.followStatus,_that.mutualFollowersCount,_that.role,_that.isDeleted,_that.isBlocked,_that.isPending,_that.level);case _:
@@ -228,7 +228,7 @@ return $default(_that.id,_that.unionId,_that.nickname,_that.avatar,_that.bio,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'union_id')  String? unionId,  String nickname, @JsonKey(name: 'avatar')  String avatar,  String? bio,  String? gender, @JsonKey(name: 'birthday')  DateTime? birthday, @JsonKey(name: 'profile_urls')  List<String> profileUrls,  List<String>? interests, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'views_count')  int? viewsCount, @JsonKey(name: 'is_following')  bool isFollowing, @JsonKey(name: 'is_follower')  bool isFollower, @JsonKey(name: 'is_friend')  bool isFriend, @JsonKey(name: 'follow_status')  String followStatus, @JsonKey(name: 'mutual_followers_count')  int mutualFollowersCount, @JsonKey(name: 'role')  String role, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'is_blocked')  bool isBlocked,  bool isPending,  UserLevelModel? level)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'union_id')  String? unionId,  String nickname, @JsonKey(name: 'avatar', fromJson: _stringFromJson)  String? avatar, @JsonKey(fromJson: _nullableString)  String? bio, @JsonKey(fromJson: _nullableString)  String? gender, @JsonKey(name: 'birthday')  DateTime? birthday, @JsonKey(name: 'profile_urls', fromJson: _listStringFromJson)  List<String> profileUrls, @JsonKey(fromJson: _listStringFromJsonNullable)  List<String>? interests, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'views_count')  int? viewsCount, @JsonKey(name: 'is_following')  bool isFollowing, @JsonKey(name: 'is_follower')  bool isFollower, @JsonKey(name: 'is_friend')  bool isFriend, @JsonKey(name: 'follow_status')  String followStatus, @JsonKey(name: 'mutual_followers_count')  int mutualFollowersCount, @JsonKey(name: 'role')  String role, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'is_blocked')  bool isBlocked,  bool isPending,  UserLevelModel? level)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
 return $default(_that.id,_that.unionId,_that.nickname,_that.avatar,_that.bio,_that.gender,_that.birthday,_that.profileUrls,_that.interests,_that.followingCount,_that.followersCount,_that.viewsCount,_that.isFollowing,_that.isFollower,_that.isFriend,_that.followStatus,_that.mutualFollowersCount,_that.role,_that.isDeleted,_that.isBlocked,_that.isPending,_that.level);case _:
@@ -248,7 +248,7 @@ return $default(_that.id,_that.unionId,_that.nickname,_that.avatar,_that.bio,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'union_id')  String? unionId,  String nickname, @JsonKey(name: 'avatar')  String avatar,  String? bio,  String? gender, @JsonKey(name: 'birthday')  DateTime? birthday, @JsonKey(name: 'profile_urls')  List<String> profileUrls,  List<String>? interests, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'views_count')  int? viewsCount, @JsonKey(name: 'is_following')  bool isFollowing, @JsonKey(name: 'is_follower')  bool isFollower, @JsonKey(name: 'is_friend')  bool isFriend, @JsonKey(name: 'follow_status')  String followStatus, @JsonKey(name: 'mutual_followers_count')  int mutualFollowersCount, @JsonKey(name: 'role')  String role, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'is_blocked')  bool isBlocked,  bool isPending,  UserLevelModel? level)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'union_id')  String? unionId,  String nickname, @JsonKey(name: 'avatar', fromJson: _stringFromJson)  String? avatar, @JsonKey(fromJson: _nullableString)  String? bio, @JsonKey(fromJson: _nullableString)  String? gender, @JsonKey(name: 'birthday')  DateTime? birthday, @JsonKey(name: 'profile_urls', fromJson: _listStringFromJson)  List<String> profileUrls, @JsonKey(fromJson: _listStringFromJsonNullable)  List<String>? interests, @JsonKey(name: 'following_count')  int? followingCount, @JsonKey(name: 'followers_count')  int? followersCount, @JsonKey(name: 'views_count')  int? viewsCount, @JsonKey(name: 'is_following')  bool isFollowing, @JsonKey(name: 'is_follower')  bool isFollower, @JsonKey(name: 'is_friend')  bool isFriend, @JsonKey(name: 'follow_status')  String followStatus, @JsonKey(name: 'mutual_followers_count')  int mutualFollowersCount, @JsonKey(name: 'role')  String role, @JsonKey(name: 'is_deleted')  bool isDeleted, @JsonKey(name: 'is_blocked')  bool isBlocked,  bool isPending,  UserLevelModel? level)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.unionId,_that.nickname,_that.avatar,_that.bio,_that.gender,_that.birthday,_that.profileUrls,_that.interests,_that.followingCount,_that.followersCount,_that.viewsCount,_that.isFollowing,_that.isFollower,_that.isFriend,_that.followStatus,_that.mutualFollowersCount,_that.role,_that.isDeleted,_that.isBlocked,_that.isPending,_that.level);case _:
@@ -263,7 +263,7 @@ return $default(_that.id,_that.unionId,_that.nickname,_that.avatar,_that.bio,_th
 @JsonSerializable()
 
 class _UserModel implements UserModel {
-  const _UserModel({required this.id, @JsonKey(name: 'union_id') this.unionId, required this.nickname, @JsonKey(name: 'avatar') this.avatar = '', this.bio, this.gender, @JsonKey(name: 'birthday') this.birthday, @JsonKey(name: 'profile_urls') final  List<String> profileUrls = const [], final  List<String>? interests = const [], @JsonKey(name: 'following_count') this.followingCount, @JsonKey(name: 'followers_count') this.followersCount, @JsonKey(name: 'views_count') this.viewsCount, @JsonKey(name: 'is_following') this.isFollowing = false, @JsonKey(name: 'is_follower') this.isFollower = false, @JsonKey(name: 'is_friend') this.isFriend = false, @JsonKey(name: 'follow_status') this.followStatus = 'not_following', @JsonKey(name: 'mutual_followers_count') this.mutualFollowersCount = 0, @JsonKey(name: 'role') this.role = 'user', @JsonKey(name: 'is_deleted') this.isDeleted = false, @JsonKey(name: 'is_blocked') this.isBlocked = false, this.isPending = false, this.level}): _profileUrls = profileUrls,_interests = interests;
+  const _UserModel({required this.id, @JsonKey(name: 'union_id') this.unionId, required this.nickname, @JsonKey(name: 'avatar', fromJson: _stringFromJson) this.avatar = '', @JsonKey(fromJson: _nullableString) this.bio, @JsonKey(fromJson: _nullableString) this.gender, @JsonKey(name: 'birthday') this.birthday, @JsonKey(name: 'profile_urls', fromJson: _listStringFromJson) final  List<String> profileUrls = const [], @JsonKey(fromJson: _listStringFromJsonNullable) final  List<String>? interests = const [], @JsonKey(name: 'following_count') this.followingCount, @JsonKey(name: 'followers_count') this.followersCount, @JsonKey(name: 'views_count') this.viewsCount, @JsonKey(name: 'is_following') this.isFollowing = false, @JsonKey(name: 'is_follower') this.isFollower = false, @JsonKey(name: 'is_friend') this.isFriend = false, @JsonKey(name: 'follow_status') this.followStatus = 'not_following', @JsonKey(name: 'mutual_followers_count') this.mutualFollowersCount = 0, @JsonKey(name: 'role') this.role = 'user', @JsonKey(name: 'is_deleted') this.isDeleted = false, @JsonKey(name: 'is_blocked') this.isBlocked = false, this.isPending = false, this.level}): _profileUrls = profileUrls,_interests = interests;
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 // ========================================
@@ -275,25 +275,25 @@ class _UserModel implements UserModel {
 // ========================================
 // Profile Info
 // ========================================
-@override@JsonKey(name: 'avatar') final  String avatar;
-@override final  String? bio;
-@override final  String? gender;
+@override@JsonKey(name: 'avatar', fromJson: _stringFromJson) final  String? avatar;
+@override@JsonKey(fromJson: _nullableString) final  String? bio;
+@override@JsonKey(fromJson: _nullableString) final  String? gender;
 @override@JsonKey(name: 'birthday') final  DateTime? birthday;
 // ========================================
-// Additional Profile Data (full profile only)
+// Additional Profile Data
 // ========================================
  final  List<String> _profileUrls;
 // ========================================
-// Additional Profile Data (full profile only)
+// Additional Profile Data
 // ========================================
-@override@JsonKey(name: 'profile_urls') List<String> get profileUrls {
+@override@JsonKey(name: 'profile_urls', fromJson: _listStringFromJson) List<String> get profileUrls {
   if (_profileUrls is EqualUnmodifiableListView) return _profileUrls;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_profileUrls);
 }
 
  final  List<String>? _interests;
-@override@JsonKey() List<String>? get interests {
+@override@JsonKey(fromJson: _listStringFromJsonNullable) List<String>? get interests {
   final value = _interests;
   if (value == null) return null;
   if (_interests is EqualUnmodifiableListView) return _interests;
@@ -302,13 +302,13 @@ class _UserModel implements UserModel {
 }
 
 // ========================================
-// Stats & Counts
+// Stats
 // ========================================
 @override@JsonKey(name: 'following_count') final  int? followingCount;
 @override@JsonKey(name: 'followers_count') final  int? followersCount;
 @override@JsonKey(name: 'views_count') final  int? viewsCount;
 // ========================================
-// Relationship Status (for other users)
+// Relationship Status
 // ========================================
 @override@JsonKey(name: 'is_following') final  bool isFollowing;
 @override@JsonKey(name: 'is_follower') final  bool isFollower;
@@ -316,14 +316,14 @@ class _UserModel implements UserModel {
 @override@JsonKey(name: 'follow_status') final  String followStatus;
 @override@JsonKey(name: 'mutual_followers_count') final  int mutualFollowersCount;
 // ========================================
-// Status & Flags
+// Flags
 // ========================================
 @override@JsonKey(name: 'role') final  String role;
 @override@JsonKey(name: 'is_deleted') final  bool isDeleted;
 @override@JsonKey(name: 'is_blocked') final  bool isBlocked;
 @override@JsonKey() final  bool isPending;
 // ========================================
-// Level System (full profile only)
+// Level
 // ========================================
 @override final  UserLevelModel? level;
 
@@ -360,7 +360,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'union_id') String? unionId, String nickname,@JsonKey(name: 'avatar') String avatar, String? bio, String? gender,@JsonKey(name: 'birthday') DateTime? birthday,@JsonKey(name: 'profile_urls') List<String> profileUrls, List<String>? interests,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'views_count') int? viewsCount,@JsonKey(name: 'is_following') bool isFollowing,@JsonKey(name: 'is_follower') bool isFollower,@JsonKey(name: 'is_friend') bool isFriend,@JsonKey(name: 'follow_status') String followStatus,@JsonKey(name: 'mutual_followers_count') int mutualFollowersCount,@JsonKey(name: 'role') String role,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'is_blocked') bool isBlocked, bool isPending, UserLevelModel? level
+ String id,@JsonKey(name: 'union_id') String? unionId, String nickname,@JsonKey(name: 'avatar', fromJson: _stringFromJson) String? avatar,@JsonKey(fromJson: _nullableString) String? bio,@JsonKey(fromJson: _nullableString) String? gender,@JsonKey(name: 'birthday') DateTime? birthday,@JsonKey(name: 'profile_urls', fromJson: _listStringFromJson) List<String> profileUrls,@JsonKey(fromJson: _listStringFromJsonNullable) List<String>? interests,@JsonKey(name: 'following_count') int? followingCount,@JsonKey(name: 'followers_count') int? followersCount,@JsonKey(name: 'views_count') int? viewsCount,@JsonKey(name: 'is_following') bool isFollowing,@JsonKey(name: 'is_follower') bool isFollower,@JsonKey(name: 'is_friend') bool isFriend,@JsonKey(name: 'follow_status') String followStatus,@JsonKey(name: 'mutual_followers_count') int mutualFollowersCount,@JsonKey(name: 'role') String role,@JsonKey(name: 'is_deleted') bool isDeleted,@JsonKey(name: 'is_blocked') bool isBlocked, bool isPending, UserLevelModel? level
 });
 
 
@@ -377,13 +377,13 @@ class __$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? unionId = freezed,Object? nickname = null,Object? avatar = null,Object? bio = freezed,Object? gender = freezed,Object? birthday = freezed,Object? profileUrls = null,Object? interests = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? viewsCount = freezed,Object? isFollowing = null,Object? isFollower = null,Object? isFriend = null,Object? followStatus = null,Object? mutualFollowersCount = null,Object? role = null,Object? isDeleted = null,Object? isBlocked = null,Object? isPending = null,Object? level = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? unionId = freezed,Object? nickname = null,Object? avatar = freezed,Object? bio = freezed,Object? gender = freezed,Object? birthday = freezed,Object? profileUrls = null,Object? interests = freezed,Object? followingCount = freezed,Object? followersCount = freezed,Object? viewsCount = freezed,Object? isFollowing = null,Object? isFollower = null,Object? isFriend = null,Object? followStatus = null,Object? mutualFollowersCount = null,Object? role = null,Object? isDeleted = null,Object? isBlocked = null,Object? isPending = null,Object? level = freezed,}) {
   return _then(_UserModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,unionId: freezed == unionId ? _self.unionId : unionId // ignore: cast_nullable_to_non_nullable
 as String?,nickname: null == nickname ? _self.nickname : nickname // ignore: cast_nullable_to_non_nullable
-as String,avatar: null == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
-as String,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
+as String,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
+as String?,bio: freezed == bio ? _self.bio : bio // ignore: cast_nullable_to_non_nullable
 as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
 as String?,birthday: freezed == birthday ? _self.birthday : birthday // ignore: cast_nullable_to_non_nullable
 as DateTime?,profileUrls: null == profileUrls ? _self._profileUrls : profileUrls // ignore: cast_nullable_to_non_nullable

@@ -7,7 +7,7 @@ part 'gift_model.g.dart';
 @freezed
 abstract class GiftModel with _$GiftModel {
   const factory GiftModel({
-    required String id,
+    String? id,
     @JsonKey(name: 'item_id') String? itemId,
     required String name,
     @JsonKey(name: 'image_url') required String imageUrl,

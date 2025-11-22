@@ -250,7 +250,7 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
       final success = await controller.sendGift(
         context,
         recipientId: widget.userId,
-        itemId: _selectedItem!.id,
+        itemId: _selectedItem!.id ?? '',
         quantity: _selectedQuantity,
       );
 

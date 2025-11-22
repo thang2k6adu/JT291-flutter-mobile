@@ -9,10 +9,10 @@ part 'gift_transaction_model.g.dart';
 @freezed
 abstract class GiftTransactionModel with _$GiftTransactionModel {
   const factory GiftTransactionModel({
-    @JsonKey(name: 'id') required String id,
+    @JsonKey(name: 'transaction_id') required String id,
     required UserModel sender,
     @JsonKey(name: 'gift_info') required GiftModel giftInfo,
-     required DateTime timestamp,
+    required DateTime timestamp,
   }) = _GiftTransactionModel;
 
   factory GiftTransactionModel.fromJson(Map<String, Object?> json) =>

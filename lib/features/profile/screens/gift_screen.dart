@@ -37,6 +37,8 @@ class _GiftScreenState extends ConsumerState<GiftScreen>
 
     // Load initial data và check if need load more
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(giftWallControllerProvider.notifier).refresh();
+      ref.read(recentGiftsControllerProvider.notifier).refresh();
       _checkLoadMoreIfListNotFull();
       _checkRecentGiftsLoadMore();
     });

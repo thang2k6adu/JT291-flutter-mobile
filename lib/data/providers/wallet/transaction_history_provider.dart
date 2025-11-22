@@ -46,6 +46,6 @@ class TransactionHistoryNotifier
       throw Exception('User ID is null');
     }
     final response = await _service.getTransactionHistory(userId, page, limit);
-    return _TransactionHistoryResponse(response);
+    return ApiPaginatedResponse(response);
   }
 }

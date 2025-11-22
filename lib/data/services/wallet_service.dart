@@ -5,7 +5,7 @@ import 'package:jt291_flutter_mobile/data/mocks/wallet_mock.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/transaction_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 
 class WalletService {
   final ApiService _apiService = ApiService();
@@ -24,40 +24,59 @@ class WalletService {
   }
 
   // GET /users/{user_id}/recharge/packages
-  Future<List<RechargePackageModel>> getRechargePackages(String userId) async {
-    print('getRechargePackages: $userId');
+  Future<ApiResponse<List<RechargePackageModel>>> getRechargePackages() async {
+    print('getRechargePackages');
     // Mock
-    await Future.delayed(const Duration(milliseconds: 300));
-    return rechargePackagesMock;
+    // await Future.delayed(const Duration(milliseconds: 300));
+    // return rechargePackagesMock;
     // TODO: Implement this
-    // final response = await _apiService.get('/v1/users/$userId/recharge/packages');
-    // return List<RechargePackageModel>.from(response['data']);
+    final response = await _apiService.get('/wallet/recharge/packages');
+    return ApiResponse.fromJson(
+      response,
+      (json) => (json as List<dynamic>)
+          .map((e) => RechargePackageModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
   }
 
   // GET /users/{user_id}/recharge/monthly-cards
-  Future<List<MonthlyCardModel>> getMonthlyCards(String userId) async {
-    print('getMonthlyCards: $userId');
+  Future<ApiResponse<List<MonthlyCardModel>>> getMonthlyCards() async {
+    print('getMonthlyCards');
     // Mock
-    await Future.delayed(const Duration(milliseconds: 300));
-    return monthlyCardsMock;
+    // await Future.delayed(const Duration(milliseconds: 300));
+    // return monthlyCardsMock;
     // TODO: Implement this
-    // final response = await _apiService.get('/v1/users/$userId/recharge/monthly-cards');
-    // return List<MonthlyCardModel>.from(response['data']);
+    final response = await _apiService.get('/wallet/recharge/monthly-cards');
+    return ApiResponse.fromJson(
+      response,
+      (json) => (json as List<dynamic>)
+          .map((e) => MonthlyCardModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
   }
 
   // GET /users/{user_id}/wallet/transactions/history?page=1&limit=20
-  Future<TransactionHistoryResponse> getTransactionHistory(
+  Future<ApiResponse<PaginatedData<TransactionModel>>> getTransactionHistory(
     String userId,
     int page,
     int limit,
   ) async {
     print('getTransactionHistory: $userId, $page, $limit');
     // Mock
-    await Future.delayed(const Duration(milliseconds: 300));
-    return mockTransactionHistoryResponse;
+    // await Future.delayed(const Duration(milliseconds: 300));
+    // return mockTransactionHistoryResponse;
     // TODO: Implement this
-    // final response = await _apiService.get('/v1/users/$userId/wallet/transactions/history', queryParameters: {'page': page, 'limit': limit});
-    // return TransactionHistoryResponse.fromJson(response['data']);
+    final response = await _apiService.get(
+      '/wallet/transactions/history',
+      queryParameters: {'page': page, 'limit': limit},
+    );
+    return ApiResponse.fromJson(
+      response,
+      (json) => PaginatedData.fromJson(
+        json as Map<String, dynamic>,
+        (item) => TransactionModel.fromJson(item as Map<String, dynamic>),
+      ),
+    );
   }
 }
 

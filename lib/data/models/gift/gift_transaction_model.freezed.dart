@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GiftTransactionModel {
 
-@JsonKey(name: 'id') String get id; UserModel get sender;@JsonKey(name: 'gift_info') GiftModel get giftInfo; DateTime get timestamp;
+@JsonKey(name: 'transaction_id') String get id; UserModel get sender;@JsonKey(name: 'gift_info') GiftModel get giftInfo; DateTime get timestamp;
 /// Create a copy of GiftTransactionModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $GiftTransactionModelCopyWith<$Res>  {
   factory $GiftTransactionModelCopyWith(GiftTransactionModel value, $Res Function(GiftTransactionModel) _then) = _$GiftTransactionModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'id') String id, UserModel sender,@JsonKey(name: 'gift_info') GiftModel giftInfo, DateTime timestamp
+@JsonKey(name: 'transaction_id') String id, UserModel sender,@JsonKey(name: 'gift_info') GiftModel giftInfo, DateTime timestamp
 });
 
 
@@ -174,7 +174,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String id,  UserModel sender, @JsonKey(name: 'gift_info')  GiftModel giftInfo,  DateTime timestamp)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'transaction_id')  String id,  UserModel sender, @JsonKey(name: 'gift_info')  GiftModel giftInfo,  DateTime timestamp)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GiftTransactionModel() when $default != null:
 return $default(_that.id,_that.sender,_that.giftInfo,_that.timestamp);case _:
@@ -195,7 +195,7 @@ return $default(_that.id,_that.sender,_that.giftInfo,_that.timestamp);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String id,  UserModel sender, @JsonKey(name: 'gift_info')  GiftModel giftInfo,  DateTime timestamp)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'transaction_id')  String id,  UserModel sender, @JsonKey(name: 'gift_info')  GiftModel giftInfo,  DateTime timestamp)  $default,) {final _that = this;
 switch (_that) {
 case _GiftTransactionModel():
 return $default(_that.id,_that.sender,_that.giftInfo,_that.timestamp);case _:
@@ -215,7 +215,7 @@ return $default(_that.id,_that.sender,_that.giftInfo,_that.timestamp);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id')  String id,  UserModel sender, @JsonKey(name: 'gift_info')  GiftModel giftInfo,  DateTime timestamp)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'transaction_id')  String id,  UserModel sender, @JsonKey(name: 'gift_info')  GiftModel giftInfo,  DateTime timestamp)?  $default,) {final _that = this;
 switch (_that) {
 case _GiftTransactionModel() when $default != null:
 return $default(_that.id,_that.sender,_that.giftInfo,_that.timestamp);case _:
@@ -230,10 +230,10 @@ return $default(_that.id,_that.sender,_that.giftInfo,_that.timestamp);case _:
 @JsonSerializable()
 
 class _GiftTransactionModel implements GiftTransactionModel {
-  const _GiftTransactionModel({@JsonKey(name: 'id') required this.id, required this.sender, @JsonKey(name: 'gift_info') required this.giftInfo, required this.timestamp});
+  const _GiftTransactionModel({@JsonKey(name: 'transaction_id') required this.id, required this.sender, @JsonKey(name: 'gift_info') required this.giftInfo, required this.timestamp});
   factory _GiftTransactionModel.fromJson(Map<String, dynamic> json) => _$GiftTransactionModelFromJson(json);
 
-@override@JsonKey(name: 'id') final  String id;
+@override@JsonKey(name: 'transaction_id') final  String id;
 @override final  UserModel sender;
 @override@JsonKey(name: 'gift_info') final  GiftModel giftInfo;
 @override final  DateTime timestamp;
@@ -271,7 +271,7 @@ abstract mixin class _$GiftTransactionModelCopyWith<$Res> implements $GiftTransa
   factory _$GiftTransactionModelCopyWith(_GiftTransactionModel value, $Res Function(_GiftTransactionModel) _then) = __$GiftTransactionModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'id') String id, UserModel sender,@JsonKey(name: 'gift_info') GiftModel giftInfo, DateTime timestamp
+@JsonKey(name: 'transaction_id') String id, UserModel sender,@JsonKey(name: 'gift_info') GiftModel giftInfo, DateTime timestamp
 });
 
 

@@ -4,8 +4,6 @@ import 'package:jt291_flutter_mobile/data/models/users/user_level_model.dart';
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
 
-/// Unified User Model - works for both current user and other users
-/// Can handle both full profile data and summary data from lists
 @freezed
 abstract class UserModel with _$UserModel {
   const factory UserModel({
@@ -19,51 +17,121 @@ abstract class UserModel with _$UserModel {
     // ========================================
     // Profile Info
     // ========================================
-    @Default('') @JsonKey(name: 'avatar') String avatar,
+    @JsonKey(name: 'avatar', fromJson: _stringFromJson)
+    @Default('')
+    String? avatar,
+
+    @JsonKey(fromJson: _nullableString)
     String? bio,
+
+    @JsonKey(fromJson: _nullableString)
     String? gender,
-    @JsonKey(name: 'birthday') DateTime? birthday,
+
+    @JsonKey(name: 'birthday')
+    DateTime? birthday,
 
     // ========================================
-    // Additional Profile Data (full profile only)
+    // Additional Profile Data
     // ========================================
-    @Default([]) @JsonKey(name: 'profile_urls') List<String> profileUrls,
-    @Default([]) List<String>? interests,
+    @JsonKey(name: 'profile_urls', fromJson: _listStringFromJson)
+    @Default([])
+    List<String> profileUrls,
+
+    @JsonKey(fromJson: _listStringFromJsonNullable)
+    @Default([])
+    List<String>? interests,
 
     // ========================================
-    // Stats & Counts
+    // Stats
     // ========================================
-    @JsonKey(name: 'following_count') int? followingCount,
-    @JsonKey(name: 'followers_count') int? followersCount,
-    @JsonKey(name: 'views_count') int? viewsCount,
+    @JsonKey(name: 'following_count')
+    int? followingCount,
+
+    @JsonKey(name: 'followers_count')
+    int? followersCount,
+
+    @JsonKey(name: 'views_count')
+    int? viewsCount,
 
     // ========================================
-    // Relationship Status (for other users)
+    // Relationship Status
     // ========================================
-    @Default(false) @JsonKey(name: 'is_following') bool isFollowing,
-    @Default(false) @JsonKey(name: 'is_follower') bool isFollower,
-    @Default(false) @JsonKey(name: 'is_friend') bool isFriend,
-    @Default('not_following')
+    @JsonKey(name: 'is_following')
+    @Default(false)
+    bool isFollowing,
+
+    @JsonKey(name: 'is_follower')
+    @Default(false)
+    bool isFollower,
+
+    @JsonKey(name: 'is_friend')
+    @Default(false)
+    bool isFriend,
+
     @JsonKey(name: 'follow_status')
+    @Default('not_following')
     String followStatus,
-    @Default(0)
+
     @JsonKey(name: 'mutual_followers_count')
+    @Default(0)
     int mutualFollowersCount,
 
     // ========================================
-    // Status & Flags
+    // Flags
     // ========================================
-    @JsonKey(name: 'role') @Default('user') String role,
-    @Default(false) @JsonKey(name: 'is_deleted') bool isDeleted,
-    @Default(false) @JsonKey(name: 'is_blocked') bool isBlocked,
-    @Default(false) bool isPending,
+    @JsonKey(name: 'role')
+    @Default('user')
+    String role,
+
+    @JsonKey(name: 'is_deleted')
+    @Default(false)
+    bool isDeleted,
+
+    @JsonKey(name: 'is_blocked')
+    @Default(false)
+    bool isBlocked,
+
+    @Default(false)
+    bool isPending,
 
     // ========================================
-    // Level System (full profile only)
+    // Level
     // ========================================
     UserLevelModel? level,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, Object?> json) =>
       _$UserModelFromJson(json);
+}
+
+//
+// ===============================
+// Helpers để xử lý null an toàn
+// ===============================
+//
+
+// String? → fallback về ""
+String _stringFromJson(Object? v) => v == null ? '' : (v as String);
+
+// String? → giữ nguyên null
+String? _nullableString(Object? v) => v == null ? null : (v as String);
+
+// List<dynamic>? → List<String>
+List<String> _listStringFromJson(Object? v) {
+  if (v == null) return [];
+  try {
+    return List<String>.from(v as List);
+  } catch (_) {
+    return [];
+  }
+}
+
+// List<dynamic>? → List<String>? (nếu API trả null → [])
+List<String> _listStringFromJsonNullable(Object? v) {
+  if (v == null) return [];
+  try {
+    return List<String>.from(v as List);
+  } catch (_) {
+    return [];
+  }
 }

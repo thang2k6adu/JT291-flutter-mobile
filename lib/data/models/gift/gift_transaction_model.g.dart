@@ -9,7 +9,7 @@ part of 'gift_transaction_model.dart';
 _GiftTransactionModel _$GiftTransactionModelFromJson(
   Map<String, dynamic> json,
 ) => _GiftTransactionModel(
-  id: json['id'] as String,
+  id: json['transaction_id'] as String,
   sender: UserModel.fromJson(json['sender'] as Map<String, dynamic>),
   giftInfo: GiftModel.fromJson(json['gift_info'] as Map<String, dynamic>),
   timestamp: DateTime.parse(json['timestamp'] as String),
@@ -18,7 +18,7 @@ _GiftTransactionModel _$GiftTransactionModelFromJson(
 Map<String, dynamic> _$GiftTransactionModelToJson(
   _GiftTransactionModel instance,
 ) => <String, dynamic>{
-  'id': instance.id,
+  'transaction_id': instance.id,
   'sender': instance.sender,
   'gift_info': instance.giftInfo,
   'timestamp': instance.timestamp.toIso8601String(),

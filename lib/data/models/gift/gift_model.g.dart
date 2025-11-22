@@ -7,7 +7,7 @@ part of 'gift_model.dart';
 // **************************************************************************
 
 _GiftModel _$GiftModelFromJson(Map<String, dynamic> json) => _GiftModel(
-  id: json['id'] as String,
+  id: json['id'] as String?,
   itemId: json['item_id'] as String?,
   name: json['name'] as String,
   imageUrl: json['image_url'] as String,

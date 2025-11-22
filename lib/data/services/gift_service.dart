@@ -93,10 +93,7 @@ class GiftService {
     try {
       final response = await _apiService.get(
         '/gifts/inventory',
-        queryParameters: {
-          'page': page,
-          'limit': limit,
-        },
+        queryParameters: {'page': page, 'limit': limit},
       );
       return ApiResponse.fromJson(
         response,
@@ -218,42 +215,41 @@ class GiftService {
 
     // TODO: Implement API call when ready
     // Uncomment khi API ready:
-    // try {
-    //   final response = await _apiService.get(
-    //     '/users/$userId/gift-wall-milestones',
-    //     queryParameters: {
-    //       'page': page,
-    //       'limit': limit,
-    //     },
-    //   );
-    //   return ApiResponse.fromJson(
-    //     response,
-    //     (json) => PaginatedData.fromJson(
-    //       json as Map<String, dynamic>,
-    //       (item) => GiftModel.fromJson(item as Map<String, dynamic>),
-    //     ),
-    //   );
-    // } catch (e) {
-    //   print('GiftService.getGiftWallMilestones error: $e');
-    //   rethrow;
-    // }
-
-    // Mock data
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    // Validate limit
-    if (limit > 50) {
-      return GiftMock.getPaginatedErrorResponse(
-        code: 40002,
-        message: 'Limit cannot exceed 50',
+    try {
+      final response = await _apiService.get(
+        '/gifts/gift-wall/$userId/givers',
+        queryParameters: {'page': page, 'limit': limit},
       );
+
+      print('GiftService.getGiftWallMilestones response: $response');
+      return ApiResponse.fromJson(
+        response,
+        (json) => PaginatedData.fromJson(
+          json as Map<String, dynamic>,
+          (item) => GiftModel.fromJson(item as Map<String, dynamic>),
+        ),
+      );
+    } catch (e) {
+      print('GiftService.getGiftWallMilestones error: $e');
+      rethrow;
     }
 
-    return GiftMock.getGiftWallMilestones(
-      userId: userId,
-      page: page,
-      limit: limit,
-    );
+    // Mock data
+    // await Future.delayed(const Duration(milliseconds: 500));
+
+    // // Validate limit
+    // if (limit > 50) {
+    //   return GiftMock.getPaginatedErrorResponse(
+    //     code: 40002,
+    //     message: 'Limit cannot exceed 50',
+    //   );
+    // }
+
+    // return GiftMock.getGiftWallMilestones(
+    //   userId: userId,
+    //   page: page,
+    //   limit: limit,
+    // );
   }
 
   /// GET /users/{user_id}/gift/recent-gifts
@@ -274,42 +270,41 @@ class GiftService {
 
     // TODO: Implement API call when ready
     // Uncomment khi API ready:
-    // try {
-    //   final response = await _apiService.get(
-    //     '/users/$userId/gift/recent-gifts',
-    //     queryParameters: {
-    //       'page': page,
-    //       'limit': limit,
-    //     },
-    //   );
-    //   return ApiResponse.fromJson(
-    //     response,
-    //     (json) => PaginatedData.fromJson(
-    //       json as Map<String, dynamic>,
-    //       (item) => GiftTransactionModel.fromJson(item as Map<String, dynamic>),
-    //     ),
-    //   );
-    // } catch (e) {
-    //   print('GiftService.getRecentGifts error: $e');
-    //   rethrow;
-    // }
-
-    // Mock data
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    // Validate limit
-    if (limit > 50) {
-      return GiftTransactionMock.getErrorResponse(
-        code: 40002,
-        message: 'Limit cannot exceed 50',
+    try {
+      final response = await _apiService.get(
+        '/gifts/recent-gifts',
+        queryParameters: {'page': page, 'limit': limit},
       );
+
+      print('GiftService.getRecentGifts response: $response');
+      return ApiResponse.fromJson(
+        response,
+        (json) => PaginatedData.fromJson(
+          json as Map<String, dynamic>,
+          (item) => GiftTransactionModel.fromJson(item as Map<String, dynamic>),
+        ),
+      );
+    } catch (e) {
+      print('GiftService.getRecentGifts error: $e');
+      rethrow;
     }
 
-    return GiftTransactionMock.getRecentGifts(
-      userId: userId,
-      page: page,
-      limit: limit,
-    );
+    // Mock data
+    // await Future.delayed(const Duration(milliseconds: 500));
+
+    // // Validate limit
+    // if (limit > 50) {
+    //   return GiftTransactionMock.getErrorResponse(
+    //     code: 40002,
+    //     message: 'Limit cannot exceed 50',
+    //   );
+    // }
+
+    // return GiftTransactionMock.getRecentGifts(
+    //   userId: userId,
+    //   page: page,
+    //   limit: limit,
+    // );
   }
 }
 

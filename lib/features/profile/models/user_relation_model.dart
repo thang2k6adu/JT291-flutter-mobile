@@ -23,7 +23,7 @@ class UserRelationItem {
     return UserRelationItem(
       id: following.id,
       nickname: following.nickname,
-      avatarUrl: following.avatar,
+      avatarUrl: following.avatar ?? '',
       bio: following.bio ?? '',
       isFollowing: following.isFollowing,
       gender: following.gender ?? 'male',
@@ -35,7 +35,7 @@ class UserRelationItem {
     return UserRelationItem(
       id: follower.id,
       nickname: follower.nickname,
-      avatarUrl: follower.avatar,
+      avatarUrl: follower.avatar ?? '',
       bio: follower.bio ?? '',
       isFollowing: follower.isFollowing,
       gender: follower.gender ?? 'male',
@@ -47,7 +47,7 @@ class UserRelationItem {
     return UserRelationItem(
       id: friend.id,
       nickname: friend.nickname,
-      avatarUrl: friend.avatar,
+      avatarUrl: friend.avatar ?? '',
       bio: friend.bio ?? '',
       isFollowing: friend.isFollowing,
       gender: friend.gender ?? 'male',
