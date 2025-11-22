@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/components/ui/icon_label.dart';
+import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
+import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 
 class GiftsSection extends StatelessWidget {
   const GiftsSection({super.key});
@@ -20,36 +22,50 @@ class GiftsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        const GiftsContainer(),
+        GiftsContainer(
+          onTap: () {
+            pushScreen(context, RouteConstants.userGifts);
+          },
+        ),
       ],
     );
   }
 }
 
 class GiftsContainer extends StatelessWidget {
-  const GiftsContainer({super.key});
+  final VoidCallback onTap;
+  const GiftsContainer({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.pink[3], AppColors.pink[6]],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 100,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [AppColors.pink[3], AppColors.pink[6]],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
         ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          children: [
-            Expanded(child: GiftItem(label: 'Rocket', icon: AppIcons.rocketRed)),
-            Expanded(child: GiftItem(label: 'Flower', icon: AppIcons.flower)),
-            Expanded(child: GiftItem(label: 'Crown', icon: AppIcons.grown)),
-            const Expanded(child: GiftsCounter()),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: GiftItem(label: 'Rocket', icon: AppIcons.rocketRed),
+              ),
+              Expanded(
+                child: GiftItem(label: 'Flower', icon: AppIcons.flower),
+              ),
+              Expanded(
+                child: GiftItem(label: 'Crown', icon: AppIcons.grown),
+              ),
+              const Expanded(child: GiftsCounter()),
+            ],
+          ),
         ),
       ),
     );
@@ -75,7 +91,7 @@ class GiftItem extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color:  color ?? Colors.transparent,
+          color: color ?? Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Image.asset(icon, width: 24, height: 24),

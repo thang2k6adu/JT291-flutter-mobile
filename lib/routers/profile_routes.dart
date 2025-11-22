@@ -8,6 +8,7 @@ import '../../features/profile/screens/edit_bio.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/profile/screens/profile_view_screen.dart';
 import '../../features/profile/screens/user_relation_screen.dart';
+import '../../features/profile/screens/gift_screen.dart';
 import '../core/core.dart';
 import 'package:flutter/material.dart';
 
@@ -69,5 +70,9 @@ final profileRoutes = <GoRoute>[
   GoRoute(
     path: RouteConstants.userProfileView,
     builder: (context, state) => ProfileViewScreen(),
+  ),
+  GoRoute(
+    path: RouteConstants.userGifts,
+    builder: (context, state) => GiftScreen(),
   ),
 ];

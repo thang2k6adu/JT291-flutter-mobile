@@ -12,7 +12,8 @@ class RouteConstants {
   static const String userMe = "/user/me";
   static const String userProfile = "/user/profile";
   static const String userProfileView = "/user/profile/view";
-
+  static const String userGifts = "/user/gifts";
+  
   static const String userSetting = "/user/setting";
   static const String myAlbum = "/user/my-album";
   static const String albumViewer = "/user/album-viewer";
