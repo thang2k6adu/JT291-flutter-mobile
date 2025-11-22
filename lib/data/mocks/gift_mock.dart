@@ -338,29 +338,20 @@ class GiftMock {
   }
 
   /// Mock gift wall milestones data
-  static final List<GiftModel> _giftWallMilestones = [
-    GiftModel(
-      id: '1',
-      name: 'Quà tặng 1',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(3).png',
-      requiredCount: 10,
-      currentCount: 5,
-    ),
-    GiftModel(
-      id: '2',
-      name: 'Quà tặng 2',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(3).png',
-      requiredCount: 10,
-      currentCount: 1,
-    ),
-    GiftModel(
-      id: '3',
-      name: 'Quà tặng 3',
-      imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(3).png',
-      requiredCount: 5,
-      currentCount: 5,
-    ),
-  ];
+  static final List<GiftModel> mockGiftWall = List.generate(30, (index) {
+    final id = (index + 1).toString();
+    final requiredCount = (index % 10 + 1) * 5; // 5, 10, 15, ...
+    final currentCount = (index % requiredCount).clamp(0, requiredCount);
+
+    return GiftModel(
+      id: id,
+      name: 'Quà tặng $id',
+      imageUrl:
+          'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(3).png',
+      requiredCount: requiredCount,
+      currentCount: currentCount,
+    );
+  });
 
   /// Mock gift wall milestones response
   /// GET /users/{user_id}/gift-wall-milestones
@@ -372,16 +363,18 @@ class GiftMock {
     // Pagination logic
     final startIndex = (page - 1) * limit;
     final endIndex = startIndex + limit;
-    final paginatedItems = _giftWallMilestones.sublist(
+    final paginatedItems = mockGiftWall.sublist(
       startIndex,
-      endIndex > _giftWallMilestones.length ? _giftWallMilestones.length : endIndex,
+      endIndex > mockGiftWall.length
+          ? mockGiftWall.length
+          : endIndex,
     );
 
     final meta = PaginationMeta(
       itemCount: paginatedItems.length,
-      totalItems: _giftWallMilestones.length,
+      totalItems: mockGiftWall.length,
       itemsPerPage: limit,
-      totalPages: (_giftWallMilestones.length / limit).ceil(),
+      totalPages: (mockGiftWall.length / limit).ceil(),
       currentPage: page,
     );
 

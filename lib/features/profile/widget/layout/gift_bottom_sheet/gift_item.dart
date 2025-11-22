@@ -17,7 +17,11 @@ class GiftItemWidget extends StatelessWidget {
     this.isSelected = false,
     this.onTap,
     this.color = Colors.transparent,
-    this.nameStyle = const TextStyle(fontSize: 11, color: Colors.black),
+    this.nameStyle = const TextStyle(
+      fontSize: 11,
+      color: Colors.black,
+      overflow: TextOverflow.ellipsis,
+    ),
     this.contentWidget,
     this.height = 4,
   });
@@ -75,8 +79,7 @@ class GiftItemWidget extends StatelessWidget {
                   ),
               ],
             ),
-            if (contentWidget != null)
-              SizedBox(height: height),
+            if (contentWidget != null) SizedBox(height: height),
             Text(gift.name, style: nameStyle),
             contentWidget ?? const SizedBox.shrink(),
           ],

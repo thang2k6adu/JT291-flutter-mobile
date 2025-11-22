@@ -90,6 +90,7 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           color: Colors.grey[600],
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       onTap: () => setState(() => _selectedItem = item),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
 import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
 import 'package:jt291_flutter_mobile/data/providers/gift/gift_wall_provider.dart';
@@ -20,16 +21,52 @@ class GiftScreen extends ConsumerStatefulWidget {
 class _GiftScreenState extends ConsumerState<GiftScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _setupScrollListener();
+    
+    // Load initial data và check if need load more
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkLoadMoreIfListNotFull();
+    });
+  }
+
+  void _setupScrollListener() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        // Khi scroll gần cuối (còn 200px), load more
+        final controller = ref.read(giftWallControllerProvider.notifier);
+        controller.loadMore();
+      }
+    });
+  }
+
+  void _checkLoadMoreIfListNotFull() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients &&
+          _scrollController.position.maxScrollExtent <=
+              _scrollController.position.viewportDimension) {
+        // Nếu list chưa đầy màn hình, load thêm
+        final notifier = ref.read(myGiftWallProvider.notifier);
+        if (notifier.hasNext) {
+          ref.read(giftWallControllerProvider.notifier).loadMore().then((_) {
+            // Sau khi load xong, check lại xem có cần load thêm không
+            _checkLoadMoreIfListNotFull();
+          });
+        }
+      }
+    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -48,7 +85,7 @@ class _GiftScreenState extends ConsumerState<GiftScreen>
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/bg_image.png', // đường dẫn đến ảnh của bạn
+              AppImages.giftBg,
               fit: BoxFit.cover,
             ),
           ),
@@ -224,15 +261,18 @@ class _GiftScreenState extends ConsumerState<GiftScreen>
   Widget _buildGiftWallTab() {
     final giftWallAsync = ref.watch(myGiftWallProvider);
     final controller = ref.read(giftWallControllerProvider.notifier);
-
+    final notifier = ref.read(myGiftWallProvider.notifier);
+ 
     return giftWallAsync.when(
       data: (gifts) {
         if (gifts.isEmpty) {
           return RefreshIndicator(
             onRefresh: () async {
               await controller.refresh();
+              _checkLoadMoreIfListNotFull();
             },
             child: ListView(
+              controller: _scrollController,
               children: const [
                 SizedBox(height: 200),
                 Center(
@@ -249,8 +289,9 @@ class _GiftScreenState extends ConsumerState<GiftScreen>
         return RefreshIndicator(
           onRefresh: () async {
             await controller.refresh();
+            _checkLoadMoreIfListNotFull();
           },
-          child: _buildGiftGrid(gifts),
+          child: _buildGiftGridWithLoadMore(gifts, notifier),
         );
       },
       loading: () =>
@@ -277,49 +318,78 @@ class _GiftScreenState extends ConsumerState<GiftScreen>
     );
   }
 
-  Widget _buildGiftGrid(List<GiftModel> gifts) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 0.85,
-      ),
-      itemCount: gifts.length,
-      itemBuilder: (context, index) {
-        return GiftItemWidget(
-          gift: gifts[index],
-          color: Colors.white.withValues(alpha: 0.1),
-          nameStyle: const TextStyle(
-            fontSize: 12,
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
+  Widget _buildGiftGridWithLoadMore(List<GiftModel> gifts, notifier) {
+    final isLoadingMore = notifier.isLoadingMore;
+    
+    return CustomScrollView(
+      controller: _scrollController,
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.all(16),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.85,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return GiftItemWidget(
+                  gift: gifts[index],
+                  color: Colors.white.withValues(alpha: 0.1),
+                  nameStyle: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  height: 6,
+                  contentWidget: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${gifts[index].currentCount}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Text(
+                        '/${gifts[index].requiredCount}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              childCount: gifts.length,
+            ),
           ),
-          height: 6,
-          contentWidget: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '${gifts[index].currentCount}',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
+        ),
+        // Loading indicator khi đang load more
+        if (isLoadingMore)
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.pink,
+                  ),
                 ),
               ),
-              Text(
-                '/${gifts[index].requiredCount}',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ],
+            ),
           ),
-        );
-      },
+      ],
     );
   }
 }
