@@ -46,7 +46,7 @@ class RecentGiftItem extends StatelessWidget {
                     transaction.sender.nickname,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
                     maxLines: 1,
@@ -57,7 +57,7 @@ class RecentGiftItem extends StatelessWidget {
                     _formatTimestamp(transaction.timestamp),
                     style: TextStyle(
                       color: Colors.grey[400],
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -67,7 +67,7 @@ class RecentGiftItem extends StatelessWidget {
             
             // Gift info
             Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Gift image
                 Container(
@@ -110,8 +110,8 @@ class RecentGiftItem extends StatelessWidget {
                   '${transaction.giftInfo.name} x${transaction.giftInfo.quantity}',
                   style: TextStyle(
                     color: AppColors.primary,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],

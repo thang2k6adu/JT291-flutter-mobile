@@ -21,6 +21,7 @@ class ProfileTabBarWidget extends StatelessWidget {
         labelColor: Colors.white,
         unselectedLabelColor: Colors.white54,
         labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+  
         tabs: const [
           Tab(text: 'Tường quà tặng'),
           Tab(text: 'Quà tặng gần đây'),
