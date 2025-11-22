@@ -7,7 +7,7 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_scre
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_draggable_sheet.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_floating_avatar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_me_screen/profile_top_bar.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/ui/profile_action_buttons.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_screen/profile_action_buttons.dart';
 import 'package:jt291_flutter_mobile/features/profile/providers/user_profile_notifier.dart';
 import 'package:jt291_flutter_mobile/features/profile/providers/user_profile_state.dart';
 

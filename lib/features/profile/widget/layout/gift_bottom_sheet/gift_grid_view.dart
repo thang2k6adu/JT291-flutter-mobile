@@ -4,7 +4,7 @@ import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
 import 'package:jt291_flutter_mobile/data/providers/gift/gift_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/controllers/gift_controller.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_item.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/ui/gift_item.dart';
 import 'package:jt291_flutter_mobile/core/utils/number_utils.dart';
 
 class GiftGridView extends ConsumerWidget {

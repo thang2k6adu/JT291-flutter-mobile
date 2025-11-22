@@ -6,7 +6,7 @@ import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
 import 'package:jt291_flutter_mobile/data/providers/gift/inventory_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/controllers/inventory_controller.dart';
-import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_item.dart';
+import 'package:jt291_flutter_mobile/features/profile/widget/ui/gift_item.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_bottom_bar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_bottom_sheet.dart';
 

@@ -6,88 +6,28 @@ import 'package:jt291_flutter_mobile/data/models/gift/gift_model.dart';
 /// Mock data cho gift transactions (lịch sử quà tặng gần đây)
 class GiftTransactionMock {
   /// Mock danh sách gift transactions
-  static final List<GiftTransactionModel> _recentGifts = [
-    GiftTransactionModel(
-      id: 'tx12345',
-      sender: const UserModel(
-        id: '101',
-        unionId: '101',
-        nickname: 'Malenna Calzoni',
-        avatar: '/avatars/malenna.jpg',
+    static final List<GiftTransactionModel> mockRecentGifts = List.generate(30, (index) {
+    final id = (index + 1).toString();
+    final requiredCount = (index % 10 + 1) * 5; // 5, 10, 15, ...
+    final currentCount = (index % requiredCount).clamp(0, requiredCount);
+
+    return GiftTransactionModel(
+      id: id,
+      sender: UserModel(
+        id: id,
+        nickname: 'User $id',
+        avatar: 'https://i.pinimg.com/236x/d8/52/5b/d8525bda518ea185d4fe908bbce65126.jpg',
       ),
-      giftInfo: const GiftModel(
-        id: '101',
-        name: 'Quà x1',
-        imageUrl: '/images/gift_icon_a.png',
-        quantity: 1,
+      giftInfo: GiftModel(
+        id: id,
+        name: 'Quà tặng $id',
+        imageUrl: 'https://ecommerce-gk-bucket.s3.ap-southeast-1.amazonaws.com/001+(3).png',
+        requiredCount: requiredCount,
+        currentCount: currentCount,
       ),
-      timestamp: DateTime.parse('2025-11-07T18:00:00Z'),
-    ),
-    GiftTransactionModel(
-      id: 'tx12346',
-      sender: const UserModel(
-        id: '102',
-        unionId: '102',
-        nickname: 'John Doe',
-        avatar: '/avatars/john.jpg',
-      ),
-      giftInfo: const GiftModel(
-        id: '101',
-        name: 'Quà x2',
-        imageUrl: '/images/gift_icon_b.png',
-        quantity: 2,
-      ),
-      timestamp: DateTime.parse('2025-11-06T15:30:00Z'),
-    ),
-    GiftTransactionModel(
-      id: 'tx12347',
-      sender: const UserModel(
-        id: '103',
-        unionId: '103',
-        nickname: 'Alice Wang',
-        avatar: '/avatars/alice.jpg',
-      ),
-      giftInfo: const GiftModel(
-        id: '102',
-        name: 'Hoa hồng',
-        imageUrl: '/images/gift_icon_c.png',
-        quantity: 5,
-      ),
-      timestamp: DateTime.parse('2025-11-05T12:20:00Z'),
-    ),
-    GiftTransactionModel(
-      id: 'tx12348',
-      sender: const UserModel(
-        id: '104',
-        unionId: '104',
-        nickname: 'Bob Smith',
-        avatar: '/avatars/bob.jpg',
-      ),
-      giftInfo: const GiftModel(
-        id: '103',
-        name: 'Chocolate',
-        imageUrl: '/images/gift_icon_d.png',
-        quantity: 10,
-      ),
-      timestamp: DateTime.parse('2025-11-04T09:15:00Z'),
-    ),
-    GiftTransactionModel(
-      id: 'tx12349',
-      sender: const UserModel(
-        id: '105',
-        unionId: '105',
-        nickname: 'Charlie Brown',
-        avatar: '/avatars/charlie.jpg',
-      ),
-      giftInfo: const GiftModel(
-        id: '104',
-        name: 'Teddy Bear',
-        imageUrl: '/images/gift_icon_e.png',
-        quantity: 1,
-      ),
-      timestamp: DateTime.parse('2025-11-03T16:45:00Z'),
-    ),
-  ];
+      timestamp: DateTime.now(),
+    );
+  });
 
   /// Mock recent gifts với pagination
   static ApiResponse<PaginatedData<GiftTransactionModel>> getRecentGifts({
@@ -98,16 +38,16 @@ class GiftTransactionMock {
     // Pagination logic
     final startIndex = (page - 1) * limit;
     final endIndex = startIndex + limit;
-    final paginatedGifts = _recentGifts.sublist(
+    final paginatedGifts = mockRecentGifts.sublist(
       startIndex,
-      endIndex > _recentGifts.length ? _recentGifts.length : endIndex,
+      endIndex > mockRecentGifts.length ? mockRecentGifts.length : endIndex,
     );
 
     final meta = PaginationMeta(
       itemCount: paginatedGifts.length,
-      totalItems: _recentGifts.length,
+      totalItems: mockRecentGifts.length,
       itemsPerPage: limit,
-      totalPages: (_recentGifts.length / limit).ceil(),
+      totalPages: (mockRecentGifts.length / limit).ceil(),
       currentPage: page,
     );
 

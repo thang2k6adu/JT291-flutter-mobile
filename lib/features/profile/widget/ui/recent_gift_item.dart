@@ -107,7 +107,7 @@ class RecentGiftItem extends StatelessWidget {
                 
                 // Gift name and quantity
                 Text(
-                  'Quà tặng x${transaction.giftInfo.quantity}',
+                  '${transaction.giftInfo.name} x${transaction.giftInfo.quantity}',
                   style: TextStyle(
                     color: AppColors.primary,
                     fontSize: 13,
