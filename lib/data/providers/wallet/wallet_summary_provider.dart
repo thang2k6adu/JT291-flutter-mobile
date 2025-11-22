@@ -22,4 +22,26 @@ class WalletSummaryNotifier extends BaseAsyncNotifier<WalletSummaryModel> {
     }
     return _service.getWalletSummary(userId);
   }
+
+  decrementDiamondBalance(int amount) {
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(
+        current.copyWith(
+          totalDiamondBalance: current.totalDiamondBalance - amount,
+        ),
+      );
+    }
+  }
+
+  incrementDiamondBalance(int amount) {
+    final current = state.value;
+    if (current != null) {
+      state = AsyncData(
+        current.copyWith(
+          totalDiamondBalance: current.totalDiamondBalance + amount,
+        ),
+      );
+    }
+  }
 }

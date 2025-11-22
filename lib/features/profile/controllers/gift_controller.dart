@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/providers/gift/gift_provider.dart';
 import 'package:jt291_flutter_mobile/data/services/gift_service.dart';
+import 'package:jt291_flutter_mobile/data/providers/wallet/wallet_summary_provider.dart';
 
 /// Controller để quản lý gift interactions và UI logic
 class GiftController extends AutoDisposeNotifier<void> {
@@ -35,6 +36,7 @@ class GiftController extends AutoDisposeNotifier<void> {
     required String recipientId,
     required String itemId,
     required int quantity,
+    required double price,
   }) async {
     try {
       print(
@@ -54,6 +56,8 @@ class GiftController extends AutoDisposeNotifier<void> {
       // await Future.delayed(const Duration(milliseconds: 500));
 
       if (success?.error == false) {
+
+        ref.read(walletSummaryProvider.notifier).refresh();
         return (success: true, message: "Đã gửi quà thành công!");
       } else {
         return (

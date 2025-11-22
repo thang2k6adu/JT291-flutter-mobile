@@ -28,6 +28,7 @@ class InventoryBottomSheet extends ConsumerStatefulWidget {
 class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
   int _selectedQuantity = 1;
   GiftModel? _selectedItem;
+  bool _isSending = false;
 
   final List<int> _quickQuantities = [1, 9, 99];
 
@@ -141,6 +142,7 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
             walletBalance: 10000, // This is just for UI, not used for inventory
             quickQuantities: _quickQuantities,
             selectedQuantity: _selectedQuantity,
+            isLoading: _isSending,
             selectedGift: _selectedItem != null
                 ? GiftModel(
                     id: _selectedItem!.id,
@@ -216,7 +218,7 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
   }
 
   Future<void> _handleSendGift() async {
-    if (_selectedItem == null) return;
+    if (_selectedItem == null || _isSending) return;
 
     // Validate quantity
     if (_selectedQuantity > _selectedItem!.quantity) {
@@ -231,25 +233,33 @@ class _InventoryBottomSheetState extends ConsumerState<InventoryBottomSheet> {
       return;
     }
 
-    final controller = ref.read(inventoryControllerProvider.notifier);
+    setState(() => _isSending = true);
 
-    print('Sending gift from inventory:');
-    print('  Gift: ${_selectedItem!.name}');
-    print('  Quantity: $_selectedQuantity');
-    print('  Available: ${_selectedItem!.quantity}');
-    print('  Recipient: ${widget.userName} (${widget.userId})');
+    try {
+      final controller = ref.read(inventoryControllerProvider.notifier);
 
-    final success = await controller.sendGift(
-      context,
-      recipientId: widget.userId,
-      itemId: _selectedItem!.id,
-      quantity: _selectedQuantity,
-    );
+      print('Sending gift from inventory:');
+      print('  Gift: ${_selectedItem!.name}');
+      print('  Quantity: $_selectedQuantity');
+      print('  Available: ${_selectedItem!.quantity}');
+      print('  Recipient: ${widget.userName} (${widget.userId})');
 
-    if (success) {
-      // Close bottom sheet after successful send
+      final success = await controller.sendGift(
+        context,
+        recipientId: widget.userId,
+        itemId: _selectedItem!.id,
+        quantity: _selectedQuantity,
+      );
+
+      if (success) {
+        // Close bottom sheet after successful send
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      }
+    } finally {
       if (mounted) {
-        Navigator.pop(context);
+        setState(() => _isSending = false);
       }
     }
   }

@@ -11,6 +11,7 @@ class GiftBottomBar extends StatelessWidget {
   final ValueChanged<int> onQuantityChanged;
   final VoidCallback? onSendPressed;
   final VoidCallback? onWalletTap;
+  final bool isLoading;
 
   const GiftBottomBar({
     super.key,
@@ -21,6 +22,7 @@ class GiftBottomBar extends StatelessWidget {
     required this.onQuantityChanged,
     this.onSendPressed,
     this.onWalletTap,
+    this.isLoading = false,
   });
 
   @override
@@ -113,8 +115,10 @@ class GiftBottomBar extends StatelessWidget {
   }
 
   Widget _buildSendButton() {
+    final bool isDisabled = selectedGift == null || isLoading;
+    
     return ElevatedButton(
-      onPressed: selectedGift == null ? null : onSendPressed,
+      onPressed: isDisabled ? null : onSendPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFFFF6B9D),
         disabledBackgroundColor: Colors.grey.shade300,
@@ -126,12 +130,23 @@ class GiftBottomBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
         ),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (isLoading) ...[
+            const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
           Text(
-            'Send',
-            style: TextStyle(
+            isLoading ? '' : 'Send',
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Colors.white,

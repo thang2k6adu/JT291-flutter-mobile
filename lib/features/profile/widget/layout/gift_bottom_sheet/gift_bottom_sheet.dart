@@ -9,6 +9,7 @@ import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_grid_view.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/gift_bottom_bar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/gift_bottom_sheet/inventory_bottom_sheet.dart';
+import 'package:jt291_flutter_mobile/data/providers/wallet/wallet_summary_provider.dart';
 
 class GiftBottomSheet extends ConsumerStatefulWidget {
   final String userId;
@@ -29,6 +30,7 @@ class _GiftBottomSheetState extends ConsumerState<GiftBottomSheet>
   late TabController _tabController;
   int _selectedQuantity = 1;
   GiftModel? _selectedGift;
+  bool _isSending = false;
 
   final List<String> _tabs = ['Hot', 'Event', 'Lucky', 'Friendship', 'Vip'];
   final List<int> _quickQuantities = [1, 9, 99];
@@ -47,6 +49,7 @@ class _GiftBottomSheetState extends ConsumerState<GiftBottomSheet>
 
   @override
   Widget build(BuildContext context) {
+    final walletSummaryState = ref.watch(walletSummaryProvider);
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
       decoration: const BoxDecoration(
@@ -72,10 +75,11 @@ class _GiftBottomSheetState extends ConsumerState<GiftBottomSheet>
             ),
           ),
           GiftBottomBar(
-            walletBalance: 10000, // TODO: Get from user profile
+            walletBalance: walletSummaryState.value?.totalDiamondBalance.toInt() ?? 0,
             quickQuantities: _quickQuantities,
             selectedQuantity: _selectedQuantity,
             selectedGift: _selectedGift,
+            isLoading: _isSending,
             onQuantityChanged: (quantity) {
               setState(() => _selectedQuantity = quantity);
             },
@@ -107,41 +111,47 @@ class _GiftBottomSheetState extends ConsumerState<GiftBottomSheet>
   }
 
   Future<void> _handleSendGift() async {
+    if (_selectedGift == null || _isSending) return;
 
-    if (_selectedGift == null) return;
+    setState(() => _isSending = true);
 
-    final totalCost = _selectedGift!.price! * _selectedQuantity;
-    final controller = ref.read(giftControllerProvider.notifier);
+    try {
+      final totalCost = _selectedGift!.price! * _selectedQuantity;
+      final controller = ref.read(giftControllerProvider.notifier);
 
-    print('Sending gift:');
-    print('  Gift: ${_selectedGift!.name}');
-    print('  Quantity: $_selectedQuantity');
-    print('  Total cost: $totalCost diamonds');
-    print('  Recipient: ${widget.userName} (${widget.userId})');
+      print('Sending gift:');
+      print('  Gift: ${_selectedGift!.name}');
+      print('  Quantity: $_selectedQuantity');
+      print('  Total cost: $totalCost diamonds');
+      print('  Recipient: ${widget.userName} (${widget.userId})');
 
-    final result = await controller.sendGift(
-      itemId: _selectedGift!.id.toString(),
-      recipientId: widget.userId,
-      quantity: _selectedQuantity,
-    );
+      final result = await controller.sendGift(
+        itemId: _selectedGift!.id.toString(),
+        recipientId: widget.userId,
+        quantity: _selectedQuantity,
+        price: _selectedGift!.price!,
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    if (result.success) {
-      // Close bottom sheet after successful send
-      if (mounted) {
-        Navigator.pop(context);
+      if (result.success) {
+        // Close bottom sheet after successful send
+        if (mounted) {
+          Navigator.pop(context);
+        }
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(result.message)));
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(result.message)));
       }
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(result.message)));
-    }
-
-    if (!result.success) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(result.message)));
+    } finally {
+      if (mounted) {
+        setState(() => _isSending = false);
+      }
     }
   }
 }
