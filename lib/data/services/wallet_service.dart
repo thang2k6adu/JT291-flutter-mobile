@@ -1,7 +1,6 @@
 import 'package:jt291_flutter_mobile/data/models/wallet/wallet_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/recharge_package_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/monthly_card_model.dart';
-import 'package:jt291_flutter_mobile/data/mocks/wallet_mock.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/transaction_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -75,6 +74,7 @@ class WalletService {
       (json) => PaginatedData.fromJson(
         json as Map<String, dynamic>,
         (item) => TransactionModel.fromJson(item as Map<String, dynamic>),
+        dataKey: 'data', // API uses "data" instead of "items"
       ),
     );
   }

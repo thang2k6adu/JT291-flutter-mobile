@@ -31,6 +31,17 @@ class ApiPaginatedResponse<T> implements PaginatedResponse<T> {
       return false;
     }
     final meta = _response.data!.meta;
+    final items = _response.data!.items;
+    
+    // Calculate hasNext based on current page and total pages
+    // If totalPages is 0 (no meta from API), use heuristic
+    if (meta.totalPages == 0) {
+      // No pagination metadata from API
+      // Assume there's more data if we got a full page of items
+      // (i.e., items.length equals itemsPerPage limit)
+      return items.length >= meta.itemsPerPage;
+    }
+    
     return meta.currentPage < meta.totalPages;
   }
 

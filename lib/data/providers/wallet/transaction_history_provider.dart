@@ -10,19 +10,6 @@ final transactionHistoryProvider =
       List<TransactionModel>
     >(TransactionHistoryNotifier.new);
 
-class _TransactionHistoryResponse
-    implements PaginatedResponse<TransactionModel> {
-  final TransactionHistoryResponse? _response;
-
-  _TransactionHistoryResponse(this._response);
-
-  @override
-  List<TransactionModel> get data => _response?.data ?? [];
-
-  @override
-  bool get hasNext => _response?.pagination.hasNext ?? false;
-}
-
 class TransactionHistoryNotifier
     extends BasePaginatedNotifier<TransactionModel> {
   late final WalletService _service;
@@ -46,6 +33,7 @@ class TransactionHistoryNotifier
       throw Exception('User ID is null');
     }
     final response = await _service.getTransactionHistory(userId, page, limit);
+    print('TransactionHistory fetchPage response: ${response.data?.items.length} items');
     return ApiPaginatedResponse(response);
   }
 }

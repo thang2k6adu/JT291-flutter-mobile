@@ -19,21 +19,48 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
+    _setupScrollListener();
+
+    // Load initial data and check if need to load more
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(transactionHistoryProvider.notifier).fetchData(reset: true).then((_) {
+        _checkLoadMoreIfListNotFull();
+      });
+    });
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
 
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent * 0.8) {
-      ref.read(transactionHistoryProvider.notifier).loadMore();
-    }
+  void _setupScrollListener() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        // Load more when near bottom (200px before end)
+        final notifier = ref.read(transactionHistoryProvider.notifier);
+        notifier.loadMore();
+      }
+    });
+  }
+
+  void _checkLoadMoreIfListNotFull() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients &&
+          _scrollController.position.maxScrollExtent <=
+              _scrollController.position.viewportDimension) {
+        // If list doesn't fill the screen, load more
+        final notifier = ref.read(transactionHistoryProvider.notifier);
+        if (notifier.hasNext) {
+          notifier.loadMore().then((_) {
+            // After loading, check again if need more
+            _checkLoadMoreIfListNotFull();
+          });
+        }
+      }
+    });
   }
 
   @override
@@ -57,15 +84,27 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   }
 
   Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return RefreshIndicator(
+      onRefresh: () async {
+        await ref.read(transactionHistoryProvider.notifier).refresh();
+        _checkLoadMoreIfListNotFull();
+      },
+      child: ListView(
+        controller: _scrollController,
         children: [
-          Icon(Icons.history, size: 64, color: Colors.grey[400]),
-          const SizedBox(height: 16),
-          Text(
-            'No transaction history',
-            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+          const SizedBox(height: 200),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.history, size: 64, color: Colors.grey[400]),
+                const SizedBox(height: 16),
+                Text(
+                  'No transaction history',
+                  style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -73,22 +112,39 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   }
 
   Widget _buildErrorState(Object error) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return RefreshIndicator(
+      onRefresh: () async {
+        await ref.read(transactionHistoryProvider.notifier).refresh();
+      },
+      child: ListView(
+        controller: _scrollController,
         children: [
-          Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
-          const SizedBox(height: 16),
-          Text(
-            'Failed to load transactions',
-            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-          ),
-          const SizedBox(height: 8),
-          TextButton(
-            onPressed: () {
-              ref.invalidate(transactionHistoryProvider);
-            },
-            child: const Text('Retry'),
+          const SizedBox(height: 200),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, size: 64, color: Colors.red[300]),
+                const SizedBox(height: 16),
+                Text(
+                  'Failed to load transactions',
+                  style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  error.toString(),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    ref.read(transactionHistoryProvider.notifier).refresh();
+                  },
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -96,34 +152,42 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   }
 
   Widget _buildTransactionList(List<TransactionModel> transactions) {
+    final notifier = ref.read(transactionHistoryProvider.notifier);
+    
     return RefreshIndicator(
       onRefresh: () async {
-        ref.invalidate(transactionHistoryProvider);
+        await ref.read(transactionHistoryProvider.notifier).refresh();
+        _checkLoadMoreIfListNotFull();
       },
       child: ListView.separated(
         controller: _scrollController,
         padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: transactions.length + 1,
-        separatorBuilder: (context, index) =>
-            const Divider(height: 1, thickness: 1, color: Color(0xFFF0F0F0)),
-        itemBuilder: (context, index) {
-          if (index == transactions.length) {
-            return _buildLoadingIndicator();
+        itemCount: transactions.length + (notifier.isLoadingMore ? 1 : 0),
+        separatorBuilder: (context, index) {
+          if (index < transactions.length - 1) {
+            return const Divider(height: 1, thickness: 1, color: Color(0xFFF0F0F0));
           }
-          return TransactionItem(transaction: transactions[index]);
+          return const SizedBox.shrink();
+        },
+        itemBuilder: (context, index) {
+          if (index < transactions.length) {
+            return TransactionItem(transaction: transactions[index]);
+          } else {
+            // Loading indicator
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ),
+            );
+          }
         },
       ),
     );
-  }
-
-  Widget _buildLoadingIndicator() {
-    final notifier = ref.read(transactionHistoryProvider.notifier);
-    return notifier.hasNext
-        ? const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Center(child: CircularProgressIndicator()),
-          )
-        : const SizedBox.shrink();
   }
 }
 
