@@ -1,40 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
+import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/feed_app_bar.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 
-void main() {
-  runApp(MyApp());
+class FeedScreen extends StatefulWidget {
+  const FeedScreen({super.key});
+
+  @override
+  State<FeedScreen> createState() => _FeedScreenState();
 }
 
-class MyApp extends StatelessWidget {
+class _FeedScreenState extends State<FeedScreen> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  bool _isCommunity = false;
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: FeedScreen());
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(_onTabChanged);
   }
-}
 
-class FeedScreen extends StatelessWidget {
-  const FeedScreen({Key? key}) : super(key: key);
+  void _onTabChanged() {
+    setState(() {
+      _isCommunity = _tabController.index == 1;
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_onTabChanged);
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3, // 3 tab
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: FeedAppBar(),
-        body: TabBarView(
-          children: [
-            FeedList(), // Friends tab
-            FeedList(), // Community tab
-            FeedList(), // Latest tab
-          ],
-        ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: FeedAppBar(
+        isCommunity: _isCommunity,
+        controller: _tabController,
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          FeedList(),
+          FeedList(),
+          FeedList(),
+        ],
       ),
     );
   }
 }
 
-// Feed list widget (dùng lại PostCard)
 class FeedList extends StatelessWidget {
   const FeedList({Key? key}) : super(key: key);
 
@@ -48,8 +69,9 @@ class FeedList extends StatelessWidget {
           description:
               'When it comes to home decor, the first step is choosing a color scheme that complements your furniture and accessories.',
           images: [
-            '[https://via.placeholder.com/300x400](https://via.placeholder.com/300x400)',
-            '[https://via.placeholder.com/300x400](https://via.placeholder.com/300x400)',
+            'https://inkythuatso.com/uploads/thumbnails/800/2022/05/hinh-anh-meo-bua-buon-cuoi-nhat-12-09-57-09.jpg',
+            'https://inkythuatso.com/uploads/thumbnails/800/2022/05/hinh-anh-meo-bua-buon-cuoi-nhat-12-09-57-09.jpg',
+            'https://inkythuatso.com/uploads/thumbnails/800/2022/05/hinh-anh-meo-bua-buon-cuoi-nhat-12-09-57-09.jpg',
           ],
           likes: 0,
           comments: 13,
@@ -60,8 +82,8 @@ class FeedList extends StatelessWidget {
           description:
               'Use light-colored or sheer curtains to let in more sunlight, making your space feel brighter and more open.',
           images: [
-            '[https://via.placeholder.com/300x400](https://via.placeholder.com/300x400)',
-            '[https://via.placeholder.com/300x400](https://via.placeholder.com/300x400)',
+            'https://inkythuatso.com/uploads/thumbnails/800/2022/05/hinh-anh-meo-bua-buon-cuoi-nhat-12-09-57-09.jpg',
+            'https://inkythuatso.com/uploads/thumbnails/800/2022/05/hinh-anh-meo-bua-buon-cuoi-nhat-12-09-57-09.jpg',
           ],
           likes: 0,
           comments: 0,
@@ -72,7 +94,6 @@ class FeedList extends StatelessWidget {
   }
 }
 
-// PostCard giữ nguyên như bạn viết
 class PostCard extends StatefulWidget {
   final String userName;
   final String timeAgo;
@@ -99,44 +120,63 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool isLiked = false;
+  int _currentImageIndex = 0;
+  final CarouselSliderController _carouselController = CarouselSliderController();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border(bottom: BorderSide(color: Colors.grey[200]!, width: 8)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           // Header
           Padding(
             padding: EdgeInsets.all(16),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundImage: NetworkImage(
-                    '[https://via.placeholder.com/100](https://via.placeholder.com/100)',
+                AvatarWidget(
+                  image: NetworkImage(
+                    'https://inkythuatso.com/uploads/thumbnails/800/2022/05/hinh-anh-meo-bua-buon-cuoi-nhat-12-09-57-09.jpg',
                   ),
+                  size: 44,
                 ),
-                SizedBox(width: 12),
+                SizedBox(width: 8),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.userName,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            widget.userName,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            widget.timeAgo,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
                       ),
+                      SizedBox(height: 4),
                       Text(
-                        widget.timeAgo,
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                        widget.description,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[950],
+                          height: 1.4,
+                        ),
                       ),
                     ],
                   ),
@@ -146,80 +186,16 @@ class _PostCardState extends State<PostCard> {
             ),
           ),
 
-          // Description
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              widget.description,
-              style: TextStyle(fontSize: 15, height: 1.4),
-            ),
-          ),
-          SizedBox(height: 12),
+          // Images Carousel
+          _buildImagesCarousel(),
 
-          // Images
-          Container(
-            height: 300,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 16, right: 4),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        widget.images[0],
-                        fit: BoxFit.cover,
-                        height: 300,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 16, left: 4),
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            widget.images[1],
-                            fit: BoxFit.cover,
-                            height: 300,
-                            width: double.infinity,
-                          ),
-                        ),
-                        if (widget.hasAttachment)
-                          Positioned(
-                            bottom: 16,
-                            right: 16,
-                            child: Container(
-                              width: 56,
-                              height: 56,
-                              decoration: BoxDecoration(
-                                color: Color(0xFFFF69B4),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.attach_file,
-                                color: Colors.white,
-                                size: 28,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 12),
 
           // Action buttons
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
+                SizedBox(width: 16),
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -228,25 +204,23 @@ class _PostCardState extends State<PostCard> {
                   },
                   child: Row(
                     children: [
-                      Icon(
-                        isLiked ? Icons.favorite : Icons.favorite_border,
-                        color: isLiked ? Colors.red : Colors.black,
-                        size: 26,
+                      SvgIconSimple.asset(
+                        AppIcons.heartSvg,
+                        size: 24,
+                        color: isLiked ? Colors.red : null,
                       ),
-                      if (isLiked)
-                        Padding(
-                          padding: EdgeInsets.only(left: 4, top: 8),
-                          child: Text('👍', style: TextStyle(fontSize: 16)),
-                        ),
                     ],
                   ),
                 ),
-                SizedBox(width: 24),
+                SizedBox(width: 12),
                 Row(
                   children: [
-                    Icon(Icons.chat_bubble_outline, size: 26),
+                    SvgIconSimple.asset(
+                      AppIcons.messageSvg,
+                      size: 24,
+                    ),
                     if (widget.comments > 0) ...[
-                      SizedBox(width: 6),
+                      SizedBox(width: 2),
                       Text(
                         '${widget.comments}',
                         style: TextStyle(
@@ -257,13 +231,87 @@ class _PostCardState extends State<PostCard> {
                     ],
                   ],
                 ),
-                SizedBox(width: 24),
-                Icon(Icons.send_outlined, size: 26),
+                SizedBox(width: 12),
+                SvgIconSimple.asset(
+                  AppIcons.sendMessageLineSvg,
+                  size: 24,
+                ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildImagesCarousel() {
+    return Stack(
+      children: [
+        CarouselSlider.builder(
+          carouselController: _carouselController,
+          itemCount: widget.images.length,
+          options: CarouselOptions(
+            height: 300,
+            viewportFraction: 0.6,
+            enlargeCenterPage: false,
+            enableInfiniteScroll: false,
+            enlargeFactor: 0.15,
+            autoPlay: false,
+            onPageChanged: (index, reason) {
+              setState(() {
+                _currentImageIndex = index;
+              });
+            },
+          ),
+          itemBuilder: (context, index, realIndex) {
+            return Container(
+              margin: EdgeInsets.symmetric(horizontal: 4),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.network(
+                      widget.images[index],
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          color: Colors.grey[200],
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                              color: Color(0xFFFF69B4),
+                              strokeWidth: 2,
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[300],
+                          child: Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 50,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    // Attachment button
+                  
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

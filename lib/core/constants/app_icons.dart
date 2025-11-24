@@ -71,4 +71,9 @@ class AppIcons {
 
    static const String feedNotifications = 'lib/assets/icons/feed_notification.png';
    static const String feedSearch = 'lib/assets/icons/feed_search.png';
+   static const String heartPng = 'lib/assets/icons/heart.png';
+   static const String heartSvg = 'lib/assets/icons/heart.svg';
+   static const String sendMessageLinePng = 'lib/assets/icons/send_message_line.png';
+   static const String sendMessageLineSvg = 'lib/assets/icons/send_message_line.svg';
+   static const String messageSvg = 'lib/assets/icons/messages.svg';
 }
