@@ -3,6 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 
 /// Response wrapper for paginated API calls
+class CachedPage<T> {
+  final T data;
+  final DateTime timestamp;
+
+  CachedPage({required this.data, required this.timestamp});
+}
+
 abstract class PaginatedResponse<T> {
   List<T> get data;
   bool get hasNext;
@@ -32,7 +39,7 @@ class ApiPaginatedResponse<T> implements PaginatedResponse<T> {
     }
     final meta = _response.data!.meta;
     final items = _response.data!.items;
-    
+
     // Calculate hasNext based on current page and total pages
     // If totalPages is 0 (no meta from API), use heuristic
     if (meta.totalPages == 0) {
@@ -41,7 +48,7 @@ class ApiPaginatedResponse<T> implements PaginatedResponse<T> {
       // (i.e., items.length equals itemsPerPage limit)
       return items.length >= meta.itemsPerPage;
     }
-    
+
     return meta.currentPage < meta.totalPages;
   }
 
@@ -59,12 +66,21 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
 
   static const int limit = 10;
 
+  final Map<String, CachedPage<List<T>>> _cache = {};
+  static const _cacheTTL = Duration(minutes: 5);
+
   /// Concrete class cần implement: fetch 1 page từ API và trả về response với pagination
   Future<PaginatedResponse<T>> fetchPage({
     required int page,
     required int limit,
     String? search,
   });
+
+  String _getCacheKey(String? search) {
+    final feedName = "base_feed"; // override or use feed-specific name
+    if (search != null && search.isNotEmpty) return "${feedName}_$search";
+    return feedName;
+  }
 
   @override
   Future<List<T>> build() async {
@@ -73,12 +89,22 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
 
   /// Fetch dữ liệu (có handle reset, pagination)
   Future<List<T>> fetchData({bool reset = false, String? search}) async {
-    if (_isLoadingMore && !reset) return state.value ?? [];
+    final cacheKey = _getCacheKey(search);
 
     if (reset) {
       _page = 1;
       _hasNext = true;
       _search = search;
+
+      final cached = _cache[cacheKey];
+      if (cached != null &&
+          DateTime.now().difference(cached.timestamp) < _cacheTTL) {
+        state = AsyncData(cached.data);
+        // fetch background
+        _fetchAndUpdateCacheInBackground(reset: true, search: search);
+        return cached.data;
+      }
+
       state = const AsyncLoading();
     } else if (!_hasNext) {
       return state.value ?? [];
@@ -101,6 +127,12 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
       final updatedList = <T>[if (!reset) ...(state.value ?? []), ...newData];
 
       state = AsyncData(updatedList);
+
+      _cache[cacheKey] = CachedPage(
+        data: updatedList,
+        timestamp: DateTime.now(),
+      );
+
       return updatedList;
     } catch (e, st) {
       state = AsyncError(e, st);
@@ -108,6 +140,27 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
     } finally {
       _isLoadingMore = false;
     }
+  }
+
+  Future<void> _fetchAndUpdateCacheInBackground({
+    bool reset = false,
+    String? search,
+  }) async {
+    try {
+      final response = await fetchPage(
+        page: reset ? 1 : _page,
+        limit: limit,
+        search: search,
+      );
+      final updatedList = <T>[...response.data];
+      final cacheKey = _getCacheKey(search);
+
+      state = AsyncData(updatedList);
+      _cache[cacheKey] = CachedPage(
+        data: updatedList,
+        timestamp: DateTime.now(),
+      );
+    } catch (_) {}
   }
 
   /// Load thêm page kế tiếp
