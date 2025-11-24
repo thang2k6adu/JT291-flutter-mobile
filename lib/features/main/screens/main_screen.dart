@@ -5,6 +5,8 @@ import 'package:jt291_flutter_mobile/data/providers/auth/auth_provider.dart';
 import 'package:jt291_flutter_mobile/features/auth/screens/splash_screen.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/profile_screen.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/screens/feed_screen.dart';
+
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -29,7 +31,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       const SplashScreen(title: "Home"),
       const SplashScreen(title: "Messages"),
       const SplashScreen(title: "Reels"),
-      const SplashScreen(title: "Explore"),
+      const FeedScreen(),
       ProfileScreen(),
     ];
 

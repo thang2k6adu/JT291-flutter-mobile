@@ -37,4 +37,6 @@ class RouteConstants {
   static const String channelMessagesGroupMember =
       "/channels/messages/group/member";
   static const String channelMessagesDetail = "/channels/messages/details";
+
+  static const String feed = "/feed";
 }

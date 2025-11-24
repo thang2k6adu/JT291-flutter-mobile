@@ -68,7 +68,7 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
   static const int limit = 10;
 
   final Map<String, CachedPage<List<T>>> _cache = {};
-  static const _cacheTTL = Duration(seconds: 10);
+  static const _cacheTTL = Duration(minutes: 5);
 
   /// Concrete class cần implement: fetch 1 page từ API và trả về response với pagination
   Future<PaginatedResponse<T>> fetchPage({
@@ -176,10 +176,13 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
       final updatedList = <T>[...response.data];
       final cacheKey = getCacheKey(search);
 
+      print('state: $state');
+
       // Only update state if it hasn't changed (avoid overwriting optimistic updates)
       if (state == initialState) {
         state = AsyncData(updatedList);
       }
+        // state = AsyncData(updatedList);
       
       // Always update cache
       _cache[cacheKey] = CachedPage(

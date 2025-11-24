@@ -68,4 +68,7 @@ class AppIcons {
    static const String eventTagPng = 'lib/assets/icons/event_tag.png';
    
    static const String noItemAvailablePng = 'lib/assets/icons/no_item_available.png';
+
+   static const String feedNotifications = 'lib/assets/icons/feed_notification.png';
+   static const String feedSearch = 'lib/assets/icons/feed_search.png';
 }
