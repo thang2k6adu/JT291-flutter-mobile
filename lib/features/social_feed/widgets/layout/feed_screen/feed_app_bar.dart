@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/components/ui/circle_icon_widget.dart';
+import 'package:jt291_flutter_mobile/data/providers/social/social_feed_provider.dart';
 
 class FeedAppBar extends StatelessWidget implements PreferredSizeWidget {
   const FeedAppBar({super.key, this.isCommunity = false, required this.controller});
@@ -94,90 +96,110 @@ class FeedAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class HotTopicsSection extends StatelessWidget {
+class HotTopicsSection extends ConsumerWidget {
   const HotTopicsSection({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final topics = [
-      HotTopicData(
-        title: '#Sayhi2025',
-        postCount: '120k bài viết',
-        imageUrl: 'https://inkythuatso.com/uploads/thumbnails/800/2022/05/hinh-anh-meo-bua-buon-cuoi-nhat-12-09-57-09.jpg', // Thay bằng URL ảnh thật
-      ),
-      HotTopicData(
-        title: '#Giaoluamnhac',
-        postCount: '120k bài viết',
-        imageUrl: 'https://inkythuatso.com/uploads/thumbnails/800/2022/05/hinh-anh-meo-bua-buon-cuoi-nhat-12-09-57-09.jpg',
-      ),
-      HotTopicData(
-        title: '#Podcastdem',
-        postCount: '120k bài viết',
-        imageUrl: 'https://inkythuatso.com/uploads/thumbnails/800/2022/05/hinh-anh-meo-bua-buon-cuoi-nhat-12-09-57-09.jpg',
-      ),
-      HotTopicData(
-        title: '#Trainghiem',
-        postCount: '120k bài viết',
-        imageUrl: 'https://inkythuatso.com/uploads/thumbnails/800/2022/05/hinh-anh-meo-bua-buon-cuoi-nhat-12-09-57-09.jpg',
-      ),
-    ];
+  String _formatPostCount(int count) {
+    if (count >= 1000000) {
+      return '${(count / 1000000).toStringAsFixed(1)}M bài viết';
+    } else if (count >= 1000) {
+      return '${(count / 1000).toStringAsFixed(0)}k bài viết';
+    }
+    return '$count bài viết';
+  }
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hotTopicsAsync = ref.watch(hotTopicsProvider);
+
+    return hotTopicsAsync.when(
+      data: (topics) {
+        if (topics.isEmpty) {
+          return SizedBox(height: 120);
+        }
+
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                '🔥',
-                style: TextStyle(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '🔥',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    'Hot Topic',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(width: 4),
-              Text(
-                'Hot Topic',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
+              SizedBox(height: 6),
+              SizedBox(
+                height: 70,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: topics.length,
+                  separatorBuilder: (context, index) => SizedBox(width: 12),
+                  itemBuilder: (context, index) {
+                    final topic = topics[index];
+                    return HotTopicCard(
+                      title: topic.hashtag,
+                      postCount: _formatPostCount(topic.postCount),
+                      imageUrl: topic.thumbnailUrl ?? '',
+                    );
+                  },
                 ),
               ),
             ],
           ),
-          SizedBox(height: 6),
-          SizedBox(
-            height: 70,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: topics.length,
-              separatorBuilder: (context, index) => SizedBox(width: 12),
-              itemBuilder: (context, index) {
-                return HotTopicCard(data: topics[index]);
-              },
+        );
+      },
+      loading: () => Container(
+        height: 120,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFFFF69B4),
+            strokeWidth: 2,
+          ),
+        ),
+      ),
+      error: (error, stack) => Container(
+        height: 120,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Center(
+          child: Text(
+            'Failed to load hot topics',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[600],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class HotTopicData {
+class HotTopicCard extends StatelessWidget {
   final String title;
   final String postCount;
   final String imageUrl;
 
-  HotTopicData({
+  const HotTopicCard({
+    super.key,
     required this.title,
     required this.postCount,
     required this.imageUrl,
   });
-}
-
-class HotTopicCard extends StatelessWidget {
-  const HotTopicCard({super.key, required this.data});
-  final HotTopicData data;
 
   @override
   Widget build(BuildContext context) {
@@ -197,20 +219,27 @@ class HotTopicCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                data.imageUrl,
-                width: 50,
-                height: 50,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    width: 36,
-                    height: 36,
-                    color: Colors.grey.shade300,
-                    child: Icon(Icons.image, color: Colors.grey.shade600),
-                  );
-                },
-              ),
+              child: imageUrl.isNotEmpty
+                  ? Image.network(
+                      imageUrl,
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 50,
+                          height: 50,
+                          color: Colors.grey.shade300,
+                          child: Icon(Icons.image, color: Colors.grey.shade600, size: 24),
+                        );
+                      },
+                    )
+                  : Container(
+                      width: 50,
+                      height: 50,
+                      color: Colors.grey.shade300,
+                      child: Icon(Icons.tag, color: Colors.grey.shade600, size: 24),
+                    ),
             ),
             SizedBox(width: 10),
             Expanded(
@@ -219,7 +248,7 @@ class HotTopicCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    data.title,
+                    title,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -230,7 +259,7 @@ class HotTopicCard extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    data.postCount,
+                    postCount,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
