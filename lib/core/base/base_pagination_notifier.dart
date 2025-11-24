@@ -1,4 +1,5 @@
 // base_paginated_notifier.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 
@@ -76,10 +77,26 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
     String? search,
   });
 
+  /// Generate cache key based on runtime type and search query
+  /// Subclasses can override this to provide custom cache keys
+  @protected
   String _getCacheKey(String? search) {
-    final feedName = "base_feed"; // override or use feed-specific name
+    final feedName = runtimeType.toString();
     if (search != null && search.isNotEmpty) return "${feedName}_$search";
     return feedName;
+  }
+
+  /// Update cache with current state
+  @protected
+  void _updateCacheWithCurrentState([String? search]) {
+    final cacheKey = _getCacheKey(search ?? _search);
+    final currentData = state.value;
+    if (currentData != null) {
+      _cache[cacheKey] = CachedPage(
+        data: currentData,
+        timestamp: DateTime.now(),
+      );
+    }
   }
 
   @override
@@ -142,10 +159,14 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
     }
   }
 
+  /// Fetch and update cache in background without blocking UI
+  /// Only updates state if it hasn't changed (to avoid overwriting optimistic updates)
   Future<void> _fetchAndUpdateCacheInBackground({
     bool reset = false,
     String? search,
   }) async {
+    final initialState = state;
+    
     try {
       final response = await fetchPage(
         page: reset ? 1 : _page,
@@ -155,12 +176,19 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
       final updatedList = <T>[...response.data];
       final cacheKey = _getCacheKey(search);
 
-      state = AsyncData(updatedList);
+      // Only update state if it hasn't changed (avoid overwriting optimistic updates)
+      if (state == initialState) {
+        state = AsyncData(updatedList);
+      }
+      
+      // Always update cache
       _cache[cacheKey] = CachedPage(
         data: updatedList,
         timestamp: DateTime.now(),
       );
-    } catch (_) {}
+    } catch (_) {
+      // Silent fail for background updates
+    }
   }
 
   /// Load thêm page kế tiếp
@@ -172,6 +200,20 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
   /// Refresh toàn bộ dữ liệu
   Future<void> refresh() async {
     await fetchData(reset: true);
+  }
+
+  /// Clear all cache
+  void clearCache() {
+    _cache.clear();
+  }
+
+  /// Invalidate cache for specific search query or all cache if search is null
+  void invalidateCache([String? search]) {
+    if (search != null) {
+      _cache.remove(_getCacheKey(search));
+    } else {
+      clearCache();
+    }
   }
 
   // --- Getters ---
@@ -196,6 +238,11 @@ mixin ListItemUpdateMixin<T> on AsyncNotifier<List<T>> {
     }).toList();
 
     state = AsyncData(updatedList);
+    
+    // Update cache if this is a paginated notifier
+    if (this is BasePaginatedNotifier) {
+      (this as BasePaginatedNotifier)._updateCacheWithCurrentState();
+    }
   }
 
   /// Update item và await cho async operation, sau đó update lại theo kết quả
@@ -205,19 +252,16 @@ mixin ListItemUpdateMixin<T> on AsyncNotifier<List<T>> {
     Future<bool> Function() operation,
     T Function(T item, bool success) updateResult,
   ) async {
-    // 1) Lấy list hiện tại
-    final initialList = state.value ?? [];
-
-    // 2) Optimistic update: set pending
+    // 1) Optimistic update: set pending
     updateItem(identify, setPending);
 
-    // 3) Perform operation
+    // 2) Perform operation
     final success = await operation();
 
-    // 4) Lấy lại list hiện tại sau optimistic update
+    // 3) Get current list after optimistic update
     final currentList = state.value ?? [];
 
-    // 5) Update item dựa trên list hiện tại
+    // 4) Update item based on operation result
     final updatedList = currentList.map((item) {
       if (identify(item)) {
         return updateResult(item, success);
@@ -225,7 +269,12 @@ mixin ListItemUpdateMixin<T> on AsyncNotifier<List<T>> {
       return item;
     }).toList();
 
-    // 6) Set state
+    // 5) Set state
     state = AsyncData(updatedList);
+    
+    // 6) Update cache if this is a paginated notifier
+    if (this is BasePaginatedNotifier) {
+      (this as BasePaginatedNotifier)._updateCacheWithCurrentState();
+    }
   }
 }
