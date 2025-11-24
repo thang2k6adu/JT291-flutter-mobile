@@ -507,39 +507,41 @@ ApiResponse<PaginatedData<PostModel>> mockFriendsFeedApiResponse({
 }
 
 /// GET /api/feed/community
-/// Returns hot topics + paginated community feed
-/// Note: This returns a custom structure with hot_topics + items + meta
-ApiResponse<Map<String, dynamic>> mockCommunityFeedApiResponse({
+/// Returns paginated community feed
+ApiResponse<PaginatedData<PostModel>> mockCommunityFeedApiResponse({
   int page = 1,
   int limit = 20,
+  DateTime? since,
 }) {
   var posts = _getCommunityPosts();
+
+  // Filter by 'since' timestamp if provided (for pull-to-refresh)
+  if (since != null) {
+    posts = posts.where((post) => post.createdAt.isAfter(since)).toList();
+  }
 
   // Apply pagination
   final start = (page - 1) * limit;
   final end = (start + limit).clamp(0, posts.length);
   final pagedPosts = start < posts.length ? posts.sublist(start, end) : <PostModel>[];
 
-  final totalPages = (posts.length / limit).ceil();
+  return mockPaginatedResponse<PostModel>(
+    items: pagedPosts,
+    currentPage: page,
+    itemsPerPage: limit,
+    totalItems: posts.length,
+    message: 'Community feed fetched successfully',
+  );
+}
 
-  // Create custom response structure
-  final responseData = {
-    'hot_topics': _mockHotTopics.map((topic) => topic.toJson()).toList(),
-    'items': pagedPosts.map((post) => post.toJson()).toList(),
-    'meta': {
-      'item_count': pagedPosts.length,
-      'total_items': posts.length,
-      'items_per_page': limit,
-      'total_pages': totalPages,
-      'current_page': page,
-    },
-  };
-
-  return ApiResponse<Map<String, dynamic>>(
+/// GET /api/feed/hot-topics
+/// Returns list of hot/trending topics
+ApiResponse<List<HotTopicModel>> mockHotTopicsApiResponse() {
+  return ApiResponse<List<HotTopicModel>>(
     error: false,
     code: 200,
-    message: 'Community feed fetched successfully',
-    data: responseData,
+    message: 'Hot topics fetched successfully',
+    data: _mockHotTopics,
     traceId: 'mock_trace_${DateTime.now().millisecondsSinceEpoch}',
   );
 }

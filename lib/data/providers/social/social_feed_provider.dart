@@ -1,0 +1,244 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/core/base/base_pagination_notifier.dart';
+import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
+import 'package:jt291_flutter_mobile/data/models/social/hot_topic_model.dart';
+import 'package:jt291_flutter_mobile/data/services/social_feed_service.dart';
+
+// =================================================================
+// FRIENDS FEED PROVIDER
+// =================================================================
+
+/// Provider for friends feed (posts from friends)
+final friendsFeedProvider = AsyncNotifierProvider<
+    FriendsFeedNotifier,
+    List<PostModel>
+>(FriendsFeedNotifier.new);
+
+class FriendsFeedNotifier extends BasePaginatedNotifier<PostModel>
+    with ListItemUpdateMixin<PostModel> {
+  late final SocialFeedService _service;
+
+  @override
+  Future<List<PostModel>> build() async {
+    _service = ref.read(socialFeedServiceProvider);
+    return super.build();
+  }
+
+  @override
+  Future<PaginatedResponse<PostModel>> fetchPage({
+    required int page,
+    required int limit,
+    String? search,
+  }) async {
+    final response = await _service.getFriendsFeed(
+      page: page,
+      limit: limit,
+    );
+    print('FriendsFeed fetchPage response: ${response.data?.items.length} items');
+    return ApiPaginatedResponse(response);
+  }
+
+  /// Toggle like on a post
+  Future<void> toggleLike(String postId) async {
+    await updateItemAsync(
+      (post) => post.id == postId,
+      (post) => post, // No pending state needed for like
+      () async {
+        final response = await _service.toggleLike(postId);
+        return !response.error;
+      },
+      (post, success) {
+        if (success) {
+          return post.copyWith(
+            isLiked: !post.isLiked,
+            likeCount: post.isLiked ? post.likeCount - 1 : post.likeCount + 1,
+          );
+        }
+        return post;
+      },
+    );
+  }
+
+  /// Toggle bookmark on a post
+  Future<void> toggleBookmark(String postId) async {
+    await updateItemAsync(
+      (post) => post.id == postId,
+      (post) => post, // No pending state needed for bookmark
+      () async {
+        final response = await _service.toggleBookmark(postId);
+        return !response.error;
+      },
+      (post, success) {
+        if (success) {
+          return post.copyWith(isBookmarked: !post.isBookmarked);
+        }
+        return post;
+      },
+    );
+  }
+}
+
+// =================================================================
+// COMMUNITY FEED PROVIDER
+// =================================================================
+
+/// Provider for community feed (posts from everyone)
+final communityFeedProvider = AsyncNotifierProvider<
+    CommunityFeedNotifier,
+    List<PostModel>
+>(CommunityFeedNotifier.new);
+
+class CommunityFeedNotifier extends BasePaginatedNotifier<PostModel>
+    with ListItemUpdateMixin<PostModel> {
+  late final SocialFeedService _service;
+
+  @override
+  Future<List<PostModel>> build() async {
+    _service = ref.read(socialFeedServiceProvider);
+    return super.build();
+  }
+
+  @override
+  Future<PaginatedResponse<PostModel>> fetchPage({
+    required int page,
+    required int limit,
+    String? search,
+  }) async {
+    final response = await _service.getCommunityFeed(
+      page: page,
+      limit: limit,
+    );
+    print('CommunityFeed fetchPage response: ${response.data?.items.length} items');
+    return ApiPaginatedResponse(response);
+  }
+
+  /// Toggle like on a post
+  Future<void> toggleLike(String postId) async {
+    await updateItemAsync(
+      (post) => post.id == postId,
+      (post) => post,
+      () async {
+        final response = await _service.toggleLike(postId);
+        return !response.error;
+      },
+      (post, success) {
+        if (success) {
+          return post.copyWith(
+            isLiked: !post.isLiked,
+            likeCount: post.isLiked ? post.likeCount - 1 : post.likeCount + 1,
+          );
+        }
+        return post;
+      },
+    );
+  }
+
+  /// Toggle bookmark on a post
+  Future<void> toggleBookmark(String postId) async {
+    await updateItemAsync(
+      (post) => post.id == postId,
+      (post) => post,
+      () async {
+        final response = await _service.toggleBookmark(postId);
+        return !response.error;
+      },
+      (post, success) {
+        if (success) {
+          return post.copyWith(isBookmarked: !post.isBookmarked);
+        }
+        return post;
+      },
+    );
+  }
+}
+
+// =================================================================
+// LATEST FEED PROVIDER
+// =================================================================
+
+/// Provider for latest feed (all posts sorted by date)
+final latestFeedProvider = AsyncNotifierProvider<
+    LatestFeedNotifier,
+    List<PostModel>
+>(LatestFeedNotifier.new);
+
+class LatestFeedNotifier extends BasePaginatedNotifier<PostModel>
+    with ListItemUpdateMixin<PostModel> {
+  late final SocialFeedService _service;
+
+  @override
+  Future<List<PostModel>> build() async {
+    _service = ref.read(socialFeedServiceProvider);
+    return super.build();
+  }
+
+  @override
+  Future<PaginatedResponse<PostModel>> fetchPage({
+    required int page,
+    required int limit,
+    String? search,
+  }) async {
+    final response = await _service.getLatestFeed(
+      page: page,
+      limit: limit,
+    );
+    print('LatestFeed fetchPage response: ${response.data?.items.length} items');
+    return ApiPaginatedResponse(response);
+  }
+
+  /// Toggle like on a post
+  Future<void> toggleLike(String postId) async {
+    await updateItemAsync(
+      (post) => post.id == postId,
+      (post) => post,
+      () async {
+        final response = await _service.toggleLike(postId);
+        return !response.error;
+      },
+      (post, success) {
+        if (success) {
+          return post.copyWith(
+            isLiked: !post.isLiked,
+            likeCount: post.isLiked ? post.likeCount - 1 : post.likeCount + 1,
+          );
+        }
+        return post;
+      },
+    );
+  }
+
+  /// Toggle bookmark on a post
+  Future<void> toggleBookmark(String postId) async {
+    await updateItemAsync(
+      (post) => post.id == postId,
+      (post) => post,
+      () async {
+        final response = await _service.toggleBookmark(postId);
+        return !response.error;
+      },
+      (post, success) {
+        if (success) {
+          return post.copyWith(isBookmarked: !post.isBookmarked);
+        }
+        return post;
+      },
+    );
+  }
+}
+
+// =================================================================
+// HOT TOPICS PROVIDER
+// =================================================================
+
+/// Provider for hot topics (trending hashtags)
+final hotTopicsProvider = FutureProvider<List<HotTopicModel>>((ref) async {
+  final service = ref.read(socialFeedServiceProvider);
+  final response = await service.getHotTopics();
+  
+  if (response.error || response.data == null) {
+    throw Exception(response.message);
+  }
+  
+  return response.data!;
+});
+
