@@ -39,6 +39,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     final controller = ref.read(socialFeedControllerProvider.notifier);
+    final hotTopics = ref.read(hotTopicsProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,

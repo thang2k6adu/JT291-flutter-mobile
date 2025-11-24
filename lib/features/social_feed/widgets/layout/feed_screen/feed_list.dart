@@ -26,6 +26,10 @@ class _FeedListState extends ConsumerState<FeedList> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onRefresh();
+    });
   }
 
   @override
