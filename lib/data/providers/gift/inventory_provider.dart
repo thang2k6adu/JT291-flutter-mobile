@@ -46,6 +46,11 @@ class MyInventoryNotifier extends BasePaginatedNotifier<GiftModel>
     return inventoryResponse;
   }
 
+  @override
+  String getCacheKey(String? search) {
+    return 'my_inventory_${search ?? ""}';
+  }
+
   /// Update item quantity after sending gift
   void updateItemQuantity(String itemId, int quantitySent) {
     updateItem(

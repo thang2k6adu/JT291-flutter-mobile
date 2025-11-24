@@ -21,6 +21,11 @@ class MyGiftWallNotifier extends BasePaginatedNotifier<GiftModel> {
   }
 
   @override
+  String getCacheKey(String? search) {
+    return 'gift_wall${search != null && search.isNotEmpty ? "_$search" : ""}';
+  }
+
+  @override
   Future<PaginatedResponse<GiftModel>> fetchPage({
     required int page,
     required int limit,

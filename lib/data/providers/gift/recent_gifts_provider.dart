@@ -22,6 +22,11 @@ class MyRecentGiftsNotifier extends BasePaginatedNotifier<GiftTransactionModel> 
   }
 
   @override
+  String getCacheKey(String? search) {
+    return 'recent_gifts${search != null && search.isNotEmpty ? "_$search" : ""}';
+  }
+
+  @override
   Future<PaginatedResponse<GiftTransactionModel>> fetchPage({
     required int page,
     required int limit,

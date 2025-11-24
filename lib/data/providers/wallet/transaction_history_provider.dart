@@ -21,6 +21,11 @@ class TransactionHistoryNotifier
   }
 
   @override
+  String getCacheKey(String? search) {
+    return 'transaction_history${search != null && search.isNotEmpty ? "_$search" : ""}';
+  }
+
+  @override
   Future<PaginatedResponse<TransactionModel>> fetchPage({
     required int page,
     required int limit,

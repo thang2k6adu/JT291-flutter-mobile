@@ -22,6 +22,11 @@ class SearchUserNotifier extends BasePaginatedNotifier<String> {
   }
 
   @override
+  String getCacheKey(String? search) {
+    return 'search_users_${search ?? "all"}';
+  }
+
+  @override
   Future<PaginatedResponse<String>> fetchPage({
     required int page,
     required int limit,
@@ -43,7 +48,9 @@ class SearchUserNotifier extends BasePaginatedNotifier<String> {
     }
 
     // Add users to central store
-    ref.read(socialConnectionManagerProvider.notifier).addUsers(userResponse.data);
+    ref
+        .read(socialConnectionManagerProvider.notifier)
+        .addUsers(userResponse.data);
 
     // Return only IDs
     return _UserIdPaginatedResponse(userResponse);
@@ -57,13 +64,15 @@ class SearchUserNotifier extends BasePaginatedNotifier<String> {
 
   /// Follow user - delegates to central manager
   Future<void> followUser(String userId, String targetUserId) async {
-    await ref.read(socialConnectionManagerProvider.notifier)
+    await ref
+        .read(socialConnectionManagerProvider.notifier)
         .followUser(userId, targetUserId);
   }
 
   /// Unfollow user - delegates to central manager
   Future<void> unfollowUser(String userId, String targetUserId) async {
-    await ref.read(socialConnectionManagerProvider.notifier)
+    await ref
+        .read(socialConnectionManagerProvider.notifier)
         .unfollowUser(userId, targetUserId);
   }
 }

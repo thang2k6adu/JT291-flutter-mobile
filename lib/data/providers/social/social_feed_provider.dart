@@ -25,6 +25,11 @@ class FriendsFeedNotifier extends BasePaginatedNotifier<PostModel>
   }
 
   @override
+  String getCacheKey(String? search) {
+    return 'friends_feed${search != null && search.isNotEmpty ? "_$search" : ""}';
+  }
+
+  @override
   Future<PaginatedResponse<PostModel>> fetchPage({
     required int page,
     required int limit,
@@ -99,6 +104,11 @@ class CommunityFeedNotifier extends BasePaginatedNotifier<PostModel>
   }
 
   @override
+  String getCacheKey(String? search) {
+    return 'community_feed${search != null && search.isNotEmpty ? "_$search" : ""}';
+  }
+
+  @override
   Future<PaginatedResponse<PostModel>> fetchPage({
     required int page,
     required int limit,
@@ -170,6 +180,11 @@ class LatestFeedNotifier extends BasePaginatedNotifier<PostModel>
   Future<List<PostModel>> build() async {
     _service = ref.read(socialFeedServiceProvider);
     return super.build();
+  }
+
+  @override
+  String getCacheKey(String? search) {
+    return 'latest_feed${search != null && search.isNotEmpty ? "_$search" : ""}';
   }
 
   @override

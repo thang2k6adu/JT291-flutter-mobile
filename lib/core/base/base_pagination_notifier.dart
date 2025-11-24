@@ -68,7 +68,7 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
   static const int limit = 10;
 
   final Map<String, CachedPage<List<T>>> _cache = {};
-  static const _cacheTTL = Duration(minutes: 5);
+  static const _cacheTTL = Duration(seconds: 10);
 
   /// Concrete class cần implement: fetch 1 page từ API và trả về response với pagination
   Future<PaginatedResponse<T>> fetchPage({
@@ -80,7 +80,7 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
   /// Generate cache key based on runtime type and search query
   /// Subclasses can override this to provide custom cache keys
   @protected
-  String _getCacheKey(String? search) {
+  String getCacheKey(String? search) {
     final feedName = runtimeType.toString();
     if (search != null && search.isNotEmpty) return "${feedName}_$search";
     return feedName;
@@ -88,8 +88,8 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
 
   /// Update cache with current state
   @protected
-  void _updateCacheWithCurrentState([String? search]) {
-    final cacheKey = _getCacheKey(search ?? _search);
+  void updateCacheWithCurrentState([String? search]) {
+    final cacheKey = getCacheKey(search ?? _search);
     final currentData = state.value;
     if (currentData != null) {
       _cache[cacheKey] = CachedPage(
@@ -106,7 +106,7 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
 
   /// Fetch dữ liệu (có handle reset, pagination)
   Future<List<T>> fetchData({bool reset = false, String? search}) async {
-    final cacheKey = _getCacheKey(search);
+    final cacheKey = getCacheKey(search);
 
     if (reset) {
       _page = 1;
@@ -174,7 +174,7 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
         search: search,
       );
       final updatedList = <T>[...response.data];
-      final cacheKey = _getCacheKey(search);
+      final cacheKey = getCacheKey(search);
 
       // Only update state if it hasn't changed (avoid overwriting optimistic updates)
       if (state == initialState) {
@@ -210,7 +210,7 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
   /// Invalidate cache for specific search query or all cache if search is null
   void invalidateCache([String? search]) {
     if (search != null) {
-      _cache.remove(_getCacheKey(search));
+      _cache.remove(getCacheKey(search));
     } else {
       clearCache();
     }
@@ -241,7 +241,7 @@ mixin ListItemUpdateMixin<T> on AsyncNotifier<List<T>> {
     
     // Update cache if this is a paginated notifier
     if (this is BasePaginatedNotifier) {
-      (this as BasePaginatedNotifier)._updateCacheWithCurrentState();
+      (this as BasePaginatedNotifier).updateCacheWithCurrentState();
     }
   }
 
@@ -274,7 +274,7 @@ mixin ListItemUpdateMixin<T> on AsyncNotifier<List<T>> {
     
     // 6) Update cache if this is a paginated notifier
     if (this is BasePaginatedNotifier) {
-      (this as BasePaginatedNotifier)._updateCacheWithCurrentState();
+      (this as BasePaginatedNotifier).updateCacheWithCurrentState();
     }
   }
 }
