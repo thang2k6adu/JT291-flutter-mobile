@@ -4,7 +4,7 @@ import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
-import 'package:jt291_flutter_mobile/features/social_feed/widgets/ui/post_image_carousel.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/widgets/ui/post_media_carousel.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostCard extends ConsumerStatefulWidget {
@@ -27,7 +27,6 @@ class _PostCardState extends ConsumerState<PostCard> {
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
-    final imageUrls = post.media.map((m) => m.url).toList();
 
     return Container(
       decoration: BoxDecoration(
@@ -38,11 +37,8 @@ class _PostCardState extends ConsumerState<PostCard> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           _buildHeader(),
-          if (imageUrls.isNotEmpty)
-            PostImagesCarousel(
-              images: imageUrls,
-              hasAttachment: false,
-            ),
+          if (post.media.isNotEmpty)
+            PostMediaCarousel(mediaList: post.media),
           _buildActionButtons(),
         ],
       ),

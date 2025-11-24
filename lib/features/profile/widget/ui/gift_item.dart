@@ -39,50 +39,52 @@ class GiftItemWidget extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      gift.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.card_giftcard,
-                          size: 32,
-                          color: Colors.grey.shade400,
-                        );
-                      },
+        child: Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 56,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        gift.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.card_giftcard,
+                            size: 32,
+                            color: Colors.grey.shade400,
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-                if (gift.isEvent)
-                  Positioned(
-                    top: -12,
-                    right: -16,
+                  if (gift.isEvent)
+                    Positioned(
+                      top: -12,
+                      right: -16,
 
-                    child: Image.asset(
-                      AppIcons.eventTagPng,
-                      width: 33,
-                      height: 16,
+                      child: Image.asset(
+                        AppIcons.eventTagPng,
+                        width: 33,
+                        height: 16,
+                      ),
                     ),
-                  ),
-              ],
-            ),
-            if (contentWidget != null) SizedBox(height: height),
-            Text(gift.name, style: nameStyle),
-            contentWidget ?? const SizedBox.shrink(),
-          ],
+                ],
+              ),
+              if (contentWidget != null) SizedBox(height: height),
+              Text(gift.name, style: nameStyle),
+              contentWidget ?? const SizedBox.shrink(),
+            ],
+          ),
         ),
       ),
     );

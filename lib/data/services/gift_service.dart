@@ -217,7 +217,7 @@ class GiftService {
     // Uncomment khi API ready:
     try {
       final response = await _apiService.get(
-        '/gifts/gift-wall/$userId/givers',
+        '/gifts/gift-wall/givers',
         queryParameters: {'page': page, 'limit': limit},
       );
 

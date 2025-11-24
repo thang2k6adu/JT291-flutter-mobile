@@ -31,36 +31,42 @@ class GiftWallGridWidget extends StatelessWidget {
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                return GiftItemWidget(
-                  gift: gifts[index],
-                  color: Colors.white.withValues(alpha: 0.1),
-                  nameStyle: const TextStyle(
-                    fontSize: 12,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  height: 6,
-                  contentWidget: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${gifts[index].currentCount}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primary,
-                          overflow: TextOverflow.ellipsis,
+                final gift = gifts[index];
+                final isInactive = gift.currentCount == 0;
+                
+                return Opacity(
+                  opacity: isInactive ? 0.4 : 1.0,
+                  child: GiftItemWidget(
+                    gift: gift,
+                    color: Colors.white.withValues(alpha: 0.1),
+                    nameStyle: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    height: 6,
+                    contentWidget: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${gift.currentCount}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: gift.currentCount < gift.requiredCount ? AppColors.primary : Colors.green,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                      Text(
-                        '/${gifts[index].requiredCount}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                        Text(
+                          '/${gift.requiredCount}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },

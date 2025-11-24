@@ -358,6 +358,83 @@ final _mockPostsData = [
     location: 'Bali, Indonesia',
   ),
 
+  // Post 11: Podcast/Audio post
+  PostModel(
+    id: 'post_011',
+    user: _mockPostUsers[0],
+    content: 'New podcast episode is live! 🎙️ In this episode, we discuss the future of AI and how it\'s changing our daily lives. Would love to hear your thoughts! #podcast #AI #tech #Giaoluamnhac',
+    media: [
+      PostMediaModel(
+        id: 'media_011',
+        type: MediaType.audio,
+        url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+        duration: 180, // 3 minutes
+      ),
+    ],
+    hashtags: ['#podcast', '#AI', '#tech', '#Giaoluamnhac'],
+    likeCount: 456,
+    commentCount: 89,
+    shareCount: 34,
+    isLiked: false,
+    isBookmarked: true,
+    createdAt: DateTime.now().subtract(const Duration(days: 2, hours: 6)),
+    privacy: PostPrivacy.public,
+  ),
+
+  // Post 12: Music/Audio post
+  PostModel(
+    id: 'post_012',
+    user: _mockPostUsers[4],
+    content: 'Just finished my first music composition! 🎵 This track took me weeks to perfect. Hope you enjoy it as much as I enjoyed making it. #music #composer #originalsong #Podcastdem',
+    media: [
+      PostMediaModel(
+        id: 'media_012',
+        type: MediaType.audio,
+        url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+        duration: 245, // 4:05
+      ),
+    ],
+    hashtags: ['#music', '#composer', '#originalsong', '#Podcastdem'],
+    likeCount: 892,
+    commentCount: 123,
+    shareCount: 67,
+    isLiked: true,
+    isBookmarked: true,
+    createdAt: DateTime.now().subtract(const Duration(days: 2, hours: 18)),
+    privacy: PostPrivacy.public,
+  ),
+
+  // Post 13: Mixed media (image + audio)
+  PostModel(
+    id: 'post_013',
+    user: _mockPostUsers[7],
+    content: 'Recorded this beautiful sound of nature during my morning walk 🌿🎧 The birds were singing so beautifully today! #nature #sounds #peaceful #meditation',
+    media: [
+      PostMediaModel(
+        id: 'media_013_1',
+        type: MediaType.image,
+        url: 'https://picsum.photos/1080/1350?random=15',
+        thumbnailUrl: 'https://picsum.photos/400/500?random=15',
+        width: 1080,
+        height: 1350,
+      ),
+      PostMediaModel(
+        id: 'media_013_2',
+        type: MediaType.audio,
+        url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+        duration: 120, // 2 minutes
+      ),
+    ],
+    hashtags: ['#nature', '#sounds', '#peaceful', '#meditation'],
+    likeCount: 334,
+    commentCount: 45,
+    shareCount: 23,
+    isLiked: false,
+    isBookmarked: false,
+    createdAt: DateTime.now().subtract(const Duration(days: 3)),
+    privacy: PostPrivacy.public,
+  ),
+
   // Additional posts for pagination testing
   ...List.generate(15, (i) {
     final index = i + 11;
