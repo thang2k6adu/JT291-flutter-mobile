@@ -58,6 +58,7 @@ dependencies:
   cached_network_image: ^3.4.1
   qr_flutter: ^4.1.0
   video_player: ^2.9.2
+  audioplayers: ^6.1.0
 
 
 dependency_overrides:

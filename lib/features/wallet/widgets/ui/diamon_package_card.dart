@@ -75,7 +75,7 @@ class DiamondPackageCard extends StatelessWidget {
                   ),
                   child: currencyIcon == null
                       ? Text(
-                          CurrencyFormatter.format(num.parse(price)),
+                          CurrencyFormatter.format(num.parse(price), locale: CurrencyLocale.us),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,

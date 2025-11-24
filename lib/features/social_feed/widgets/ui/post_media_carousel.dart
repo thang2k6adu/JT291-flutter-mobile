@@ -25,52 +25,78 @@ class _PostMediaCarouselState extends State<PostMediaCarousel> {
   Widget build(BuildContext context) {
     if (widget.mediaList.isEmpty) return SizedBox.shrink();
 
-    return Stack(
+    // Check if all media are audio - display differently
+    final hasOnlyAudio = widget.mediaList.every((m) => m.type == MediaType.audio);
+    
+    if (hasOnlyAudio) {
+      // Display audio inline without carousel
+      return Column(
+        children: widget.mediaList.map((media) => MediaAudioItem(media: media)).toList(),
+      );
+    }
+    
+    // Filter out audio from carousel and display separately
+    final visualMedia = widget.mediaList.where((m) => m.type != MediaType.audio).toList();
+    final audioMedia = widget.mediaList.where((m) => m.type == MediaType.audio).toList();
+
+    return Column(
       children: [
-        CarouselSlider.builder(
-          carouselController: _carouselController,
-          itemCount: widget.mediaList.length,
-          options: CarouselOptions(
-            height: 300,
-            viewportFraction: 0.6,
-            enlargeCenterPage: false,
-            enableInfiniteScroll: false,
-            enlargeFactor: 0.15,
-            autoPlay: false,
-            onPageChanged: (index, reason) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-          ),
-          itemBuilder: (context, index, realIndex) {
-            final media = widget.mediaList[index];
-            return _buildMediaItem(media);
-          },
-        ),
-        // Indicator dots nếu có nhiều media
-        if (widget.mediaList.length > 1)
-          Positioned(
-            bottom: 12,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                widget.mediaList.length,
-                (index) => Container(
-                  width: 8,
-                  height: 8,
-                  margin: EdgeInsets.symmetric(horizontal: 4),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: _currentIndex == index
-                        ? Colors.white
-                        : Colors.white.withOpacity(0.4),
+        // Display visual media in carousel
+        if (visualMedia.isNotEmpty)
+          Stack(
+            children: [
+              CarouselSlider.builder(
+                carouselController: _carouselController,
+                itemCount: visualMedia.length,
+                options: CarouselOptions(
+                  height: 300,
+                  viewportFraction: 0.6,
+                  enlargeCenterPage: false,
+                  enableInfiniteScroll: false,
+                  enlargeFactor: 0.15,
+                  autoPlay: false,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                ),
+                itemBuilder: (context, index, realIndex) {
+                  final media = visualMedia[index];
+                  return _buildMediaItem(media);
+                },
+              ),
+              // Indicator dots nếu có nhiều media
+              if (visualMedia.length > 1)
+                Positioned(
+                  bottom: 12,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      visualMedia.length,
+                      (index) => Container(
+                        width: 8,
+                        height: 8,
+                        margin: EdgeInsets.symmetric(horizontal: 4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentIndex == index
+                              ? Colors.white
+                              : Colors.white.withOpacity(0.4),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
+            ],
+          ),
+        
+        // Display audio inline below carousel
+        if (audioMedia.isNotEmpty)
+          Column(
+            children: audioMedia.map((media) => MediaAudioItem(media: media)).toList(),
           ),
       ],
     );

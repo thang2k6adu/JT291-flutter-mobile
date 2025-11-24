@@ -1,6 +1,6 @@
 class ApiConstants {
   // Base URL cho API
-  static const String baseUrl = 'https://bases-palmer-priorities-springer.trycloudflare.com/';
+  static const String baseUrl = 'https://controversy-dealers-executed-differently.trycloudflare.com/';
   static const String webClientId =
       '839130523883-20l9ejh0q1omrdt74u14qnr5mqgt1f0h.apps.googleusercontent.com';
 
