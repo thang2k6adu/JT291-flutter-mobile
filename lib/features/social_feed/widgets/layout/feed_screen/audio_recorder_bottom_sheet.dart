@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
+import 'package:jt291_flutter_mobile/components/helper/audio_helper.dart';
 import 'dart:async';
 
 class AudioRecorderBottomSheet extends StatefulWidget {
@@ -16,6 +17,8 @@ class _AudioRecorderBottomSheetState extends State<AudioRecorderBottomSheet>
   Duration _recordingDuration = Duration.zero;
   Timer? _timer;
   final TextEditingController _textController = TextEditingController();
+  final AudioHelper _audioHelper = AudioHelper();
+  String? _recordingPath;
   late AnimationController _dotsAnimationController;
   late List<AnimationController> _dotControllers;
 
@@ -58,47 +61,101 @@ class _AudioRecorderBottomSheetState extends State<AudioRecorderBottomSheet>
     for (var controller in _dotControllers) {
       controller.dispose();
     }
+    // Nếu đang record thì stop và cleanup
+    if (_isRecording && _recordingPath != null) {
+      _audioHelper.stopRecording();
+    }
     super.dispose();
   }
 
-  void _startRecording() {
-    setState(() {
-      _isRecording = true;
-      _recordingDuration = Duration.zero;
-    });
+  Future<void> _startRecording() async {
+    try {
+      final path = await _audioHelper.startRecording();
+      if (path == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Không có quyền truy cập microphone'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
 
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _isRecording = true;
+        _recordingDuration = Duration.zero;
+        _recordingPath = path;
+      });
+
+      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+        if (mounted) {
+          setState(() {
+            _recordingDuration = Duration(seconds: _recordingDuration.inSeconds + 1);
+          });
+        }
+      });
+    } catch (e) {
+      print('Error starting recording: $e');
       if (mounted) {
-        setState(() {
-          _recordingDuration = Duration(seconds: _recordingDuration.inSeconds + 1);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi khi bắt đầu ghi âm: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _stopRecording() async {
+    _timer?.cancel();
+
+    try {
+      // Stop recording và lấy file path
+      final audioPath = await _audioHelper.stopRecording();
+      
+      if (audioPath == null || audioPath.isEmpty) {
+        throw Exception('Không thể lưu file audio');
+      }
+
+      if (mounted) {
+        Navigator.pop(context, {
+          'duration': _recordingDuration,
+          'filePath': audioPath,
+          'note': _textController.text,
         });
       }
-    });
-
-    // TODO: Implement actual audio recording logic
-    // Example: _audioRecorder.startRecording();
+    } catch (e) {
+      print('Error stopping recording: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi khi dừng ghi âm: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
-  void _stopRecording() {
+  Future<void> _cancelRecording() async {
     _timer?.cancel();
 
-    // TODO: Save audio file and return path
-    // Example: final audioPath = await _audioRecorder.stopRecording();
+    // Nếu đang record thì stop và cleanup
+    if (_isRecording && _recordingPath != null) {
+      try {
+        await _audioHelper.stopRecording();
+        // TODO: Có thể xóa file nếu muốn
+      } catch (e) {
+        print('Error canceling recording: $e');
+      }
+    }
     
-    Navigator.pop(context, {
-      'duration': _recordingDuration,
-      'filePath': 'path/to/audio/file.m4a', // Replace with actual path
-      'note': _textController.text,
-    });
-  }
-
-  void _cancelRecording() {
-    _timer?.cancel();
-
-    // TODO: Cancel and delete recording
-    // Example: _audioRecorder.cancelRecording();
-    
-    Navigator.pop(context);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   @override

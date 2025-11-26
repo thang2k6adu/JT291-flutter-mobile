@@ -21,7 +21,7 @@ class CreatePostAudioPlayer extends StatefulWidget {
 }
 
 class _CreatePostAudioPlayerState extends State<CreatePostAudioPlayer> {
-  late AudioPlayer _audioPlayer;
+  AudioPlayer? _audioPlayer;
   bool _isInitialized = false;
   bool _hasError = false;
   bool _isPlaying = false;
@@ -61,7 +61,7 @@ class _CreatePostAudioPlayerState extends State<CreatePostAudioPlayer> {
       _audioPlayer = AudioPlayer();
 
       // Listen to player state
-      _audioPlayer.onPlayerStateChanged.listen((state) {
+      _audioPlayer!.onPlayerStateChanged.listen((state) {
         if (mounted) {
           setState(() {
             _isPlaying = state == PlayerState.playing;
@@ -70,7 +70,7 @@ class _CreatePostAudioPlayerState extends State<CreatePostAudioPlayer> {
       });
 
       // Listen to position changes
-      _audioPlayer.onPositionChanged.listen((position) {
+      _audioPlayer!.onPositionChanged.listen((position) {
         if (mounted) {
           setState(() {
             _position = position;
@@ -79,7 +79,7 @@ class _CreatePostAudioPlayerState extends State<CreatePostAudioPlayer> {
       });
 
       // Listen to completion
-      _audioPlayer.onPlayerComplete.listen((event) {
+      _audioPlayer!.onPlayerComplete.listen((event) {
         if (mounted) {
           setState(() {
             _position = Duration.zero;
@@ -91,12 +91,12 @@ class _CreatePostAudioPlayerState extends State<CreatePostAudioPlayer> {
       // Set the source (file path or URL)
       if (widget.audioPath.startsWith('http://') ||
           widget.audioPath.startsWith('https://')) {
-        await _audioPlayer.setSourceUrl(widget.audioPath);
+        await _audioPlayer!.setSourceUrl(widget.audioPath);
       } else {
-        await _audioPlayer.setSourceDeviceFile(widget.audioPath);
+        await _audioPlayer!.setSourceDeviceFile(widget.audioPath);
       }
 
-      widget.onInitialized(_audioPlayer);
+      widget.onInitialized(_audioPlayer!);
 
       setState(() {
         _isInitialized = true;
@@ -111,16 +111,17 @@ class _CreatePostAudioPlayerState extends State<CreatePostAudioPlayer> {
 
   @override
   void dispose() {
-    _audioPlayer.dispose();
+    _audioPlayer?.dispose();
     super.dispose();
   }
 
   void _togglePlayPause() async {
     try {
+      if (_audioPlayer == null) return;
       if (_isPlaying) {
-        await _audioPlayer.pause();
+        await _audioPlayer!.pause();
       } else {
-        await _audioPlayer.resume();
+        await _audioPlayer!.resume();
       }
     } catch (e) {
       print('Error toggling play/pause: $e');
@@ -129,7 +130,8 @@ class _CreatePostAudioPlayerState extends State<CreatePostAudioPlayer> {
 
   void _seekTo(Duration position) async {
     try {
-      await _audioPlayer.seek(position);
+      if (_audioPlayer == null) return;
+      await _audioPlayer!.seek(position);
     } catch (e) {
       print('Error seeking: $e');
     }

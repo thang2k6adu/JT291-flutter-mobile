@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
+import 'package:jt291_flutter_mobile/data/models/upload/upload_response_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/pagination_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/profile_view_model.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_list_response.dart';
@@ -153,6 +154,151 @@ class UserGeneralService {
     } catch (e) {
       print("uploadAttachments failed: $e");
       throw Exception('Upload attachments failed: $e');
+    }
+  }
+
+  /// Upload một file video
+  /// [file] là File video cần upload
+  /// Returns UploadResponseModel với URL và metadata
+  FutureOr<UploadResponseModel> uploadVideo(File file) async {
+    try {
+      final formData = FormData();
+      formData.files.add(
+        MapEntry(
+          'file',
+          await MultipartFile.fromFile(
+            file.path,
+            filename: file.path.split('/').last,
+          ),
+        ),
+      );
+
+      print('uploadVideo: uploading ${file.path}');
+
+      final response = await _apiService.post(
+        '/uploads/videos',
+        data: formData,
+        headers: {'Content-Type': 'multipart/form-data'},
+      );
+
+      print('uploadVideo response: $response');
+
+      // Response có thể có 2 cấu trúc:
+      // 1. { data: { items: [{ url, ... }], count: 1 } } - có items array
+      // 2. { data: { url: ..., thumbnail_url: ..., ... } } - trực tiếp trong data
+      if (response['data'] != null) {
+        final data = response['data'] as Map<String, dynamic>;
+        
+        // Kiểm tra xem có items array không
+        final items = data['items'] as List<dynamic>?;
+        if (items != null && items.isNotEmpty) {
+          return UploadResponseModel.fromJson(items[0] as Map<String, dynamic>);
+        }
+        
+        // Nếu không có items, parse trực tiếp từ data
+        if (data.containsKey('url') || data.containsKey('file_url')) {
+          return UploadResponseModel.fromJson(data);
+        }
+      }
+      
+      throw Exception('Invalid response format: no data found');
+    } catch (e) {
+      print("uploadVideo failed: $e");
+      throw Exception('Upload video failed: $e');
+    }
+  }
+
+  /// Upload một file audio
+  /// [file] là File audio cần upload
+  /// Returns UploadResponseModel với URL và metadata
+  FutureOr<UploadResponseModel> uploadAudio(File file) async {
+    try {
+      final formData = FormData();
+      formData.files.add(
+        MapEntry(
+          'file',
+          await MultipartFile.fromFile(
+            file.path,
+            filename: file.path.split('/').last,
+          ),
+        ),
+      );
+
+      print('uploadAudio: uploading ${file.path}');
+
+      final response = await _apiService.post(
+        '/uploads/audio',
+        data: formData,
+        headers: {'Content-Type': 'multipart/form-data'},
+      );
+
+      print('uploadAudio response: $response');
+
+      // Response có thể có 2 cấu trúc:
+      // 1. { data: { items: [{ url, ... }], count: 1 } } - có items array
+      // 2. { data: { url: ..., thumbnail_url: ..., ... } } - trực tiếp trong data
+      if (response['data'] != null) {
+        final data = response['data'] as Map<String, dynamic>;
+        
+        // Kiểm tra xem có items array không
+        final items = data['items'] as List<dynamic>?;
+        if (items != null && items.isNotEmpty) {
+          return UploadResponseModel.fromJson(items[0] as Map<String, dynamic>);
+        }
+        
+        // Nếu không có items, parse trực tiếp từ data
+        if (data.containsKey('url') || data.containsKey('file_url')) {
+          return UploadResponseModel.fromJson(data);
+        }
+      }
+      
+      throw Exception('Invalid response format: no data found');
+    } catch (e) {
+      print("uploadAudio failed: $e");
+      throw Exception('Upload audio failed: $e');
+    }
+  }
+
+  /// Upload một file ảnh
+  /// [file] là File ảnh cần upload
+  /// Returns UploadResponseModel với URL và metadata
+  FutureOr<UploadResponseModel> uploadImage(File file) async {
+    try {
+      final formData = FormData();
+      formData.files.add(
+        MapEntry(
+          'files',
+          await MultipartFile.fromFile(
+            file.path,
+            filename: file.path.split('/').last,
+          ),
+        ),
+      );
+
+      print('uploadImage: uploading ${file.path}');
+
+      final response = await _apiService.post(
+        '/uploads/images',
+        data: formData,
+        headers: {'Content-Type': 'multipart/form-data'},
+      );
+
+      print('uploadImage response: $response');
+
+      // Response structure: { data: { items: [{ url, ... }], count: 1 } }
+      if (response['data'] != null) {
+        final data = response['data'] as Map<String, dynamic>;
+        final items = data['items'] as List<dynamic>?;
+        
+        if (items != null && items.isNotEmpty) {
+          return UploadResponseModel.fromJson(items[0] as Map<String, dynamic>);
+        }
+      }
+      
+      throw Exception('Invalid response format: no items found');
+    } catch (e) {
+      print("uploadImage failed: $e");
+      throw Exception('Upload image failed: $e');
     }
   }
 

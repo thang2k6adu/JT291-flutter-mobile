@@ -564,7 +564,6 @@ $PaginationMetaCopyWith<$Res> get meta {
 }
 }
 
-
 /// @nodoc
 mixin _$PaginationMeta {
 
@@ -575,8 +574,6 @@ mixin _$PaginationMeta {
 @pragma('vm:prefer-inline')
 $PaginationMetaCopyWith<PaginationMeta> get copyWith => _$PaginationMetaCopyWithImpl<PaginationMeta>(this as PaginationMeta, _$identity);
 
-  /// Serializes this PaginationMeta to a JSON map.
-  Map<String, dynamic> toJson();
 
 
 @override
@@ -584,7 +581,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is PaginationMeta&&(identical(other.itemCount, itemCount) || other.itemCount == itemCount)&&(identical(other.totalItems, totalItems) || other.totalItems == totalItems)&&(identical(other.itemsPerPage, itemsPerPage) || other.itemsPerPage == itemsPerPage)&&(identical(other.totalPages, totalPages) || other.totalPages == totalPages)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,itemCount,totalItems,itemsPerPage,totalPages,currentPage);
 
@@ -763,11 +760,11 @@ return $default(_that.itemCount,_that.totalItems,_that.itemsPerPage,_that.totalP
 }
 
 /// @nodoc
-@JsonSerializable()
+
 
 class _PaginationMeta implements PaginationMeta {
   const _PaginationMeta({@JsonKey(name: 'item_count') this.itemCount = 0, @JsonKey(name: 'total_items') this.totalItems = 0, @JsonKey(name: 'items_per_page') this.itemsPerPage = 10, @JsonKey(name: 'total_pages') this.totalPages = 0, @JsonKey(name: 'current_page') this.currentPage = 1});
-  factory _PaginationMeta.fromJson(Map<String, dynamic> json) => _$PaginationMetaFromJson(json);
+  
 
 @override@JsonKey(name: 'item_count') final  int itemCount;
 @override@JsonKey(name: 'total_items') final  int totalItems;
@@ -781,17 +778,14 @@ class _PaginationMeta implements PaginationMeta {
 @pragma('vm:prefer-inline')
 _$PaginationMetaCopyWith<_PaginationMeta> get copyWith => __$PaginationMetaCopyWithImpl<_PaginationMeta>(this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$PaginationMetaToJson(this, );
-}
+
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaginationMeta&&(identical(other.itemCount, itemCount) || other.itemCount == itemCount)&&(identical(other.totalItems, totalItems) || other.totalItems == totalItems)&&(identical(other.itemsPerPage, itemsPerPage) || other.itemsPerPage == itemsPerPage)&&(identical(other.totalPages, totalPages) || other.totalPages == totalPages)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,itemCount,totalItems,itemsPerPage,totalPages,currentPage);
 

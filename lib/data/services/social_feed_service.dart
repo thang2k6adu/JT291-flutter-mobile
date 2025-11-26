@@ -218,20 +218,24 @@ class SocialFeedService {
         'privacy': privacy.name,
         'hashtags': hashtags,
         'media': media.map((m) => {
-          'type': m.type.name,
-          'url': m.url,
-          'thumbnail_url': m.thumbnailUrl,
-          'width': m.width,
-          'height': m.height,
-          'duration': m.duration,
+          'media_type': m.type.name, // API yêu cầu media_type thay vì type
+          'media_url': m.url, // API yêu cầu media_url thay vì url
+          if (m.thumbnailUrl != null) 'thumbnail_url': m.thumbnailUrl,
+          if (m.width != null) 'width': m.width,
+          if (m.height != null) 'height': m.height,
+          // duration không được gửi ở root level theo API
         }).toList(),
       };
+
+      print("REQUEST BODY = ${jsonEncode(requestBody)}");
 
       // Call API
       final response = await _apiService.post(
         '/posts',
         data: requestBody,
       );
+
+      print("RESPONSE = ${jsonEncode(response)}");
 
       // Parse response
       return ApiResponse.fromJson(
@@ -243,8 +247,6 @@ class SocialFeedService {
       
       // Mock response for development/testing
       // Simulate network delay
-      await Future.delayed(const Duration(milliseconds: 800));
-
       // Generate mock post
       final postId = 'post_${DateTime.now().millisecondsSinceEpoch}';
       final mockUser = UserModel(

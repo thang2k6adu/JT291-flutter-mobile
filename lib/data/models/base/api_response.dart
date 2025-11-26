@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'api_response.freezed.dart';
-part 'api_response.g.dart';
 
 /// Base API Response wrapper
 /// Generic type T represents the data payload

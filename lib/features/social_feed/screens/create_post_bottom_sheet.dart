@@ -9,6 +9,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/controllers/social_feed_controller.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_media_model.dart';
+import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
 import '../widgets/layout/feed_screen/audio_recorder_bottom_sheet.dart';
 import '../widgets/layout/create_post/create_post.dart';
 
@@ -37,6 +38,7 @@ class _CreatePostBottomSheetState extends ConsumerState<CreatePostBottomSheet> {
 
   // Loading state
   bool _isCreatingPost = false;
+  String? _uploadProgressMessage;
 
   // Handle backspace to delete last hashtag
   // Only delete when TextField is empty and cursor is at start
@@ -187,58 +189,183 @@ class _CreatePostBottomSheetState extends ConsumerState<CreatePostBottomSheet> {
     });
   }
 
-  // Convert media files to PostMediaModel list
-  List<PostMediaModel> _convertMediaToPostMedia() {
+  // Upload all media files and convert to PostMediaModel list
+  Future<List<PostMediaModel>> _uploadAndConvertMedia() async {
     final List<PostMediaModel> mediaList = [];
+    final userService = ref.read(userGeneralServiceProvider);
 
-    // Convert images
-    for (int i = 0; i < _selectedImages.length; i++) {
-      final image = _selectedImages[i];
-      // For now, use file path as mock URL. In production, upload first and get real URL
-      mediaList.add(
-        PostMediaModel(
-          id: 'img_${DateTime.now().millisecondsSinceEpoch}_$i',
-          type: MediaType.image,
-          url: image.path, // Mock: will be replaced with uploaded URL
-          thumbnailUrl: image.path,
-        ),
-      );
+    try {
+      final totalMedia = _selectedImages.length + _selectedVideos.length + _selectedAudios.length;
+      int uploadedCount = 0;
+
+      // Upload images
+      if (_selectedImages.isNotEmpty) {
+        setState(() {
+          _uploadProgressMessage = 'Đang tải ảnh... (${uploadedCount + 1}/${totalMedia})';
+        });
+
+        final imageFutures = _selectedImages.asMap().entries.map((entry) async {
+          final index = entry.key;
+          final image = entry.value;
+          final imageFile = File(image.path);
+          
+          if (await imageFile.exists()) {
+            try {
+              final uploadResult = await userService.uploadImage(imageFile);
+              // Chỉ lấy URL từ backend, không fallback về local path
+              final imageUrl = uploadResult.url ?? uploadResult.fileUrl;
+              
+              if (imageUrl == null || imageUrl.isEmpty) {
+                throw Exception('Backend không trả về URL cho ảnh ${index + 1}');
+              }
+              
+              setState(() {
+                uploadedCount++;
+                _uploadProgressMessage = 'Đang tải ảnh... ($uploadedCount/$totalMedia)';
+              });
+              
+              return PostMediaModel(
+                id: 'img_${DateTime.now().millisecondsSinceEpoch}_$index',
+                type: MediaType.image,
+                url: imageUrl,
+                thumbnailUrl: imageUrl,
+              );
+            } catch (e) {
+              print('Error uploading image $index: $e');
+              throw Exception('Lỗi khi tải ảnh ${index + 1}: ${e.toString()}');
+            }
+          }
+          return null;
+        }).toList();
+
+        final imageResults = await Future.wait(imageFutures);
+        mediaList.addAll(imageResults.whereType<PostMediaModel>());
+      }
+
+      // Upload videos
+      if (_selectedVideos.isNotEmpty) {
+        setState(() {
+          _uploadProgressMessage = 'Đang tải video... (${uploadedCount + 1}/$totalMedia)';
+        });
+
+        final videoFutures = _selectedVideos.asMap().entries.map((entry) async {
+          final index = entry.key;
+          final video = entry.value;
+          final videoFile = File(video.path);
+          final controller = _videoControllers[index];
+          final duration = controller?.value.duration.inSeconds;
+          
+          if (await videoFile.exists()) {
+            try {
+              final uploadResult = await userService.uploadVideo(videoFile);
+              // Chỉ lấy URL từ backend, không fallback về local path
+              final videoUrl = uploadResult.url ?? uploadResult.fileUrl;
+              
+              if (videoUrl == null || videoUrl.isEmpty) {
+                throw Exception('Backend không trả về URL cho video ${index + 1}');
+              }
+              
+              final videoDuration = uploadResult.duration ?? duration;
+              
+              setState(() {
+                uploadedCount++;
+                _uploadProgressMessage = 'Đang tải video... ($uploadedCount/$totalMedia)';
+              });
+              
+              return PostMediaModel(
+                id: 'vid_${DateTime.now().millisecondsSinceEpoch}_$index',
+                type: MediaType.video,
+                url: videoUrl,
+                thumbnailUrl: videoUrl, // TODO: Should get thumbnail URL from API
+                duration: videoDuration,
+              );
+            } catch (e) {
+              print('Error uploading video $index: $e');
+              throw Exception('Lỗi khi tải video ${index + 1}: ${e.toString()}');
+            }
+          }
+          return null;
+        }).toList();
+
+        final videoResults = await Future.wait(videoFutures);
+        mediaList.addAll(videoResults.whereType<PostMediaModel>());
+      }
+
+      // Upload audios
+      if (_selectedAudios.isNotEmpty) {
+        setState(() {
+          _uploadProgressMessage = 'Đang tải audio... (${uploadedCount + 1}/$totalMedia)';
+        });
+
+        final audioFutures = _selectedAudios.asMap().entries.map((entry) async {
+          final index = entry.key;
+          final audio = entry.value;
+          final filePath = audio['filePath'] as String? ?? '';
+          final duration = audio['duration'] as Duration? ?? Duration.zero;
+          
+          print('Uploading audio $index: filePath=$filePath');
+          
+          if (filePath.isEmpty) {
+            print('Audio $index: filePath is empty');
+            return null;
+          }
+          
+          final audioFile = File(filePath);
+          
+          if (!await audioFile.exists()) {
+            print('Audio $index: file does not exist at $filePath');
+            throw Exception('File audio ${index + 1} không tồn tại');
+          }
+          
+          try {
+            print('Audio $index: starting upload...');
+            final uploadResult = await userService.uploadAudio(audioFile);
+            print('Audio $index: upload result = $uploadResult');
+            
+            // Chỉ lấy URL từ backend, không fallback về local path
+            final audioUrl = uploadResult.url ?? uploadResult.fileUrl;
+            
+            if (audioUrl == null || audioUrl.isEmpty) {
+              throw Exception('Backend không trả về URL cho audio ${index + 1}');
+            }
+            
+            final audioDuration = uploadResult.duration ?? duration.inSeconds;
+            
+            setState(() {
+              uploadedCount++;
+              _uploadProgressMessage = 'Đang tải audio... ($uploadedCount/$totalMedia)';
+            });
+            
+            print('Audio $index: uploaded successfully, URL=$audioUrl');
+            
+            return PostMediaModel(
+              id: 'aud_${DateTime.now().millisecondsSinceEpoch}_$index',
+              type: MediaType.audio,
+              url: audioUrl,
+              duration: audioDuration,
+            );
+          } catch (e) {
+            print('Error uploading audio $index: $e');
+            throw Exception('Lỗi khi tải audio ${index + 1}: ${e.toString()}');
+          }
+        }).toList();
+
+        final audioResults = await Future.wait(audioFutures);
+        mediaList.addAll(audioResults.whereType<PostMediaModel>());
+      }
+
+      setState(() {
+        _uploadProgressMessage = null;
+      });
+
+      return mediaList;
+    } catch (e) {
+      print('Error uploading media: $e');
+      setState(() {
+        _uploadProgressMessage = null;
+      });
+      rethrow;
     }
-
-    // Convert videos
-    for (int i = 0; i < _selectedVideos.length; i++) {
-      final video = _selectedVideos[i];
-      final controller = _videoControllers[i];
-      final duration = controller?.value.duration.inSeconds;
-      
-      mediaList.add(
-        PostMediaModel(
-          id: 'vid_${DateTime.now().millisecondsSinceEpoch}_$i',
-          type: MediaType.video,
-          url: video.path, // Mock: will be replaced with uploaded URL
-          thumbnailUrl: video.path, // Mock: should generate thumbnail
-          duration: duration,
-        ),
-      );
-    }
-
-    // Convert audios
-    for (int i = 0; i < _selectedAudios.length; i++) {
-      final audio = _selectedAudios[i];
-      final filePath = audio['filePath'] as String? ?? '';
-      final duration = audio['duration'] as Duration? ?? Duration.zero;
-      
-      mediaList.add(
-        PostMediaModel(
-          id: 'aud_${DateTime.now().millisecondsSinceEpoch}_$i',
-          type: MediaType.audio,
-          url: filePath, // Mock: will be replaced with uploaded URL
-          duration: duration.inSeconds,
-        ),
-      );
-    }
-
-    return mediaList;
   }
 
   // Handle post creation
@@ -266,13 +393,13 @@ class _CreatePostBottomSheetState extends ConsumerState<CreatePostBottomSheet> {
       // Convert privacy boolean to PostPrivacy enum
       final privacy = _isPublic ? PostPrivacy.public : PostPrivacy.private;
 
-      // Convert media files to PostMediaModel
-      final media = _convertMediaToPostMedia();
+      // Upload all media files first, then get URLs
+      final media = await _uploadAndConvertMedia();
 
       // Get controller
       final controller = ref.read(socialFeedControllerProvider.notifier);
 
-      // Create post
+      // Create post with uploaded media URLs
       final createdPost = await controller.createPost(
         content: content,
         privacy: privacy,
@@ -291,10 +418,15 @@ class _CreatePostBottomSheetState extends ConsumerState<CreatePostBottomSheet> {
     } catch (e) {
       print('Error creating post: $e');
       if (mounted) {
+        final errorMessage = e.toString().contains('Lỗi khi tải')
+            ? e.toString()
+            : 'Không thể tạo bài viết: ${e.toString()}';
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Không thể tạo bài viết: ${e.toString()}'),
+            content: Text(errorMessage),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
           ),
         );
       }
@@ -302,6 +434,7 @@ class _CreatePostBottomSheetState extends ConsumerState<CreatePostBottomSheet> {
       if (mounted) {
         setState(() {
           _isCreatingPost = false;
+          _uploadProgressMessage = null;
         });
       }
     }
@@ -324,6 +457,7 @@ class _CreatePostBottomSheetState extends ConsumerState<CreatePostBottomSheet> {
           // Header
           CreatePostHeader(
             isCreatingPost: _isCreatingPost,
+            uploadProgressMessage: _uploadProgressMessage,
             onCancel: () => Navigator.pop(context),
             onCreatePost: _handleCreatePost,
           ),
