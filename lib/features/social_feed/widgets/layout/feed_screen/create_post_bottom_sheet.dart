@@ -8,6 +8,8 @@ import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
 import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/components/helper/image_helper.dart';
+import 'package:jt291_flutter_mobile/components/helper/video_helper.dart';
+import 'package:video_player/video_player.dart';
 
 class CreatePostBottomSheet extends StatefulWidget {
   const CreatePostBottomSheet({super.key});
@@ -19,13 +21,22 @@ class CreatePostBottomSheet extends StatefulWidget {
 class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
   final TextEditingController _textController = TextEditingController();
   final ImageHelper _imageHelper = ImageHelper();
+  final VideoHelper _videoHelper = VideoHelper();
   bool _isPublic = true;
   List<XFile> _selectedImages = [];
+  List<XFile> _selectedVideos = [];
   List<String> _selectedHashtags = [];
+
+  // Controllers for video players
+  Map<int, VideoPlayerController> _videoControllers = {};
 
   @override
   void dispose() {
     _textController.dispose();
+    // Dispose all video controllers
+    _videoControllers.forEach((key, controller) {
+      controller.dispose();
+    });
     super.dispose();
   }
 
@@ -49,10 +60,69 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
     }
   }
 
+  // Hàm xử lý chọn video
+  Future<void> _pickVideo() async {
+    try {
+      final video = await _videoHelper.pickVideo(
+        source: ImageSource.gallery,
+        maxDurationSeconds: 300, // 5 phút
+      );
+
+      if (video != null) {
+        setState(() {
+          _selectedVideos.add(video);
+        });
+
+        // Initialize video controller for preview
+        await _initializeVideoController(_selectedVideos.length - 1, video);
+      }
+    } catch (e) {
+      print('Error picking video: $e');
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Lỗi khi chọn video: $e')));
+    }
+  }
+
+  // Initialize video controller
+  Future<void> _initializeVideoController(int index, XFile video) async {
+    final controller = VideoPlayerController.file(File(video.path));
+    try {
+      await controller.initialize();
+      setState(() {
+        _videoControllers[index] = controller;
+      });
+    } catch (e) {
+      print('Error initializing video controller: $e');
+    }
+  }
+
   // Hàm xóa ảnh
   void _removeImage(int index) {
     setState(() {
       _selectedImages.removeAt(index);
+    });
+  }
+
+  // Hàm xóa video
+  void _removeVideo(int index) {
+    // Dispose controller trước khi xóa
+    _videoControllers[index]?.dispose();
+    _videoControllers.remove(index);
+
+    setState(() {
+      _selectedVideos.removeAt(index);
+
+      // Update video controllers indices
+      Map<int, VideoPlayerController> newControllers = {};
+      _videoControllers.forEach((key, value) {
+        if (key > index) {
+          newControllers[key - 1] = value;
+        } else if (key < index) {
+          newControllers[key] = value;
+        }
+      });
+      _videoControllers = newControllers;
     });
   }
 
@@ -136,7 +206,8 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                         image: AssetImage(AppImages.defaultAvatar),
                         size: 40,
                       ),
-                      if (_selectedImages.isNotEmpty) ...[
+                      if (_selectedImages.isNotEmpty ||
+                          _selectedVideos.isNotEmpty) ...[
                         SizedBox(height: 8),
                         Container(
                           width: 2,
@@ -218,7 +289,10 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                               child: _buildMediaButton(AppIcons.galleryPng),
                             ),
                             SizedBox(width: 16),
-                            _buildMediaButton(AppIcons.videoPng),
+                            GestureDetector(
+                              onTap: _pickVideo,
+                              child: _buildMediaButton(AppIcons.videoPng),
+                            ),
                             SizedBox(width: 16),
                             _buildMediaButton(AppIcons.audioPng),
                           ],
@@ -228,6 +302,12 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                         if (_selectedImages.isNotEmpty) ...[
                           SizedBox(height: 16),
                           _buildImagesGrid(),
+                        ],
+
+                        // Hiển thị video đã chọn
+                        if (_selectedVideos.isNotEmpty) ...[
+                          SizedBox(height: 16),
+                          _buildVideosGrid(),
                         ],
                       ],
                     ),
@@ -341,6 +421,22 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
     );
   }
 
+  // Widget hiển thị grid video (2 cột)
+  Widget _buildVideosGrid() {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 1,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 1,
+      ),
+      itemCount: _selectedVideos.length,
+      itemBuilder: (context, index) => _buildVideoPreview(index),
+    );
+  }
+
   // Widget hiển thị preview ảnh với nút xóa
   Widget _buildImagePreview(int index) {
     return Stack(
@@ -371,6 +467,101 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
         ),
       ],
     );
+  }
+
+  // Widget hiển thị preview video với nút xóa
+  // Widget hiển thị preview video với nút xóa
+  // Widget hiển thị preview video với nút xóa
+Widget _buildVideoPreview(int index) {
+  final controller = _videoControllers[index];
+
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(12),
+    child: GestureDetector(
+      onTap: () {
+        if (controller != null && controller.value.isInitialized) {
+          setState(() {
+            if (controller.value.isPlaying) {
+              controller.pause();
+            } else {
+              controller.play();
+            }
+          });
+        }
+      },
+      child: Stack(
+        children: [
+          // Video Container
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: controller != null && controller.value.isInitialized
+                ? Center(
+                    child: AspectRatio(
+                      aspectRatio: controller.value.aspectRatio,
+                      child: VideoPlayer(controller),
+                    ),
+                  )
+                : Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.primary,
+                    ),
+                  ),
+          ),
+
+          // Play/Pause icon overlay (chỉ hiện khi pause)
+          if (controller != null &&
+              controller.value.isInitialized &&
+              !controller.value.isPlaying)
+            Positioned. fill(
+              child: Center(
+                child: Container(
+                  padding: EdgeInsets. all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.play_arrow,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                ),
+              ),
+            ),
+
+          // Delete button
+          Positioned(
+            top: 8,
+            right: 8,
+            child: GestureDetector(
+              onTap: () => _removeVideo(index),
+              child: Container(
+                padding: EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.close, color: Colors.white, size: 18),
+              ),
+            ),
+          ),
+
+          // Video duratio
+        ],
+      ),
+    ),
+  );
+}
+
+  // Format duration to mm:ss
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String minutes = twoDigits(duration.inMinutes.remainder(60));
+    String seconds = twoDigits(duration.inSeconds.remainder(60));
+    return '$minutes:$seconds';
   }
 
   Widget _buildTopicChip(
