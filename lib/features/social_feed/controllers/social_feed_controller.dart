@@ -13,12 +13,14 @@ class SocialFeedController extends Notifier<void> {
   late final FeedUseCase _feedUseCase;
   late final PostInteractionUseCase _postInteractionUseCase;
   late final CreatePostUseCase _createPostUseCase;
+  late final UserInteractionUseCase _userInteractionUseCase;
 
   @override
   void build() {
     _feedUseCase = FeedUseCase(ref);
     _postInteractionUseCase = PostInteractionUseCase(ref);
     _createPostUseCase = CreatePostUseCase(ref);
+    _userInteractionUseCase = UserInteractionUseCase(ref);
   }
 
   // =================================================================
@@ -239,6 +241,23 @@ class SocialFeedController extends Notifier<void> {
 
   void navigateToHashtagPosts(BuildContext context, String hashtag) {
     print('SocialFeedController: Navigate to hashtag: $hashtag');
+  }
+
+  /// Block a user
+  Future<bool> blockUser(String userId, BuildContext context) async {
+    try {
+      final success = await _userInteractionUseCase.blockUser(userId);
+      if (success && context.mounted) {
+        _showInfoMessage(context, 'User blocked successfully');
+      }
+      return success;
+    } catch (e) {
+      print('SocialFeedController: blockUser error: $e');
+      if (context.mounted) {
+        _showErrorMessage(context, 'Failed to block user: ${e.toString()}');
+      }
+      return false;
+    }
   }
 
   // =================================================================

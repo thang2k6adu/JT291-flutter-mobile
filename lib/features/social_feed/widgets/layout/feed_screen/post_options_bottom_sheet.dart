@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/block_user_bottom_sheet.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/report_bottom_sheet.dart';
 
 class PostOptionsBottomSheet extends StatelessWidget {
   final String postId;
   final String authorId;
   final String authorName;
+  final String? authorAvatar;
 
   const PostOptionsBottomSheet({
     super.key,
     required this.postId,
     required this.authorId,
     required this.authorName,
+    this.authorAvatar,
   });
 
   @override
@@ -46,7 +49,7 @@ class PostOptionsBottomSheet extends StatelessWidget {
               title: 'Block users',
               onTap: () {
                 Navigator.pop(context);
-                _showBlockConfirmation(context);
+                _showBlockUserBottomSheet(context);
               },
             ),
 
@@ -110,56 +113,15 @@ class PostOptionsBottomSheet extends StatelessWidget {
     );
   }
 
-  void _showBlockConfirmation(BuildContext context) {
-    showDialog(
+  void _showBlockUserBottomSheet(BuildContext context) {
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        title: Text(
-          'Block $authorName? ',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        content: Text(
-          'You won\'t see posts from this user anymore.',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[700],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // TODO: Implement block user logic
-              // Example: ref.read(socialFeedControllerProvider.notifier).blockUser(authorId);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('User blocked successfully'),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            },
-            child: Text(
-              'Block',
-              style: TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => BlockUserBottomSheet(
+        authorId: authorId,
+        authorName: authorName,
+        authorAvatar: authorAvatar,
       ),
     );
   }

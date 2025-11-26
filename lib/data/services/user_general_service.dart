@@ -568,12 +568,35 @@ class UserGeneralService {
     }
   }
 
+  /// Block user
+  /// POST /profile/{user_id}/block
+  /// [userId] là ID của user đang block (current user)
+  /// [blockedId] là ID của user bị block
+  FutureOr<bool> blockUser(String userId, String blockedId) async {
+    try {
+      final requestBody = {
+        'blocked_id': blockedId,
+      };
+
+      final response = await _apiService.post(
+        '/profile/$userId/block',
+        data: requestBody,
+      );
+
+      if (response['error'] == false) {
+        return true;
+      } else {
+        throw Exception('Block user failed: ${response['message']}');
+      }
+    } catch (e) {
+      print("blockUser failed: $e");
+      throw Exception('Block user failed: $e');
+    }
+  }
+
   /// Lấy thống kê bạn bè/follow
   FutureOr<UserStatsModel?> getUserStats(String userId) async {
     try {
-      // await Future.delayed(const Duration(milliseconds: 300));
-      // return userStatsMock;
-
       final response = await _apiService.get('/connections/stats');
 
       print('getUserStats response: $response');

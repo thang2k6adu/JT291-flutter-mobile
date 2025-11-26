@@ -11,7 +11,7 @@ class PostHeader extends StatelessWidget {
 
   const PostHeader({
     super.key,
-    required this.post,
+    required this. post,
   });
 
   @override
@@ -34,7 +34,7 @@ class PostHeader extends StatelessWidget {
     );
   }
 
-  Widget _buildAvatar(String?  avatarUrl) {
+  Widget _buildAvatar(String? avatarUrl) {
     final image = avatarUrl != null && avatarUrl.isNotEmpty
         ? NetworkImage(avatarUrl)
         : AssetImage(AppImages. defaultAvatar) as ImageProvider;
@@ -95,7 +95,7 @@ class PostHeader extends StatelessWidget {
     return GestureDetector(
       onTap: () => _showPostOptions(context),
       child: Padding(
-        padding: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4.0),
         child: Icon(
           Icons.more_horiz,
           color: Colors.grey[600],
@@ -112,7 +112,8 @@ class PostHeader extends StatelessWidget {
       builder: (context) => PostOptionsBottomSheet(
         postId: post.id,
         authorId: post.user.id,
-        authorName: post.user.nickname,
+        authorName: post.user. nickname,
+        authorAvatar: post.user.avatar, // Truyền avatar
       ),
     );
   }
