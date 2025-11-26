@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
-import 'package:jt291_flutter_mobile/data/providers/social/social_feed_provider.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/providers/providers.dart';
 
 class CreatePostBottomSection extends ConsumerWidget {
   final bool isPublic;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_media_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
-import 'package:jt291_flutter_mobile/data/providers/social/social_feed_provider.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/use_cases/use_cases.dart';
 
 /// Provider for SocialFeedController
 final socialFeedControllerProvider = 
@@ -10,37 +10,40 @@ final socialFeedControllerProvider =
 
 /// Controller to manage social feed interactions and UI logic
 class SocialFeedController extends Notifier<void> {
+  late final FeedUseCase _feedUseCase;
+  late final PostInteractionUseCase _postInteractionUseCase;
+  late final CreatePostUseCase _createPostUseCase;
+
   @override
   void build() {
-    // Controller initialization
+    _feedUseCase = FeedUseCase(ref);
+    _postInteractionUseCase = PostInteractionUseCase(ref);
+    _createPostUseCase = CreatePostUseCase(ref);
   }
 
   // =================================================================
   // FRIENDS FEED ACTIONS
   // =================================================================
 
-  /// Load more friends feed posts
   Future<void> loadMoreFriendsFeed() async {
     try {
-      await ref.read(friendsFeedProvider.notifier).loadMore();
+      await _feedUseCase.loadMoreFriendsFeed();
     } catch (e) {
       print('SocialFeedController: loadMoreFriendsFeed error: $e');
     }
   }
 
-  /// Refresh friends feed
   Future<void> refreshFriendsFeed() async {
     try {
-      await ref.read(friendsFeedProvider.notifier).refresh();
+      await _feedUseCase.refreshFriendsFeed();
     } catch (e) {
       print('SocialFeedController: refreshFriendsFeed error: $e');
     }
   }
 
-  /// Toggle like on a post in friends feed
   Future<void> toggleLikeFriendsFeed(String postId, BuildContext context) async {
     try {
-      await ref.read(friendsFeedProvider.notifier).toggleLike(postId);
+      await _postInteractionUseCase.toggleLike(postId);
     } catch (e) {
       print('SocialFeedController: toggleLikeFriendsFeed error: $e');
       if (context.mounted) {
@@ -49,10 +52,9 @@ class SocialFeedController extends Notifier<void> {
     }
   }
 
-  /// Toggle bookmark on a post in friends feed
   Future<void> toggleBookmarkFriendsFeed(String postId, BuildContext context) async {
     try {
-      await ref.read(friendsFeedProvider.notifier).toggleBookmark(postId);
+      await _postInteractionUseCase.toggleBookmarkFriendsFeed(postId);
     } catch (e) {
       print('SocialFeedController: toggleBookmarkFriendsFeed error: $e');
       if (context.mounted) {
@@ -65,28 +67,25 @@ class SocialFeedController extends Notifier<void> {
   // COMMUNITY FEED ACTIONS
   // =================================================================
 
-  /// Load more community feed posts
   Future<void> loadMoreCommunityFeed() async {
     try {
-      await ref.read(communityFeedProvider.notifier).loadMore();
+      await _feedUseCase.loadMoreCommunityFeed();
     } catch (e) {
       print('SocialFeedController: loadMoreCommunityFeed error: $e');
     }
   }
 
-  /// Refresh community feed
   Future<void> refreshCommunityFeed() async {
     try {
-      await ref.read(communityFeedProvider.notifier).refresh();
+      await _feedUseCase.refreshCommunityFeed();
     } catch (e) {
       print('SocialFeedController: refreshCommunityFeed error: $e');
     }
   }
 
-  /// Toggle like on a post in community feed
   Future<void> toggleLikeCommunityFeed(String postId, BuildContext context) async {
     try {
-      await ref.read(communityFeedProvider.notifier).toggleLike(postId);
+      await _postInteractionUseCase.toggleLike(postId);
     } catch (e) {
       print('SocialFeedController: toggleLikeCommunityFeed error: $e');
       if (context.mounted) {
@@ -95,10 +94,9 @@ class SocialFeedController extends Notifier<void> {
     }
   }
 
-  /// Toggle bookmark on a post in community feed
   Future<void> toggleBookmarkCommunityFeed(String postId, BuildContext context) async {
     try {
-      await ref.read(communityFeedProvider.notifier).toggleBookmark(postId);
+      await _postInteractionUseCase.toggleBookmarkCommunityFeed(postId);
     } catch (e) {
       print('SocialFeedController: toggleBookmarkCommunityFeed error: $e');
       if (context.mounted) {
@@ -111,28 +109,25 @@ class SocialFeedController extends Notifier<void> {
   // LATEST FEED ACTIONS
   // =================================================================
 
-  /// Load more latest feed posts
   Future<void> loadMoreLatestFeed() async {
     try {
-      await ref.read(latestFeedProvider.notifier).loadMore();
+      await _feedUseCase.loadMoreLatestFeed();
     } catch (e) {
       print('SocialFeedController: loadMoreLatestFeed error: $e');
     }
   }
 
-  /// Refresh latest feed
   Future<void> refreshLatestFeed() async {
     try {
-      await ref.read(latestFeedProvider.notifier).refresh();
+      await _feedUseCase.refreshLatestFeed();
     } catch (e) {
       print('SocialFeedController: refreshLatestFeed error: $e');
     }
   }
 
-  /// Toggle like on a post in latest feed
   Future<void> toggleLikeLatestFeed(String postId, BuildContext context) async {
     try {
-      await ref.read(latestFeedProvider.notifier).toggleLike(postId);
+      await _postInteractionUseCase.toggleLike(postId);
     } catch (e) {
       print('SocialFeedController: toggleLikeLatestFeed error: $e');
       if (context.mounted) {
@@ -141,10 +136,9 @@ class SocialFeedController extends Notifier<void> {
     }
   }
 
-  /// Toggle bookmark on a post in latest feed
   Future<void> toggleBookmarkLatestFeed(String postId, BuildContext context) async {
     try {
-      await ref.read(latestFeedProvider.notifier).toggleBookmark(postId);
+      await _postInteractionUseCase.toggleBookmarkLatestFeed(postId);
     } catch (e) {
       print('SocialFeedController: toggleBookmarkLatestFeed error: $e');
       if (context.mounted) {
@@ -157,10 +151,9 @@ class SocialFeedController extends Notifier<void> {
   // HOT TOPICS ACTIONS
   // =================================================================
 
-  /// Refresh hot topics
   Future<void> refreshHotTopics() async {
     try {
-      ref.invalidate(hotTopicsProvider);
+      await _feedUseCase.refreshHotTopics();
     } catch (e) {
       print('SocialFeedController: refreshHotTopics error: $e');
     }
@@ -170,16 +163,6 @@ class SocialFeedController extends Notifier<void> {
   // CREATE POST ACTIONS
   // =================================================================
 
-  /// Create a new post
-  /// 
-  /// Parameters:
-  /// - content: Post content text
-  /// - privacy: Post privacy setting (public, friends, private)
-  /// - hashtags: List of hashtag strings
-  /// - media: List of PostMediaModel objects
-  /// - context: BuildContext for showing messages
-  /// 
-  /// Returns the created PostModel if successful, null otherwise
   Future<PostModel?> createPost({
     required String content,
     required PostPrivacy privacy,
@@ -188,14 +171,12 @@ class SocialFeedController extends Notifier<void> {
     required BuildContext context,
   }) async {
     try {
-      await ref.read(createPostProvider.notifier).createPost(
+      final createdPost = await _createPostUseCase.createPost(
         content: content,
         privacy: privacy,
         hashtags: hashtags,
         media: media,
       );
-
-      final createdPost = ref.read(createPostProvider).value;
       
       if (createdPost != null && context.mounted) {
         _showInfoMessage(context, 'Post created successfully');
@@ -215,48 +196,48 @@ class SocialFeedController extends Notifier<void> {
     }
   }
 
-  /// Reset create post state
   void resetCreatePost() {
-    ref.read(createPostProvider.notifier).reset();
+    _createPostUseCase.resetCreatePost();
   }
 
   // =================================================================
-  // GENERIC ACTIONS (can be used across all feeds)
+  // GENERIC ACTIONS
   // =================================================================
 
-  /// Navigate to post detail
+  Future<void> toggleLike(String postId, BuildContext context) async {
+    try {
+      await _postInteractionUseCase.toggleLike(postId);
+    } catch (e) {
+      print('SocialFeedController: toggleLike error: $e');
+      if (context.mounted) {
+        _showErrorMessage(context, 'Failed to like post');
+      }
+    }
+  }
+
   void navigateToPostDetail(BuildContext context, String postId) {
-    // TODO: Implement navigation to post detail screen
     print('SocialFeedController: Navigate to post detail: $postId');
   }
 
-  /// Navigate to user profile
   void navigateToUserProfile(BuildContext context, String userId) {
-    // TODO: Implement navigation to user profile screen
     print('SocialFeedController: Navigate to user profile: $userId');
   }
 
-  /// Share post
   Future<void> sharePost(BuildContext context, String postId) async {
-    // TODO: Implement share functionality
     print('SocialFeedController: Share post: $postId');
     if (context.mounted) {
       _showInfoMessage(context, 'Share functionality coming soon');
     }
   }
 
-  /// Report post
   Future<void> reportPost(BuildContext context, String postId) async {
-    // TODO: Implement report functionality
     print('SocialFeedController: Report post: $postId');
     if (context.mounted) {
       _showInfoMessage(context, 'Report functionality coming soon');
     }
   }
 
-  /// Navigate to hashtag posts
   void navigateToHashtagPosts(BuildContext context, String hashtag) {
-    // TODO: Implement navigation to hashtag posts screen
     print('SocialFeedController: Navigate to hashtag: $hashtag');
   }
 
@@ -264,7 +245,6 @@ class SocialFeedController extends Notifier<void> {
   // UI HELPERS
   // =================================================================
 
-  /// Show error snackbar
   void _showErrorMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -275,7 +255,6 @@ class SocialFeedController extends Notifier<void> {
     );
   }
 
-  /// Show info snackbar
   void _showInfoMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -286,4 +265,3 @@ class SocialFeedController extends Notifier<void> {
     );
   }
 }
-
