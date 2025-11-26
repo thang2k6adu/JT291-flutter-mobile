@@ -81,13 +81,38 @@ class PostHeader extends StatelessWidget {
   }
 
   Widget _buildContent() {
-    return Text(
-      post.content,
-      style: const TextStyle(
-        fontSize: 14,
-        color: Color(0xFF1A1A1A),
-        height: 1.4,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Hashtags ở đầu
+        if (post.hashtags.isNotEmpty) ...[
+          Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: post.hashtags.map((hashtag) {
+              return Text(
+                hashtag,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF1DA1F2), // Màu xanh cho hashtag
+                  fontWeight: FontWeight.w500,
+                  height: 1.4,
+                ),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 4),
+        ],
+        // Content text
+        Text(
+          post.content,
+          style: const TextStyle(
+            fontSize: 14,
+            color: Color(0xFF1A1A1A),
+            height: 1.4,
+          ),
+        ),
+      ],
     );
   }
 

@@ -10,14 +10,17 @@ part 'comment_model.g.dart';
 abstract class CommentModel with _$CommentModel {
   const factory CommentModel({
     required String id,
+    @JsonKey(name: 'post_id') required String postId,
+    @JsonKey(name: 'user_id') required String userId,
     required UserModel user,
     required String content,
     @Default([]) List<PostMediaModel> media,
     @JsonKey(name: 'like_count') @Default(0) int likeCount,
-    @JsonKey(name: 'reply_count') @Default(0) int replyCount,
+    @JsonKey(name: 'replies_count') @Default(0) int repliesCount,
     @JsonKey(name: 'is_liked') @Default(false) bool isLiked,
+    @JsonKey(name: 'parent_id') String? parentId,
     @JsonKey(name: 'created_at') required DateTime createdAt,
-    @JsonKey(name: 'parent_comment_id') String? parentCommentId,
+    @JsonKey(name: 'updated_at') DateTime? updatedAt,
   }) = _CommentModel;
 
   factory CommentModel.fromJson(Map<String, dynamic> json) =>
