@@ -80,4 +80,7 @@ class AppIcons {
    static const String galleryPng = 'lib/assets/icons/gallery.png';
    static const String videoPng = 'lib/assets/icons/video_square.png';
    static const String audioPng = 'lib/assets/icons/microphone.png';
+
+   static const String blockUserPng = 'lib/assets/icons/block_user.png';
+   static const String reportPng = 'lib/assets/icons/report.png';
 }

@@ -40,4 +40,5 @@ class RouteConstants {
 
   static const String feed = "/feed";
   static const String addHastag = "/add-hastag";
+  static const String postDetail = "/post/:postId";
 }
