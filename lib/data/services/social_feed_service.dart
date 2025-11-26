@@ -3,6 +3,7 @@ import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 import 'package:jt291_flutter_mobile/data/models/social/hot_topic_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_media_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
+import 'package:jt291_flutter_mobile/data/models/social/report_reason_model.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 
 /// Service for social feed API operations
@@ -136,6 +137,23 @@ class SocialFeedService {
       );
     } catch (e) {
       print("SocialFeedService.toggleBookmark: error=${e.toString()}");
+      rethrow;
+    }
+  }
+
+  /// GET /reports/reasons
+  /// Get list of report reasons
+  Future<ApiResponse<List<ReportReasonModel>>> getReportReasons() async {
+    try {
+      final response = await _apiService.get('/reports/reasons');
+      return ApiResponse.fromJson(
+        response,
+        (data) => List.from(data as List<dynamic>)
+            .map((item) => ReportReasonModel.fromJson(item as Map<String, dynamic>))
+            .toList(),
+      );
+    } catch (e) {
+      print("SocialFeedService.getReportReasons: error=${e.toString()}");
       rethrow;
     }
   }

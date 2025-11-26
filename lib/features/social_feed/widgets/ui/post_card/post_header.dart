@@ -3,6 +3,7 @@ import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/widgets/ui/post_card/post_time_formatter.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/post_options_bottom_sheet.dart';
 
 /// Header widget for post card showing user avatar, name, and time
 class PostHeader extends StatelessWidget {
@@ -27,16 +28,16 @@ class PostHeader extends StatelessWidget {
           Expanded(
             child: _buildUserInfo(),
           ),
-          const Icon(Icons.more_horiz, color: Colors.grey),
+          _buildMenuButton(context),
         ],
       ),
     );
   }
 
-  Widget _buildAvatar(String? avatarUrl) {
+  Widget _buildAvatar(String?  avatarUrl) {
     final image = avatarUrl != null && avatarUrl.isNotEmpty
         ? NetworkImage(avatarUrl)
-        : AssetImage(AppImages.defaultAvatar) as ImageProvider;
+        : AssetImage(AppImages. defaultAvatar) as ImageProvider;
 
     return AvatarWidget(
       image: image,
@@ -89,5 +90,30 @@ class PostHeader extends StatelessWidget {
       ),
     );
   }
-}
 
+  Widget _buildMenuButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showPostOptions(context),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Icon(
+          Icons.more_horiz,
+          color: Colors.grey[600],
+          size: 24,
+        ),
+      ),
+    );
+  }
+
+  void _showPostOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => PostOptionsBottomSheet(
+        postId: post.id,
+        authorId: post.user.id,
+        authorName: post.user.nickname,
+      ),
+    );
+  }
+}

@@ -60,18 +60,19 @@ class _LikeButton extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          SvgIconSimple.asset(
-            AppIcons.heartSvg,
+          Icon(
+            isLiked ? Icons.favorite : Icons.favorite_border,
             size: 24,
-            color: isLiked ? Colors.red : null,
+            color: isLiked ? Colors.red : Colors.black,
           ),
           if (likeCount > 0) ...[
             const SizedBox(width: 4),
             Text(
               '$likeCount',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
+                color: isLiked ? Colors.red : Colors.black,
               ),
             ),
           ],
