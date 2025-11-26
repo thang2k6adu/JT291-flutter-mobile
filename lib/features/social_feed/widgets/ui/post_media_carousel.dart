@@ -92,7 +92,7 @@ class _PostMediaCarouselState extends State<PostMediaCarousel> {
                 ),
             ],
           ),
-        
+        SizedBox(height: 16),
         // Display audio inline below carousel
         if (audioMedia.isNotEmpty)
           Column(

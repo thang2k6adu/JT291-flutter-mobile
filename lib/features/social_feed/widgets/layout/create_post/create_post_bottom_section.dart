@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
+import 'package:jt291_flutter_mobile/data/providers/social/social_feed_provider.dart';
 
-class CreatePostBottomSection extends StatelessWidget {
+class CreatePostBottomSection extends ConsumerWidget {
   final bool isPublic;
   final Function(bool) onPrivacyChanged;
   final Function(String) onHashtagAdded;
@@ -16,7 +18,9 @@ class CreatePostBottomSection extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hotTopicsAsync = ref.watch(hotTopicsProvider);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -44,9 +48,33 @@ class CreatePostBottomSection extends StatelessWidget {
                   },
                 ),
                 const SizedBox(width: 8),
-                _buildTopicChip(context, '# Sayhi2025'),
-                const SizedBox(width: 8),
-                _buildTopicChip(context, '# Giao lưu am nhạc'),
+                // Hiển thị hot topics từ API
+                hotTopicsAsync.when(
+                  data: (topics) {
+                    return Row(
+                      children: topics.take(5).map((topic) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: _buildTopicChip(
+                            context,
+                            topic.hashtag.startsWith('#') ? topic.hashtag : '#${topic.hashtag}',
+                            onTap: () {
+                              onHashtagAdded(topic.hashtag.startsWith('#') 
+                                  ? topic.hashtag 
+                                  : '#${topic.hashtag}');
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  },
+                  loading: () => const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                  error: (error, stack) => const SizedBox.shrink(),
+                ),
               ],
             ),
           ),

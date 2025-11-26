@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -6,10 +7,11 @@ import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
+import 'package:jt291_flutter_mobile/data/providers/user/user_general_provider.dart';
 import 'create_post_utils.dart';
 import 'create_post_media_previews.dart';
 
-class CreatePostContent extends StatelessWidget {
+class CreatePostContent extends ConsumerWidget {
   final TextEditingController textController;
   final List<String> selectedHashtags;
   final bool hasMedia;
@@ -52,7 +54,10 @@ class CreatePostContent extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userAsync = ref.watch(userGeneralProvider);
+    final currentUser = userAsync.value;
+    
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -60,7 +65,9 @@ class CreatePostContent extends StatelessWidget {
         Column(
           children: [
             AvatarWidget(
-              image: AssetImage(AppImages.defaultAvatar),
+              image: currentUser?.avatar != null && currentUser!.avatar!.isNotEmpty
+                  ? NetworkImage(currentUser.avatar!)
+                  : AssetImage(AppImages.defaultAvatar) as ImageProvider,
               size: 40,
             ),
             if (hasMedia) ...[
@@ -81,9 +88,9 @@ class CreatePostContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // User name
-              const Text(
-                'Darlene Bears',
-                style: TextStyle(
+              Text(
+                currentUser?.nickname ?? 'User',
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),

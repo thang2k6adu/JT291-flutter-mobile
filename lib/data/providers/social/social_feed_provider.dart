@@ -17,11 +17,15 @@ final friendsFeedProvider = AsyncNotifierProvider<
 
 class FriendsFeedNotifier extends BasePaginatedNotifier<PostModel>
     with ListItemUpdateMixin<PostModel> {
-  late final SocialFeedService _service;
+  SocialFeedService? _service;
+
+  SocialFeedService get service {
+    _service ??= ref.read(socialFeedServiceProvider);
+    return _service!;
+  }
 
   @override
   Future<List<PostModel>> build() async {
-    _service = ref.read(socialFeedServiceProvider);
     return super.build();
   }
 
@@ -36,7 +40,7 @@ class FriendsFeedNotifier extends BasePaginatedNotifier<PostModel>
     required int limit,
     String? search,
   }) async {
-    final response = await _service.getFriendsFeed(
+    final response = await service.getFriendsFeed(
       page: page,
       limit: limit,
     );
@@ -50,7 +54,7 @@ class FriendsFeedNotifier extends BasePaginatedNotifier<PostModel>
       (post) => post.id == postId,
       (post) => post, // No pending state needed for like
       () async {
-        final response = await _service.toggleLike(postId);
+        final response = await service.toggleLike(postId);
         return !response.error;
       },
       (post, success) {
@@ -71,7 +75,7 @@ class FriendsFeedNotifier extends BasePaginatedNotifier<PostModel>
       (post) => post.id == postId,
       (post) => post, // No pending state needed for bookmark
       () async {
-        final response = await _service.toggleBookmark(postId);
+        final response = await service.toggleBookmark(postId);
         return !response.error;
       },
       (post, success) {
@@ -96,11 +100,15 @@ final communityFeedProvider = AsyncNotifierProvider<
 
 class CommunityFeedNotifier extends BasePaginatedNotifier<PostModel>
     with ListItemUpdateMixin<PostModel> {
-  late final SocialFeedService _service;
+  SocialFeedService? _service;
+
+  SocialFeedService get service {
+    _service ??= ref.read(socialFeedServiceProvider);
+    return _service!;
+  }
 
   @override
   Future<List<PostModel>> build() async {
-    _service = ref.read(socialFeedServiceProvider);
     return super.build();
   }
 
@@ -115,7 +123,7 @@ class CommunityFeedNotifier extends BasePaginatedNotifier<PostModel>
     required int limit,
     String? search,
   }) async {
-    final response = await _service.getCommunityFeed(
+    final response = await service.getCommunityFeed(
       page: page,
       limit: limit,
     );
@@ -129,7 +137,7 @@ class CommunityFeedNotifier extends BasePaginatedNotifier<PostModel>
       (post) => post.id == postId,
       (post) => post,
       () async {
-        final response = await _service.toggleLike(postId);
+        final response = await service.toggleLike(postId);
         return !response.error;
       },
       (post, success) {
@@ -150,7 +158,7 @@ class CommunityFeedNotifier extends BasePaginatedNotifier<PostModel>
       (post) => post.id == postId,
       (post) => post,
       () async {
-        final response = await _service.toggleBookmark(postId);
+        final response = await service.toggleBookmark(postId);
         return !response.error;
       },
       (post, success) {
@@ -175,11 +183,15 @@ final latestFeedProvider = AsyncNotifierProvider<
 
 class LatestFeedNotifier extends BasePaginatedNotifier<PostModel>
     with ListItemUpdateMixin<PostModel> {
-  late final SocialFeedService _service;
+  SocialFeedService? _service;
+
+  SocialFeedService get service {
+    _service ??= ref.read(socialFeedServiceProvider);
+    return _service!;
+  }
 
   @override
   Future<List<PostModel>> build() async {
-    _service = ref.read(socialFeedServiceProvider);
     return super.build();
   }
 
@@ -194,7 +206,7 @@ class LatestFeedNotifier extends BasePaginatedNotifier<PostModel>
     required int limit,
     String? search,
   }) async {
-    final response = await _service.getLatestFeed(
+    final response = await service.getLatestFeed(
       page: page,
       limit: limit,
     );
@@ -208,7 +220,7 @@ class LatestFeedNotifier extends BasePaginatedNotifier<PostModel>
       (post) => post.id == postId,
       (post) => post,
       () async {
-        final response = await _service.toggleLike(postId);
+        final response = await service.toggleLike(postId);
         return !response.error;
       },
       (post, success) {
@@ -229,7 +241,7 @@ class LatestFeedNotifier extends BasePaginatedNotifier<PostModel>
       (post) => post.id == postId,
       (post) => post,
       () async {
-        final response = await _service.toggleBookmark(postId);
+        final response = await service.toggleBookmark(postId);
         return !response.error;
       },
       (post, success) {
@@ -268,11 +280,15 @@ final createPostProvider = AsyncNotifierProvider<CreatePostNotifier, PostModel?>
 );
 
 class CreatePostNotifier extends AsyncNotifier<PostModel?> {
-  late final SocialFeedService _service;
+  SocialFeedService? _service;
+
+  SocialFeedService get service {
+    _service ??= ref.read(socialFeedServiceProvider);
+    return _service!;
+  }
 
   @override
   Future<PostModel?> build() async {
-    _service = ref.read(socialFeedServiceProvider);
     return null; // Initial state is null (no post created yet)
   }
 
@@ -292,7 +308,7 @@ class CreatePostNotifier extends AsyncNotifier<PostModel?> {
     state = const AsyncValue.loading();
 
     try {
-      final response = await _service.createPost(
+      final response = await service.createPost(
         content: content,
         privacy: privacy,
         hashtags: hashtags,
