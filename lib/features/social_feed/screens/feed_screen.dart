@@ -4,7 +4,7 @@ import 'package:jt291_flutter_mobile/data/providers/social/social_feed_provider.
 import 'package:jt291_flutter_mobile/features/social_feed/controllers/social_feed_controller.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/feed_app_bar.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/feed_list.dart';
-import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/create_post_bottom_sheet.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/screens/create_post_bottom_sheet.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
