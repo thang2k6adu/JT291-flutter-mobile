@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jt291_flutter_mobile/data/models/social/post_media_model.dart';
+import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
 import 'package:jt291_flutter_mobile/data/providers/social/social_feed_provider.dart';
 
 /// Provider for SocialFeedController
@@ -162,6 +164,60 @@ class SocialFeedController extends Notifier<void> {
     } catch (e) {
       print('SocialFeedController: refreshHotTopics error: $e');
     }
+  }
+
+  // =================================================================
+  // CREATE POST ACTIONS
+  // =================================================================
+
+  /// Create a new post
+  /// 
+  /// Parameters:
+  /// - content: Post content text
+  /// - privacy: Post privacy setting (public, friends, private)
+  /// - hashtags: List of hashtag strings
+  /// - media: List of PostMediaModel objects
+  /// - context: BuildContext for showing messages
+  /// 
+  /// Returns the created PostModel if successful, null otherwise
+  Future<PostModel?> createPost({
+    required String content,
+    required PostPrivacy privacy,
+    required List<String> hashtags,
+    required List<PostMediaModel> media,
+    required BuildContext context,
+  }) async {
+    try {
+      await ref.read(createPostProvider.notifier).createPost(
+        content: content,
+        privacy: privacy,
+        hashtags: hashtags,
+        media: media,
+      );
+
+      final createdPost = ref.read(createPostProvider).value;
+      
+      if (createdPost != null && context.mounted) {
+        _showInfoMessage(context, 'Post created successfully');
+        return createdPost;
+      } else if (context.mounted) {
+        _showErrorMessage(context, 'Failed to create post');
+        return null;
+      }
+      
+      return createdPost;
+    } catch (e) {
+      print('SocialFeedController: createPost error: $e');
+      if (context.mounted) {
+        _showErrorMessage(context, 'Failed to create post: ${e.toString()}');
+      }
+      return null;
+    }
+  }
+
+  /// Reset create post state
+  void resetCreatePost() {
+    ref.read(createPostProvider.notifier).reset();
   }
 
   // =================================================================

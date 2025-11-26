@@ -1,26 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/core/theme/app_colors.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
-import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jt291_flutter_mobile/components/helper/image_helper.dart';
 import 'package:jt291_flutter_mobile/components/helper/video_helper.dart';
 import 'package:video_player/video_player.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/controllers/social_feed_controller.dart';
+import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
+import 'package:jt291_flutter_mobile/data/models/social/post_media_model.dart';
 import 'audio_recorder_bottom_sheet.dart';
 
-class CreatePostBottomSheet extends StatefulWidget {
+// Custom TextInputFormatter to handle backspace for deleting hashtags
+class HashtagBackspaceFormatter extends TextInputFormatter {
+  final Function()? onBackspaceAtStart;
+
+  HashtagBackspaceFormatter(this.onBackspaceAtStart);
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    // Detect backspace: text length decreased and cursor is at start
+    // This happens when user presses backspace at the beginning of text field
+    if (newValue.text.length < oldValue.text.length &&
+        newValue.selection.start == 0 &&
+        newValue.selection.end == 0 &&
+        onBackspaceAtStart != null) {
+      // Trigger callback to delete last hashtag
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        onBackspaceAtStart?.call();
+      });
+    }
+    return newValue;
+  }
+}
+
+class CreatePostBottomSheet extends ConsumerStatefulWidget {
   const CreatePostBottomSheet({super. key});
 
   @override
-  State<CreatePostBottomSheet> createState() => _CreatePostBottomSheetState();
+  ConsumerState<CreatePostBottomSheet> createState() => _CreatePostBottomSheetState();
 }
 
-class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
+class _CreatePostBottomSheetState extends ConsumerState<CreatePostBottomSheet> {
   final TextEditingController _textController = TextEditingController();
   final ImageHelper _imageHelper = ImageHelper();
   final VideoHelper _videoHelper = VideoHelper();
@@ -35,6 +66,20 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
   
   // Controllers for audio players
   Map<int, AudioPlayer> _audioPlayers = {};
+
+  // Loading state
+  bool _isCreatingPost = false;
+
+  // Handle backspace to delete last hashtag
+  // Only delete when TextField is empty and cursor is at start
+  void _handleBackspaceAtStart() {
+    // Only delete hashtag if TextField is empty
+    if (_textController.text.isEmpty && _selectedHashtags.isNotEmpty) {
+      setState(() {
+        _selectedHashtags.removeLast();
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -174,6 +219,126 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
     });
   }
 
+  // Convert media files to PostMediaModel list
+  List<PostMediaModel> _convertMediaToPostMedia() {
+    final List<PostMediaModel> mediaList = [];
+
+    // Convert images
+    for (int i = 0; i < _selectedImages.length; i++) {
+      final image = _selectedImages[i];
+      // For now, use file path as mock URL. In production, upload first and get real URL
+      mediaList.add(
+        PostMediaModel(
+          id: 'img_${DateTime.now().millisecondsSinceEpoch}_$i',
+          type: MediaType.image,
+          url: image.path, // Mock: will be replaced with uploaded URL
+          thumbnailUrl: image.path,
+        ),
+      );
+    }
+
+    // Convert videos
+    for (int i = 0; i < _selectedVideos.length; i++) {
+      final video = _selectedVideos[i];
+      final controller = _videoControllers[i];
+      final duration = controller?.value.duration.inSeconds;
+      
+      mediaList.add(
+        PostMediaModel(
+          id: 'vid_${DateTime.now().millisecondsSinceEpoch}_$i',
+          type: MediaType.video,
+          url: video.path, // Mock: will be replaced with uploaded URL
+          thumbnailUrl: video.path, // Mock: should generate thumbnail
+          duration: duration,
+        ),
+      );
+    }
+
+    // Convert audios
+    for (int i = 0; i < _selectedAudios.length; i++) {
+      final audio = _selectedAudios[i];
+      final filePath = audio['filePath'] as String? ?? '';
+      final duration = audio['duration'] as Duration? ?? Duration.zero;
+      
+      mediaList.add(
+        PostMediaModel(
+          id: 'aud_${DateTime.now().millisecondsSinceEpoch}_$i',
+          type: MediaType.audio,
+          url: filePath, // Mock: will be replaced with uploaded URL
+          duration: duration.inSeconds,
+        ),
+      );
+    }
+
+    return mediaList;
+  }
+
+  // Handle post creation
+  Future<void> _handleCreatePost() async {
+    // Validate: must have content or media
+    final content = _textController.text.trim();
+    if (content.isEmpty && 
+        _selectedImages.isEmpty && 
+        _selectedVideos.isEmpty && 
+        _selectedAudios.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Vui lòng nhập nội dung hoặc chọn media'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isCreatingPost = true;
+    });
+
+    try {
+      // Convert privacy boolean to PostPrivacy enum
+      final privacy = _isPublic ? PostPrivacy.public : PostPrivacy.private;
+
+      // Convert media files to PostMediaModel
+      final media = _convertMediaToPostMedia();
+
+      // Get controller
+      final controller = ref.read(socialFeedControllerProvider.notifier);
+
+      // Create post
+      final createdPost = await controller.createPost(
+        content: content,
+        privacy: privacy,
+        hashtags: _selectedHashtags,
+        media: media,
+        context: context,
+      );
+
+      if (createdPost != null && mounted) {
+        // Reset state
+        controller.resetCreatePost();
+        
+        // Close bottom sheet
+        Navigator.pop(context, createdPost);
+      }
+    } catch (e) {
+      print('Error creating post: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Không thể tạo bài viết: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isCreatingPost = false;
+        });
+      }
+    }
+  }
+
   // Hàm hiển thị privacy dropdown menu
   void _showPrivacyMenu(BuildContext context) {
     final RenderBox button = context.findRenderObject() as RenderBox;
@@ -301,26 +466,34 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                 ),
                 TextButton(
-                  onPressed: () {
-                    // TODO: Handle post creation
-                    Navigator.pop(context);
-                  },
+                  onPressed: _isCreatingPost ? null : _handleCreatePost,
                   style: TextButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: _isCreatingPost 
+                        ? Colors.grey.shade300 
+                        : AppColors.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                    child: Text(
-                      'Post',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight. w600,
-                      ),
-                    ),
+                    child: _isCreatingPost
+                        ? SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            ),
+                          )
+                        : Text(
+                            'Post',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight. w600,
+                            ),
+                          ),
                   ),
                 ),
               ],
@@ -370,24 +543,25 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                         ),
                         SizedBox(height: 8),
 
-                        // Hashtags và TextField content
+                        // Hashtags và TextField content - hiển thị inline như Facebook
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Hiển thị hashtags đã chọn
+                            // Hiển thị hashtags như text thường với màu khác
                             if (_selectedHashtags.isNotEmpty)
-                              Wrap(
-                                spacing: 4,
-                                children: _selectedHashtags.map((hashtag) {
-                                  return Text(
-                                    hashtag + ' ',
-                                    style: TextStyle(
-                                      color: AppColors.primary,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  );
-                                }).toList(),
+                              RichText(
+                                text: TextSpan(
+                                  children: _selectedHashtags.map((hashtag) {
+                                    return TextSpan(
+                                      text: '$hashtag ',
+                                      style: TextStyle(
+                                        color: AppColors.primary,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
 
                             // TextField để nhập content
@@ -395,12 +569,15 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                               child: TextField(
                                 controller: _textController,
                                 maxLines: null,
+                                inputFormatters: [
+                                  HashtagBackspaceFormatter(_handleBackspaceAtStart),
+                                ],
                                 onChanged: (value) {
                                   setState(() {});
                                 },
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
-                                  hintText: "What's new?",
+                                  hintText: _selectedHashtags.isEmpty ? "What's new?" : null,
                                   hintStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 15,
@@ -734,14 +911,18 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
     return GestureDetector(
       onTap: isPrimary
           ? () async {
-              // TODO: Navigate to add hashtag screen and get result
-              // Example: final result = await pushScreen(context, RouteConstants.addHastag);
-              // if (result != null) {
-              //   setState(() {
-              //     _selectedHashtags.add(result);
-              //   });
-              // }
-              pushScreen(context, RouteConstants. addHastag);
+              // Navigate to add hashtag screen and get result
+              final result = await GoRouter.of(context).push(RouteConstants.addHastag);
+              if (result != null && result is String) {
+                // Ensure hashtag starts with #
+                final hashtag = result.startsWith('#') ? result : '#$result';
+                // Avoid duplicates
+                if (!_selectedHashtags.contains(hashtag)) {
+                  setState(() {
+                    _selectedHashtags.add(hashtag);
+                  });
+                }
+              }
             }
           : onTap ??  () {},
       child: Container(

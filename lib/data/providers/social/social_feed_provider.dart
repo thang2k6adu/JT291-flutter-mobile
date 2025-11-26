@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/core/base/base_pagination_notifier.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
+import 'package:jt291_flutter_mobile/data/models/social/post_media_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/hot_topic_model.dart';
 import 'package:jt291_flutter_mobile/data/services/social_feed_service.dart';
 
@@ -256,4 +257,71 @@ final hotTopicsProvider = FutureProvider<List<HotTopicModel>>((ref) async {
   
   return response.data!;
 });
+
+// =================================================================
+// CREATE POST PROVIDER
+// =================================================================
+
+/// Provider for creating a new post
+final createPostProvider = AsyncNotifierProvider<CreatePostNotifier, PostModel?>(
+  CreatePostNotifier.new,
+);
+
+class CreatePostNotifier extends AsyncNotifier<PostModel?> {
+  late final SocialFeedService _service;
+
+  @override
+  Future<PostModel?> build() async {
+    _service = ref.read(socialFeedServiceProvider);
+    return null; // Initial state is null (no post created yet)
+  }
+
+  /// Create a new post
+  /// 
+  /// Parameters:
+  /// - content: Post content text
+  /// - privacy: Post privacy setting (public, friends, private)
+  /// - hashtags: List of hashtag strings
+  /// - media: List of PostMediaModel objects
+  Future<void> createPost({
+    required String content,
+    required PostPrivacy privacy,
+    required List<String> hashtags,
+    required List<PostMediaModel> media,
+  }) async {
+    state = const AsyncValue.loading();
+
+    try {
+      final response = await _service.createPost(
+        content: content,
+        privacy: privacy,
+        hashtags: hashtags,
+        media: media,
+      );
+
+      if (response.error || response.data == null) {
+        state = AsyncValue.error(
+          Exception(response.message),
+          StackTrace.current,
+        );
+        return;
+      }
+
+      state = AsyncValue.data(response.data);
+
+      // Invalidate feed providers to refresh them with the new post
+      ref.invalidate(friendsFeedProvider);
+      ref.invalidate(communityFeedProvider);
+      ref.invalidate(latestFeedProvider);
+    } catch (e, stackTrace) {
+      state = AsyncValue.error(e, stackTrace);
+      rethrow;
+    }
+  }
+
+  /// Reset the state (clear created post)
+  void reset() {
+    state = const AsyncValue.data(null);
+  }
+}
 

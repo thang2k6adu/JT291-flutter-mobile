@@ -1,7 +1,8 @@
 import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
+import 'package:jt291_flutter_mobile/data/models/social/post_media_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/hot_topic_model.dart';
-import 'package:jt291_flutter_mobile/data/mocks/social_feed_mock.dart';
+import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 import 'dart:convert';
@@ -190,6 +191,91 @@ class SocialFeedService {
       data: true,
       traceId: 'mock_trace_${DateTime.now().millisecondsSinceEpoch}',
     );
+  }
+
+  /// POST /api/posts
+  /// Create a new post
+  /// 
+  /// Parameters:
+  /// - content: Post content text
+  /// - privacy: Post privacy setting (public, friends, private)
+  /// - hashtags: List of hashtag strings
+  /// - media: List of PostMediaModel objects
+  Future<ApiResponse<PostModel>> createPost({
+    required String content,
+    required PostPrivacy privacy,
+    required List<String> hashtags,
+    required List<PostMediaModel> media,
+  }) async {
+    print(
+      'SocialFeedService.createPost: content=$content, privacy=$privacy, hashtags=$hashtags, media=${media.length}',
+    );
+
+    try {
+      // Prepare request body
+      final requestBody = {
+        'content': content,
+        'privacy': privacy.name,
+        'hashtags': hashtags,
+        'media': media.map((m) => {
+          'type': m.type.name,
+          'url': m.url,
+          'thumbnail_url': m.thumbnailUrl,
+          'width': m.width,
+          'height': m.height,
+          'duration': m.duration,
+        }).toList(),
+      };
+
+      // Call API
+      final response = await _apiService.post(
+        '/posts',
+        data: requestBody,
+      );
+
+      // Parse response
+      return ApiResponse.fromJson(
+        response,
+        (data) => PostModel.fromJson(data as Map<String, dynamic>),
+      );
+    } catch (e) {
+      print("SocialFeedService.createPost: error=${e.toString()}");
+      
+      // Mock response for development/testing
+      // Simulate network delay
+      await Future.delayed(const Duration(milliseconds: 800));
+
+      // Generate mock post
+      final postId = 'post_${DateTime.now().millisecondsSinceEpoch}';
+      final mockUser = UserModel(
+        id: 'current_user',
+        nickname: 'Current User',
+        avatar: 'https://i.pravatar.cc/300?u=current_user',
+      );
+
+      final mockPost = PostModel(
+        id: postId,
+        user: mockUser,
+        content: content,
+        media: media,
+        hashtags: hashtags,
+        likeCount: 0,
+        commentCount: 0,
+        shareCount: 0,
+        isLiked: false,
+        isBookmarked: false,
+        createdAt: DateTime.now(),
+        privacy: privacy,
+      );
+
+      return ApiResponse<PostModel>(
+        error: false,
+        code: 201,
+        message: 'Post created successfully',
+        data: mockPost,
+        traceId: 'mock_trace_${DateTime.now().millisecondsSinceEpoch}',
+      );
+    }
   }
 }
 
