@@ -38,7 +38,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
 
   @override
   void dispose() {
-    _textController.dispose();
+    _textController. dispose();
     // Dispose all video controllers
     _videoControllers.forEach((key, controller) {
       controller.dispose();
@@ -47,7 +47,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
     _audioPlayers.forEach((key, player) {
       player.dispose();
     });
-    super.dispose();
+    super. dispose();
   }
 
   // Hàm xử lý chọn ảnh
@@ -84,7 +84,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
         });
 
         // Initialize video controller for preview
-        await _initializeVideoController(_selectedVideos.length - 1, video);
+        await _initializeVideoController(_selectedVideos. length - 1, video);
       }
     } catch (e) {
       print('Error picking video: $e');
@@ -134,7 +134,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
   void _removeVideo(int index) {
     // Dispose controller trước khi xóa
     _videoControllers[index]?.dispose();
-    _videoControllers.remove(index);
+    _videoControllers. remove(index);
 
     setState(() {
       _selectedVideos.removeAt(index);
@@ -174,10 +174,97 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
     });
   }
 
+  // Hàm hiển thị privacy dropdown menu
+  void _showPrivacyMenu(BuildContext context) {
+    final RenderBox button = context.findRenderObject() as RenderBox;
+    final RenderBox overlay = Navigator.of(context).overlay! . context.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect. fromRect(
+      Rect.fromPoints(
+        button.localToGlobal(Offset.zero, ancestor: overlay),
+        button. localToGlobal(button.size.bottomRight(Offset.zero), ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu<bool>(
+      context: context,
+      position: position,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      items: [
+        PopupMenuItem<bool>(
+          value: true,
+          child: Row(
+            children: [
+              Icon(
+                Icons.public,
+                size: 20,
+                color: _isPublic ? AppColors.primary : Colors.grey. shade700,
+              ),
+              SizedBox(width: 12),
+              Text(
+                'Public',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: _isPublic ? FontWeight.w600 : FontWeight.w400,
+                  color: _isPublic ? AppColors.primary : Colors.black87,
+                ),
+              ),
+              if (_isPublic) ...[
+                Spacer(),
+                Icon(
+                  Icons.check,
+                  size: 20,
+                  color: AppColors.primary,
+                ),
+              ],
+            ],
+          ),
+        ),
+        PopupMenuItem<bool>(
+          value: false,
+          child: Row(
+            children: [
+              Icon(
+                Icons.lock,
+                size: 20,
+                color: ! _isPublic ? AppColors. primary : Colors.grey.shade700,
+              ),
+              SizedBox(width: 12),
+              Text(
+                'Only me',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: !_isPublic ? FontWeight.w600 : FontWeight.w400,
+                  color: !_isPublic ? AppColors.primary : Colors.black87,
+                ),
+              ),
+              if (! _isPublic) ...[
+                Spacer(),
+                Icon(
+                  Icons.check,
+                  size: 20,
+                  color: AppColors. primary,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    ). then((value) {
+      if (value != null) {
+        setState(() {
+          _isPublic = value;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.9,
+      height: MediaQuery.of(context).size. height * 0.9,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -271,7 +358,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                   // User name và content
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment. start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // User name
                         Text(
@@ -405,42 +492,50 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Anyone can view your post.',
+                      _isPublic 
+                          ? 'Anyone can view your post.'
+                          : 'Only you can view this post.',
                       style: TextStyle(
                         color: Colors.grey.shade600,
                         fontSize: 14,
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        // TODO: Show privacy options
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.public,
-                              size: 18,
-                              color: Colors. grey.shade700,
-                            ),
-                            SizedBox(width: 6),
-                            Text(
-                              'Public',
-                              style: TextStyle(
+                    Builder(
+                      builder: (context) => InkWell(
+                        onTap: () => _showPrivacyMenu(context),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                _isPublic ? Icons.public : Icons.lock,
+                                size: 18,
                                 color: Colors.grey.shade700,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
                               ),
-                            ),
-                          ],
+                              SizedBox(width: 6),
+                              Text(
+                                _isPublic ? 'Public' : 'Only me',
+                                style: TextStyle(
+                                  color: Colors.grey.shade700,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(width: 4),
+                              Icon(
+                                Icons.arrow_drop_down,
+                                size: 20,
+                                color: Colors. grey.shade700,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -459,7 +554,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
       icon,
       width: 22,
       height: 22,
-      color: Colors.grey.shade600,
+      color: Colors.grey. shade600,
     );
   }
 
@@ -504,7 +599,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
         return Container(
           margin: EdgeInsets.only(bottom: 8),
           child: _AudioPlayerPreview(
-            audioPath: audio['filePath'] as String? ?? '',
+            audioPath: audio['filePath'] as String?  ?? '',
             duration: audio['duration'] as Duration,
             onRemove: () => _removeAudio(index),
             onInitialized: (player) {
@@ -524,7 +619,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             image: DecorationImage(
-              image: FileImage(File(_selectedImages[index].path)),
+              image: FileImage(File(_selectedImages[index]. path)),
               fit: BoxFit. cover,
             ),
           ),
@@ -662,7 +757,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
               style: TextStyle(
                 color: isPrimary ? Color(0xFFE56C8C) : Colors.grey.shade700,
                 fontSize: 14,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight. w500,
               ),
             ),
             if (isPrimary) ...[
@@ -681,7 +776,7 @@ class _CreatePostBottomSheetState extends State<CreatePostBottomSheet> {
   }
 }
 
-// Widget audio player preview giống với audio_player_widget.dart
+// Widget audio player preview giống với audio_player_widget. dart
 class _AudioPlayerPreview extends StatefulWidget {
   final String audioPath;
   final Duration duration;
@@ -717,7 +812,7 @@ class _AudioPlayerPreviewState extends State<_AudioPlayerPreview> {
       // Kiểm tra file path có hợp lệ không
       if (widget.audioPath.isEmpty || 
           widget.audioPath == 'path/to/audio/file.m4a' ||
-          widget.audioPath.contains('path/to')) {
+          widget. audioPath.contains('path/to')) {
         // File path là placeholder hoặc không hợp lệ
         setState(() {
           _hasError = true;
@@ -726,11 +821,11 @@ class _AudioPlayerPreviewState extends State<_AudioPlayerPreview> {
       }
 
       // Kiểm tra file có tồn tại không (nếu là local file)
-      if (!widget.audioPath.startsWith('http://') && 
+      if (! widget.audioPath.startsWith('http://') && 
           !widget.audioPath.startsWith('https://')) {
         final file = File(widget.audioPath);
-        if (!await file.exists()) {
-          print('Audio file does not exist: ${widget.audioPath}');
+        if (! await file.exists()) {
+          print('Audio file does not exist: ${widget. audioPath}');
           setState(() {
             _hasError = true;
           });
@@ -759,7 +854,7 @@ class _AudioPlayerPreviewState extends State<_AudioPlayerPreview> {
       });
 
       // Listen to completion
-      _audioPlayer.onPlayerComplete.listen((event) {
+      _audioPlayer. onPlayerComplete.listen((event) {
         if (mounted) {
           setState(() {
             _position = Duration.zero;
@@ -817,7 +912,7 @@ class _AudioPlayerPreviewState extends State<_AudioPlayerPreview> {
   String _formatDuration(Duration duration) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    final seconds = twoDigits(duration.inSeconds. remainder(60));
     return '$minutes:$seconds';
   }
 
@@ -870,7 +965,7 @@ class _AudioPlayerPreviewState extends State<_AudioPlayerPreview> {
               child: Container(
                 padding: EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: Colors.grey. shade300,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(Icons.close, color: Colors.grey.shade700, size: 18),
@@ -881,11 +976,11 @@ class _AudioPlayerPreviewState extends State<_AudioPlayerPreview> {
       );
     }
 
-    if (!_isInitialized) {
+    if (! _isInitialized) {
       return Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: Colors.grey. shade100,
           borderRadius: BorderRadius.circular(30),
         ),
         child: Row(
@@ -912,7 +1007,7 @@ class _AudioPlayerPreviewState extends State<_AudioPlayerPreview> {
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius. circular(30),
       ),
       child: Column(
         children: [
@@ -929,7 +1024,7 @@ class _AudioPlayerPreviewState extends State<_AudioPlayerPreview> {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    _isPlaying ? Icons.pause : Icons.play_arrow,
+                    _isPlaying ? Icons. pause : Icons.play_arrow,
                     color: Colors.white,
                     size: 24,
                   ),
@@ -943,7 +1038,7 @@ class _AudioPlayerPreviewState extends State<_AudioPlayerPreview> {
                 child: GestureDetector(
                   onTapDown: (details) {
                     // Calculate position based on tap
-                    final RenderBox? box = context.findRenderObject() as RenderBox?;
+                    final RenderBox?  box = context.findRenderObject() as RenderBox? ;
                     if (box != null) {
                       final localPosition = details.localPosition;
                       final width = box.size.width - 80; // Subtract button width and padding
@@ -1015,7 +1110,7 @@ class _AudioWaveformVisualizer extends StatelessWidget {
   final bool isPlaying;
   
   const _AudioWaveformVisualizer({
-    required this.duration,
+    required this. duration,
     required this.position,
     required this.isPlaying,
   });
@@ -1023,7 +1118,7 @@ class _AudioWaveformVisualizer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final progress = duration.inMilliseconds > 0 
-        ? position.inMilliseconds / duration.inMilliseconds 
+        ? position.inMilliseconds / duration. inMilliseconds 
         : 0.0;
     
     return CustomPaint(
@@ -1055,7 +1150,7 @@ class _WaveformPainter extends CustomPainter {
     final spacing = (size.width - (barCount * barWidth)) / (barCount - 1);
     
     // Generate random heights for waveform (in real app, this would come from audio data)
-    final heights = List.generate(barCount, (index) {
+    final heights = List. generate(barCount, (index) {
       // Create a wave pattern
       final baseHeight = size.height * 0.3;
       final variation = size.height * 0.4 * 
@@ -1076,9 +1171,9 @@ class _WaveformPainter extends CustomPainter {
       final isPlayed = barProgress <= progress;
       
       final paint = Paint()
-        ..color = isPlayed ? Colors.black : Colors.grey[300]!
+        ..color = isPlayed ? Colors.black : Colors.grey[300]! 
         ..strokeWidth = barWidth
-        ..strokeCap = StrokeCap.round;
+        ..strokeCap = StrokeCap. round;
       
       // Draw bar
       canvas.drawLine(
