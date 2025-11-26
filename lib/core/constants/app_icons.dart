@@ -76,4 +76,8 @@ class AppIcons {
    static const String sendMessageLinePng = 'lib/assets/icons/send_message_line.png';
    static const String sendMessageLineSvg = 'lib/assets/icons/send_message_line.svg';
    static const String messageSvg = 'lib/assets/icons/messages.svg';
+
+   static const String galleryPng = 'lib/assets/icons/gallery.png';
+   static const String videoPng = 'lib/assets/icons/video_square.png';
+   static const String audioPng = 'lib/assets/icons/microphone.png';
 }

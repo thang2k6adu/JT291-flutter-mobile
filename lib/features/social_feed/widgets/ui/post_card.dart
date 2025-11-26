@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/ui/avatar.dart';
 import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/widgets/ui/post_media_carousel.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -56,8 +57,8 @@ class _PostCardState extends ConsumerState<PostCard> {
         children: [
           AvatarWidget(
             image: user.avatar != null && user.avatar!.isNotEmpty
-                ? NetworkImage(user.avatar!)
-                : AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                ? NetworkImage(user.avatar! )
+                : AssetImage(AppImages.defaultAvatar) as ImageProvider,
             size: 44,
           ),
           SizedBox(width: 8),

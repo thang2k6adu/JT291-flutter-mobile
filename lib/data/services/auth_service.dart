@@ -91,6 +91,7 @@ class AuthService {
         return authToken;
 
       } else {
+        print("loginWithEmailAndPassword error: ${response['message']}");
         throw Exception(response['message']);
       }
 

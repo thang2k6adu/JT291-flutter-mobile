@@ -76,6 +76,22 @@ abstract class PaginationMeta with _$PaginationMeta {
     @Default(1) @JsonKey(name: 'current_page') int currentPage,
   }) = _PaginationMeta;
 
-  factory PaginationMeta.fromJson(Map<String, dynamic> json) =>
-      _$PaginationMetaFromJson(json);
+  // Custom safe fromJson
+  factory PaginationMeta.fromJson(Map<String, dynamic> json) {
+    int _toInt(dynamic v) {
+      if (v == null) return 0;
+      if (v is int) return v;
+      if (v is String) return int.tryParse(v) ?? 0;
+      return 0;
+    }
+
+    return PaginationMeta(
+      itemCount: _toInt(json['item_count']),
+      totalItems: _toInt(json['total_items']),
+      itemsPerPage: _toInt(json['items_per_page']),
+      totalPages: _toInt(json['total_pages']),
+      currentPage: _toInt(json['current_page']),
+    );
+  }
 }
+

@@ -4,6 +4,7 @@ import 'package:jt291_flutter_mobile/data/providers/social/social_feed_provider.
 import 'package:jt291_flutter_mobile/features/social_feed/controllers/social_feed_controller.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/feed_app_bar.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/feed_list.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/create_post_bottom_sheet.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -12,7 +13,8 @@ class FeedScreen extends ConsumerStatefulWidget {
   ConsumerState<FeedScreen> createState() => _FeedScreenState();
 }
 
-class _FeedScreenState extends ConsumerState<FeedScreen> with SingleTickerProviderStateMixin {
+class _FeedScreenState extends ConsumerState<FeedScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _isCommunity = false;
 
@@ -36,17 +38,22 @@ class _FeedScreenState extends ConsumerState<FeedScreen> with SingleTickerProvid
     super.dispose();
   }
 
+  void _showCreatePostBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => CreatePostBottomSheet(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = ref.read(socialFeedControllerProvider.notifier);
-    final hotTopics = ref.read(hotTopicsProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: FeedAppBar(
-        isCommunity: _isCommunity,
-        controller: _tabController,
-      ),
+      appBar: FeedAppBar(isCommunity: _isCommunity, controller: _tabController),
       body: TabBarView(
         controller: _tabController,
         children: [
@@ -69,6 +76,15 @@ class _FeedScreenState extends ConsumerState<FeedScreen> with SingleTickerProvid
             onLoadMore: () => controller.loadMoreLatestFeed(),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+        onPressed: () {
+          _showCreatePostBottomSheet();
+        },
+        backgroundColor: Color(0xFFE56C8C), // Màu hồng giống hình
+        elevation: 1,
+        child: Icon(Icons.edit, color: Colors.white, size: 28),
       ),
     );
   }

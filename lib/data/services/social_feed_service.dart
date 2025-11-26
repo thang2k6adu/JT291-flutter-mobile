@@ -4,6 +4,7 @@ import 'package:jt291_flutter_mobile/data/models/social/hot_topic_model.dart';
 import 'package:jt291_flutter_mobile/data/mocks/social_feed_mock.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
+import 'dart:convert';
 
 /// Service để lấy social feed data
 /// Hiện tại dùng mock data, sau này sẽ connect với API thực
@@ -56,35 +57,44 @@ class SocialFeedService {
     required int limit,
     DateTime? since,
   }) async {
-    print(
-      'SocialFeedService.getCommunityFeed: page=$page, limit=$limit, since=$since',
-    );
+    try {
+      print(
+        'SocialFeedService.getCommunityFeed: page=$page, limit=$limit, since=$since',
+      );
 
-    final response = await _apiService.get(
-      '/community/posts',
-      queryParameters: {'page': page, 'limit': limit},
-    );
-    final apiResponse = ApiResponse.fromJson(
-      response,
-      (data) => PaginatedData.fromJson(
-        data as Map<String, dynamic>,
-        (item) => PostModel.fromJson(item as Map<String, dynamic>),
-        dataKey: 'items',
-        metaKey: 'meta',
-      ),
-    );
+      final response = await _apiService.get(
+        '/community/posts',
+        queryParameters: {'page': page, 'limit': limit},
+      );
 
-    print('SocialFeedService.getCommunityFeed: apiResponse=$apiResponse');
+      print("RAW RESPONSE = ${jsonEncode(response)}");
+      print("RAW RESPONSE DATA = ${jsonEncode(response['data']['meta'])}");
 
-    return ApiResponse.fromJson(
-      response,
-      (data) => PaginatedData.fromJson(
-        data as Map<String, dynamic>,
-        (item) => PostModel.fromJson(item as Map<String, dynamic>),
-        dataKey: 'items',
-        metaKey: 'meta',
-      ),
-    );
+      final apiResponse = ApiResponse.fromJson(
+        response,
+        (data) => PaginatedData.fromJson(
+          data as Map<String, dynamic>,
+          (item) => PostModel.fromJson(item as Map<String, dynamic>),
+          dataKey: 'items',
+          metaKey: 'meta',
+        ),
+      );
+
+      print('SocialFeedService.getCommunityFeed: apiResponse=$apiResponse');
+
+      return ApiResponse.fromJson(
+        response,
+        (data) => PaginatedData.fromJson(
+          data as Map<String, dynamic>,
+          (item) => PostModel.fromJson(item as Map<String, dynamic>),
+          dataKey: 'items',
+          metaKey: 'meta',
+        ),
+      );
+    } catch (e) {
+      print("SocialFeedService.getCommunityFeed: error=${e.toString()}");
+      rethrow;
+    }
     // Simulate network delay
     // await Future.delayed(const Duration(milliseconds: 500));
 
@@ -107,11 +117,24 @@ class SocialFeedService {
       'SocialFeedService.getLatestFeed: page=$page, limit=$limit, since=$since',
     );
 
-    // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 500));
+    try {
+      final response = await _apiService.get('/latest/feed', queryParameters: {'page': page, 'limit': limit});
+      print("RAW RESPONSE = ${jsonEncode(response)}");
+      print("RAW RESPONSE DATA = ${jsonEncode(response['data']['meta'])}");
 
-    // Return mock data
-    return mockLatestFeedApiResponse(page: page, limit: limit, since: since);
+      return ApiResponse.fromJson(
+        response,
+        (data) => PaginatedData.fromJson(data as Map<String, dynamic>, (item) => PostModel.fromJson(item as Map<String, dynamic>), dataKey: 'items', metaKey: 'meta'),
+      );
+    } catch (e) {
+      print("SocialFeedService.getLatestFeed: error=${e.toString()}");
+      rethrow;
+    }
+    // // Simulate network delay
+    // await Future.delayed(const Duration(milliseconds: 500));
+
+    // // Return mock data
+    // return mockLatestFeedApiResponse(page: page, limit: limit, since: since);
   }
 
   /// GET /api/feed/hot-topics

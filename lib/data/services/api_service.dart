@@ -87,7 +87,7 @@ class ApiService {
       final refreshDio = Dio(BaseOptions(baseUrl: ApiConstants.baseUrl));
 
       final response = await refreshDio.post(
-        '/v1/auth/refresh',
+        '/auth/refresh',
         data: {'refreshToken': refreshToken},
       );
 
@@ -177,6 +177,7 @@ class ApiService {
       if (e.response != null) {
         throw Exception(e.response?.data['message']);
       } else {
+        print("Failed to call API: ${e.toString()}");
         throw Exception("Failed to call API");
       }
     }

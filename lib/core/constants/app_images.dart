@@ -14,4 +14,6 @@ class AppImages {
   static const String giftBottomSheetBg =
       'lib/assets/images/background/gift_bottom_sheet_bg.png';
   static const String giftBg = 'lib/assets/images/background/gift_bg.png';
+
+  static const String defaultAvatar = 'lib/assets/images/background/gift_bg.png';
 }

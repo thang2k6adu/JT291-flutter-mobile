@@ -39,4 +39,5 @@ class RouteConstants {
   static const String channelMessagesDetail = "/channels/messages/details";
 
   static const String feed = "/feed";
+  static const String addHastag = "/add-hastag";
 }

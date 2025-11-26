@@ -10,6 +10,7 @@ import 'wallet_routes.dart';
 import 'search_routes.dart';
 import '../data/models/users/user_model.dart';
 import '../core/constants/route_constants.dart';
+import 'social_router.dart';
 
 class RouterRefreshNotifier extends ChangeNotifier {
   void refresh() => notifyListeners();
@@ -36,6 +37,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ...profileRoutes,
           ...walletRoutes,
           ...searchRoutes,
+          ...socialRoutes,
         ],
       ),
     ],
