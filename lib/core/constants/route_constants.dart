@@ -43,4 +43,5 @@ class RouteConstants {
   static const String postDetail = "/post/:postId";
   static const String commentReplies = "/post/:postId/comment/:commentId/replies";
   static const String postLikes = "/post/:postId/likes";
+  static const String notifications = "/notifications";
 }

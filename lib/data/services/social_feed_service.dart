@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 import 'package:jt291_flutter_mobile/data/models/social/hashtag_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/hot_topic_model.dart';
+import 'package:jt291_flutter_mobile/data/models/social/notification_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_like_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_media_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
@@ -294,6 +295,63 @@ class SocialFeedService {
       );
     } catch (e) {
       print("SocialFeedService.searchHashtags: error=${e.toString()}");
+      rethrow;
+    }
+  }
+
+  /// GET /notifications
+  /// Get list of notifications with pagination
+  Future<ApiResponse<PaginatedData<NotificationModel>>> getNotifications({
+    int page = 1,
+    int limit = 20,
+    NotificationType? type,
+    bool? unreadOnly,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{
+        'page': page,
+        'limit': limit,
+      };
+      if (type != null) {
+        queryParams['type'] = type.name;
+      }
+      if (unreadOnly != null) {
+        queryParams['unread_only'] = unreadOnly;
+      }
+
+      final response = await _apiService.get(
+        '/notifications',
+        queryParameters: queryParams,
+      );
+
+      return ApiResponse.fromJson(
+        response,
+        (data) => PaginatedData.fromJson(
+          data as Map<String, dynamic>,
+          (item) => NotificationModel.fromJson(item as Map<String, dynamic>),
+          dataKey: 'items',
+          metaKey: 'meta',
+        ),
+      );
+    } catch (e) {
+      print("SocialFeedService.getNotifications: error=${e.toString()}");
+      rethrow;
+    }
+  }
+
+  /// PATCH /notifications/{id}/read
+  /// Mark a notification as read
+  Future<ApiResponse<Map<String, dynamic>>> markNotificationAsRead(String notificationId) async {
+    try {
+      final response = await _apiService.patch(
+        '/notifications/$notificationId/read',
+      );
+      return ApiResponse.fromJson(
+        response,
+        (data) => data as Map<String, dynamic>,
+      );
+    } catch (e) {
+      print("SocialFeedService.markNotificationAsRead: error=${e.toString()}");
       rethrow;
     }
   }

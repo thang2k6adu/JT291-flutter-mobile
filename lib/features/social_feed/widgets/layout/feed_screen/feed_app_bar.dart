@@ -76,6 +76,9 @@ class FeedAppBar extends StatelessWidget implements PreferredSizeWidget {
                 iconSize: 20,
                 backgroundColor: Colors.white,
                 iconColor: Colors.black,
+                onTap: () {
+                  context.push(RouteConstants.notifications);
+                },
               ),
               SizedBox(width: 15),
               CircleIconWidget(

@@ -4,6 +4,7 @@ import '../../features/social_feed/screens/add_hastag.dart';
 import '../../features/social_feed/screens/post_detail_screen.dart';
 import '../../features/social_feed/screens/comment_replies_screen.dart';
 import '../../features/social_feed/screens/post_likes_screen.dart';
+import '../../features/social_feed/screens/notification_screen.dart';
 import '../core/core.dart';
 import '../../data/mocks/social_feed_mock.dart' as mock;
 import '../../data/models/social/comment_model.dart';
@@ -60,5 +61,9 @@ final socialRoutes = <GoRoute>[
       final postId = state.pathParameters['postId']!;
       return PostLikesScreen(postId: postId);
     },
+  ),
+  GoRoute(
+    path: RouteConstants.notifications,
+    builder: (context, state) => const NotificationScreen(),
   ),
 ];
