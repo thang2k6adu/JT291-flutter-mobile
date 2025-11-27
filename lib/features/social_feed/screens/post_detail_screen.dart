@@ -229,9 +229,14 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
             'Comments',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
-          Text(
-            'View activity >',
-            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+          GestureDetector(
+            onTap: () {
+              context.push('/post/${widget.postId}/likes');
+            },
+            child: Text(
+              'View activity >',
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            ),
           ),
         ],
       ),

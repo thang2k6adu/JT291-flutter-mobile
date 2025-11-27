@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
 import 'package:jt291_flutter_mobile/data/models/social/hot_topic_model.dart';
+import 'package:jt291_flutter_mobile/data/models/social/post_like_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_media_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/report_reason_model.dart';
@@ -134,6 +135,74 @@ class SocialFeedService {
       );
     } catch (e) {
       print("SocialFeedService.getPostById: error=${e.toString()}");
+      rethrow;
+    }
+  }
+
+  /// GET /posts/{postId}/likes
+  /// Get list of likes for a post
+  Future<ApiResponse<PaginatedData<PostLikeModel>>> getPostLikes({
+    required String postId,
+    int page = 1,
+    int limit = 20,
+    String? search,
+    String? sort,
+    DateTime? since,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{
+        'page': page,
+        'limit': limit,
+      };
+      
+      if (search != null && search.isNotEmpty) {
+        queryParams['search'] = search;
+      }
+      
+      if (sort != null && sort.isNotEmpty) {
+        queryParams['sort'] = sort;
+      }
+      
+      if (since != null) {
+        queryParams['since'] = since.toIso8601String();
+      }
+
+      final response = await _apiService.get(
+        '/posts/$postId/likes',
+        queryParameters: queryParams,
+      );
+
+      return ApiResponse.fromJson(
+        response,
+        (data) {
+          // Handle paginated response: { items: [...], meta: {...} }
+          if (data is Map<String, dynamic>) {
+            if (data.containsKey('items')) {
+              // Paginated response
+              return PaginatedData.fromJson(
+                data,
+                (item) => PostLikeModel.fromJson(item as Map<String, dynamic>),
+                dataKey: 'items',
+                metaKey: 'meta',
+              );
+            }
+          }
+          
+          // Handle direct list response
+          if (data is List<dynamic>) {
+            return PaginatedData(
+              items: data
+                  .map((item) => PostLikeModel.fromJson(item as Map<String, dynamic>))
+                  .toList(),
+              meta: PaginationMeta(),
+            );
+          }
+          
+          throw Exception('Invalid response data format: expected Map or List but got ${data.runtimeType}');
+        },
+      );
+    } catch (e) {
+      print("SocialFeedService.getPostLikes: error=${e.toString()}");
       rethrow;
     }
   }
