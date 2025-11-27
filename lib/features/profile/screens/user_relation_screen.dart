@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/ui/app_search_field.dart';
+import 'package:jt291_flutter_mobile/core/mixins/multi_scroll_pagination_helper.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_relation_appbar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_list_section.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_relation_tabbar.dart';
@@ -34,45 +35,74 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
   final ScrollController followingScrollController = ScrollController();
   final ScrollController followerScrollController = ScrollController();
   final ScrollController friendScrollController = ScrollController();
+  
+  late final MultiScrollPaginationHelper _paginationHelper;
 
   @override
   void initState() {
     super.initState();
-    _setupScrollListeners();
+    
+    _paginationHelper = MultiScrollPaginationHelper(
+      onLoadMore: (controllerId) async {
+        switch (controllerId) {
+          case 'following':
+            await ref.read(followingListProvider.notifier).loadMore();
+            break;
+          case 'followers':
+            await ref.read(followerListProvider.notifier).loadMore();
+            break;
+          case 'friends':
+            await ref.read(friendListProvider.notifier).loadMore();
+            break;
+        }
+      },
+      hasNext: (controllerId) {
+        switch (controllerId) {
+          case 'following':
+            return ref.read(followingListProvider.notifier).hasNext;
+          case 'followers':
+            return ref.read(followerListProvider.notifier).hasNext;
+          case 'friends':
+            return ref.read(friendListProvider.notifier).hasNext;
+          default:
+            return false;
+        }
+      },
+      isLoadingMore: (controllerId) {
+        switch (controllerId) {
+          case 'following':
+            return ref.read(followingListProvider.notifier).isLoadingMore;
+          case 'followers':
+            return ref.read(followerListProvider.notifier).isLoadingMore;
+          case 'friends':
+            return ref.read(friendListProvider.notifier).isLoadingMore;
+          default:
+            return false;
+        }
+      },
+    );
+    
+    _paginationHelper.setupController('following', followingScrollController);
+    _paginationHelper.setupController('followers', followerScrollController);
+    _paginationHelper.setupController('friends', friendScrollController);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(followingListProvider.notifier).fetchData(reset: true);
-      ref.read(followerListProvider.notifier).fetchData(reset: true);
-      ref.read(friendListProvider.notifier).fetchData(reset: true);
-    });
-  }
-
-  void _setupScrollListeners() {
-    followingScrollController.addListener(() {
-      if (followingScrollController.position.pixels >=
-          followingScrollController.position.maxScrollExtent - 200) {
-        ref.read(followingListProvider.notifier).loadMore();
-      }
-    });
-
-    followerScrollController.addListener(() {
-      if (followerScrollController.position.pixels >=
-          followerScrollController.position.maxScrollExtent - 200) {
-        ref.read(followerListProvider.notifier).loadMore();
-      }
-    });
-
-    friendScrollController.addListener(() {
-      if (friendScrollController.position.pixels >=
-          friendScrollController.position.maxScrollExtent - 200) {
-        ref.read(friendListProvider.notifier).loadMore();
-      }
+      ref.read(followingListProvider.notifier).fetchData(reset: true).then((_) {
+        _paginationHelper.checkLoadMoreIfListNotFull('following');
+      });
+      ref.read(followerListProvider.notifier).fetchData(reset: true).then((_) {
+        _paginationHelper.checkLoadMoreIfListNotFull('followers');
+      });
+      ref.read(friendListProvider.notifier).fetchData(reset: true).then((_) {
+        _paginationHelper.checkLoadMoreIfListNotFull('friends');
+      });
     });
   }
 
   @override
   void dispose() {
     searchController.dispose();
+    _paginationHelper.dispose();
     followingScrollController.dispose();
     followerScrollController.dispose();
     friendScrollController.dispose();
@@ -190,7 +220,10 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
                     data: (userIds) => buildFilteredUserList(
                       userIds: userIds,
                       scrollController: followingScrollController,
-                      onRefresh: followingNotifier.refresh,
+                      onRefresh: () async {
+                        await followingNotifier.refresh();
+                        _paginationHelper.checkLoadMoreIfListNotFull('following');
+                      },
                       isLoading: followingNotifier.isLoadingMore,
                       searchQuery: searchQuery,
                       convertFn: (user) => UserRelationItem.fromFollowingModel(user),
@@ -212,7 +245,10 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
                       title: UserTab.followers.name.capitalize(),
                       onPressed: _handleUserButtonPressed,
                       scrollController: followerScrollController,
-                      onRefresh: followerNotifier.refresh,
+                      onRefresh: () async {
+                        await followerNotifier.refresh();
+                        _paginationHelper.checkLoadMoreIfListNotFull('followers');
+                      },
                       isLoading: followerNotifier.isLoadingMore,
                     ),
                     loading: () =>
@@ -230,7 +266,10 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
                       title: UserTab.friends.name.capitalize(),
                       onPressed: _handleUserButtonPressed,
                       scrollController: friendScrollController,
-                      onRefresh: friendNotifier.refresh,
+                      onRefresh: () async {
+                        await friendNotifier.refresh();
+                        _paginationHelper.checkLoadMoreIfListNotFull('friends');
+                      },
                       isLoading: friendNotifier.isLoadingMore,
                     ),
                     loading: () =>

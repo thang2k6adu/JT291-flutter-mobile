@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jt291_flutter_mobile/core/mixins/scroll_pagination_mixin.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_model.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/widgets/ui/post_card/post_card.dart';
 
@@ -10,6 +11,8 @@ class FeedContentList extends StatefulWidget {
   final Function(String, BuildContext)? onLikeTap;
   final Function(String, BuildContext)? onCommentTap;
   final Function(String, BuildContext)? onShareTap;
+  final bool Function()? hasNext;
+  final bool Function()? isLoadingMore;
 
   const FeedContentList({
     super.key,
@@ -19,34 +22,24 @@ class FeedContentList extends StatefulWidget {
     this.onLikeTap,
     this.onCommentTap,
     this.onShareTap,
+    this.hasNext,
+    this.isLoadingMore,
   });
 
   @override
   State<FeedContentList> createState() => _FeedContentListState();
 }
 
-class _FeedContentListState extends State<FeedContentList> {
-  final ScrollController _scrollController = ScrollController();
+class _FeedContentListState extends State<FeedContentList>
+    with ScrollPaginationMixin {
+  @override
+  Future<void> Function() get onLoadMore => widget.onLoadMore;
 
   @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
+  bool Function() get hasNext => widget.hasNext ?? super.hasNext;
 
   @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
-      widget.onLoadMore();
-    }
-  }
+  bool Function() get isLoadingMore => widget.isLoadingMore ?? super.isLoadingMore;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +47,7 @@ class _FeedContentListState extends State<FeedContentList> {
       onRefresh: widget.onRefresh,
       color: const Color(0xFFFF69B4),
       child: ListView.builder(
-        controller: _scrollController,
+        controller: scrollController,
         itemCount: widget.posts.length,
         physics: const AlwaysScrollableScrollPhysics(),
         itemBuilder: (context, index) {

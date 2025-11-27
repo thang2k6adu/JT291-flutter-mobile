@@ -6,6 +6,7 @@ import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
 import 'package:jt291_flutter_mobile/components/ui/app_search_field.dart';
 import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
+import 'package:jt291_flutter_mobile/core/mixins/scroll_pagination_mixin.dart';
 import 'package:jt291_flutter_mobile/data/providers/search/search_user_provider.dart';
 import 'package:jt291_flutter_mobile/data/providers/relationship/social_connection_manager_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/controllers/search_user_controller.dart';
@@ -20,41 +21,30 @@ class SearchUserScreen extends ConsumerStatefulWidget {
   ConsumerState<SearchUserScreen> createState() => _SearchUserScreenState();
 }
 
-class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
+class _SearchUserScreenState extends ConsumerState<SearchUserScreen>
+    with ScrollPaginationMixin {
   final TextEditingController _searchController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
   Timer? _debounce;
   String _currentQuery = '';
 
   @override
+  Future<void> Function() get onLoadMore => () async {
+    await ref.read(searchUserProvider.notifier).loadMore();
+  };
+
+  @override
+  bool Function() get hasNext => () => ref.read(searchUserProvider.notifier).hasNext;
+
+  @override
+  bool Function() get isLoadingMore => () => ref.read(searchUserProvider.notifier).isLoadingMore;
+
+  @override
   void initState() {
     super.initState();
-    _setupScrollListener();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(searchUserProvider.notifier).fetchData(reset: true).then((_) {
-        _checkLoadMoreIfListNotFull();
+        checkLoadMoreIfListNotFull();
       });
-    });
-  }
-
-  void _setupScrollListener() {
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 200) {
-        ref.read(searchUserProvider.notifier).loadMore();
-      }
-    });
-  }
-
-  void _checkLoadMoreIfListNotFull() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients &&
-          _scrollController.position.maxScrollExtent <=
-              _scrollController.position.viewportDimension &&
-          ref.read(searchUserProvider.notifier).hasNext) {
-        ref.read(searchUserProvider.notifier).loadMore();
-      }
     });
   }
 
@@ -71,7 +61,7 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
             .read(searchUserProvider.notifier)
             .fetchData(reset: true, search: query);
 
-        _checkLoadMoreIfListNotFull();
+        checkLoadMoreIfListNotFull();
       }
     });
   }
@@ -104,7 +94,6 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
   @override
   void dispose() {
     _searchController.dispose();
-    _scrollController.dispose();
     _debounce?.cancel();
     super.dispose();
   }
@@ -163,10 +152,10 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen> {
                 return RefreshIndicator(
                   onRefresh: () async {
                     await searchNotifier.refresh();
-                    _checkLoadMoreIfListNotFull();
+                    checkLoadMoreIfListNotFull();
                   },
                   child: ListView.builder(
-                    controller: _scrollController,
+                    controller: scrollController,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     itemCount:
                         users.length + (searchNotifier.isLoadingMore ? 1 : 0),

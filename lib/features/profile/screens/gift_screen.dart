@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
+import 'package:jt291_flutter_mobile/core/mixins/multi_scroll_pagination_helper.dart';
 import 'package:jt291_flutter_mobile/data/models/gift/gift_transaction_model.dart';
 import 'package:jt291_flutter_mobile/data/providers/gift/gift_wall_provider.dart';
 import 'package:jt291_flutter_mobile/data/providers/gift/recent_gifts_provider.dart';
@@ -28,75 +29,65 @@ class _GiftScreenState extends ConsumerState<GiftScreen>
   late TabController _tabController;
   final ScrollController _giftWallScrollController = ScrollController();
   final ScrollController _recentGiftsScrollController = ScrollController();
+  
+  late final MultiScrollPaginationHelper _paginationHelper;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _setupScrollListeners();
+    
+    _paginationHelper = MultiScrollPaginationHelper(
+      onLoadMore: (controllerId) async {
+        switch (controllerId) {
+          case 'giftWall':
+            await ref.read(giftWallControllerProvider.notifier).loadMore();
+            break;
+          case 'recentGifts':
+            await ref.read(recentGiftsControllerProvider.notifier).loadMore();
+            break;
+        }
+      },
+      hasNext: (controllerId) {
+        switch (controllerId) {
+          case 'giftWall':
+            return ref.read(myGiftWallProvider.notifier).hasNext;
+          case 'recentGifts':
+            return ref.read(myRecentGiftsProvider.notifier).hasNext;
+          default:
+            return false;
+        }
+      },
+      isLoadingMore: (controllerId) {
+        switch (controllerId) {
+          case 'giftWall':
+            return ref.read(myGiftWallProvider.notifier).isLoadingMore;
+          case 'recentGifts':
+            return ref.read(myRecentGiftsProvider.notifier).isLoadingMore;
+          default:
+            return false;
+        }
+      },
+    );
+    
+    _paginationHelper.setupController('giftWall', _giftWallScrollController);
+    _paginationHelper.setupController('recentGifts', _recentGiftsScrollController);
 
     // Load initial data và check if need load more
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(giftWallControllerProvider.notifier).refresh();
-      ref.read(recentGiftsControllerProvider.notifier).refresh();
-      _checkLoadMoreIfListNotFull();
-      _checkRecentGiftsLoadMore();
-    });
-  }
-
-  void _setupScrollListeners() {
-    // Gift Wall tab scroll listener
-    _giftWallScrollController.addListener(() {
-      if (_giftWallScrollController.position.pixels >=
-          _giftWallScrollController.position.maxScrollExtent - 200) {
-        final controller = ref.read(giftWallControllerProvider.notifier);
-        controller.loadMore();
-      }
-    });
-
-    // Recent Gifts tab scroll listener
-    _recentGiftsScrollController.addListener(() {
-      if (_recentGiftsScrollController.position.pixels >=
-          _recentGiftsScrollController.position.maxScrollExtent - 200) {
-        final controller = ref.read(recentGiftsControllerProvider.notifier);
-        controller.loadMore();
-      }
-    });
-  }
-
-  void _checkLoadMoreIfListNotFull() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_giftWallScrollController.hasClients &&
-          _giftWallScrollController.position.maxScrollExtent <=
-              _giftWallScrollController.position.viewportDimension) {
-        final notifier = ref.read(myGiftWallProvider.notifier);
-        if (notifier.hasNext) {
-          ref.read(giftWallControllerProvider.notifier).loadMore().then((_) {
-            _checkLoadMoreIfListNotFull();
-          });
-        }
-      }
-    });
-  }
-
-  void _checkRecentGiftsLoadMore() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_recentGiftsScrollController.hasClients &&
-          _recentGiftsScrollController.position.maxScrollExtent <=
-              _recentGiftsScrollController.position.viewportDimension) {
-        final notifier = ref.read(myRecentGiftsProvider.notifier);
-        if (notifier.hasNext) {
-          ref.read(recentGiftsControllerProvider.notifier).loadMore().then((_) {
-            _checkRecentGiftsLoadMore();
-          });
-        }
-      }
+      ref.read(giftWallControllerProvider.notifier).refresh().then((_) {
+        _paginationHelper.checkLoadMoreIfListNotFull('giftWall');
+      });
+      ref.read(recentGiftsControllerProvider.notifier).refresh().then((_) {
+        _paginationHelper.checkLoadMoreIfListNotFull('recentGifts');
+      });
     });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _paginationHelper.dispose();
     _giftWallScrollController.dispose();
     _recentGiftsScrollController.dispose();
     super.dispose();
@@ -143,7 +134,7 @@ class _GiftScreenState extends ConsumerState<GiftScreen>
                       children: [
                         GiftWallTabWidget(
                           scrollController: _giftWallScrollController,
-                          onCheckLoadMore: _checkLoadMoreIfListNotFull,
+                          onCheckLoadMore: () => _paginationHelper.checkLoadMoreIfListNotFull('giftWall'),
                           buildGiftGrid: (gifts, notifier) =>
                               GiftWallGridWidget(
                                 gifts: gifts,
@@ -153,7 +144,7 @@ class _GiftScreenState extends ConsumerState<GiftScreen>
                         ),
                         RecentGiftsTabWidget(
                           scrollController: _recentGiftsScrollController,
-                          onCheckLoadMore: _checkRecentGiftsLoadMore,
+                          onCheckLoadMore: () => _paginationHelper.checkLoadMoreIfListNotFull('recentGifts'),
                           buildRecentGiftsList: (transactions, notifier) =>
                               RecentGiftsListWidget(
                                 transactions:

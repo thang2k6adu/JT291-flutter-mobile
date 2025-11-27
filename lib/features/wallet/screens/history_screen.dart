@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
+import 'package:jt291_flutter_mobile/core/mixins/scroll_pagination_mixin.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/transaction_model.dart';
 import 'package:jt291_flutter_mobile/data/providers/wallet/transaction_history_provider.dart';
 import 'package:intl/intl.dart';
@@ -13,53 +14,27 @@ class HistoryScreen extends ConsumerStatefulWidget {
   ConsumerState<HistoryScreen> createState() => _HistoryScreenState();
 }
 
-class _HistoryScreenState extends ConsumerState<HistoryScreen> {
-  final ScrollController _scrollController = ScrollController();
+class _HistoryScreenState extends ConsumerState<HistoryScreen>
+    with ScrollPaginationMixin {
+  @override
+  Future<void> Function() get onLoadMore => () async {
+    await ref.read(transactionHistoryProvider.notifier).loadMore();
+  };
+
+  @override
+  bool Function() get hasNext => () => ref.read(transactionHistoryProvider.notifier).hasNext;
+
+  @override
+  bool Function() get isLoadingMore => () => ref.read(transactionHistoryProvider.notifier).isLoadingMore;
 
   @override
   void initState() {
     super.initState();
-    _setupScrollListener();
-
     // Load initial data and check if need to load more
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(transactionHistoryProvider.notifier).fetchData(reset: true).then((_) {
-        _checkLoadMoreIfListNotFull();
+        checkLoadMoreIfListNotFull();
       });
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _setupScrollListener() {
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 200) {
-        // Load more when near bottom (200px before end)
-        final notifier = ref.read(transactionHistoryProvider.notifier);
-        notifier.loadMore();
-      }
-    });
-  }
-
-  void _checkLoadMoreIfListNotFull() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients &&
-          _scrollController.position.maxScrollExtent <=
-              _scrollController.position.viewportDimension) {
-        // If list doesn't fill the screen, load more
-        final notifier = ref.read(transactionHistoryProvider.notifier);
-        if (notifier.hasNext) {
-          notifier.loadMore().then((_) {
-            // After loading, check again if need more
-            _checkLoadMoreIfListNotFull();
-          });
-        }
-      }
     });
   }
 
@@ -87,10 +62,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     return RefreshIndicator(
       onRefresh: () async {
         await ref.read(transactionHistoryProvider.notifier).refresh();
-        _checkLoadMoreIfListNotFull();
+        checkLoadMoreIfListNotFull();
       },
       child: ListView(
-        controller: _scrollController,
+        controller: scrollController,
         children: [
           const SizedBox(height: 200),
           Center(
@@ -117,7 +92,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
         await ref.read(transactionHistoryProvider.notifier).refresh();
       },
       child: ListView(
-        controller: _scrollController,
+        controller: scrollController,
         children: [
           const SizedBox(height: 200),
           Center(
@@ -157,10 +132,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
     return RefreshIndicator(
       onRefresh: () async {
         await ref.read(transactionHistoryProvider.notifier).refresh();
-        _checkLoadMoreIfListNotFull();
+        checkLoadMoreIfListNotFull();
       },
       child: ListView.separated(
-        controller: _scrollController,
+        controller: scrollController,
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: transactions.length + (notifier.isLoadingMore ? 1 : 0),
         separatorBuilder: (context, index) {
