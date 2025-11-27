@@ -28,3 +28,19 @@ abstract class HashtagSearchResponseModel with _$HashtagSearchResponseModel {
       _$HashtagSearchResponseModelFromJson(json);
 }
 
+/// Hashtag detail model for hashtag screen
+@freezed
+abstract class HashtagDetailModel with _$HashtagDetailModel {
+  const factory HashtagDetailModel({
+    required String id,
+    required String name,
+    String? thumbnail,
+    @JsonKey(name: 'post_count') @Default(0) int postCount,
+    @JsonKey(name: 'view_count') @Default(0) int viewCount,
+    @JsonKey(name: 'is_following') @Default(false) bool isFollowing,
+  }) = _HashtagDetailModel;
+
+  factory HashtagDetailModel.fromJson(Map<String, dynamic> json) =>
+      _$HashtagDetailModelFromJson(json);
+}
+

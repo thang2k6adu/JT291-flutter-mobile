@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jt291_flutter_mobile/components/layout/CustomAppBar.dart';
 import 'package:jt291_flutter_mobile/components/ui/app_search_field.dart';
 import 'package:jt291_flutter_mobile/core/mixins/search_with_debounce_mixin.dart';
 import 'package:jt291_flutter_mobile/data/services/social_feed_service.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/providers/hashtag_search_provider.dart';
 
+/// Mode for AddHashtagScreen
+enum AddHashtagMode {
+  browse, // Browse hashtags (from FeedScreen) - navigate to HashtagScreen on tap
+  select, // Select hashtag for post (from CreatePostBottomSheet) - return hashtag on tap
+}
+
 class AddHashtagScreen extends ConsumerStatefulWidget {
-  const AddHashtagScreen({super.key});
+  final AddHashtagMode mode;
+
+  const AddHashtagScreen({
+    super.key,
+    this.mode = AddHashtagMode.select, // Default to select mode for backward compatibility
+  });
 
   @override
   ConsumerState<AddHashtagScreen> createState() => _AddHashtagScreenState();
@@ -93,7 +105,10 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen>
           ),
         ),
         const SizedBox(height: 16),
-        ..._hotHashtags.map((hashtag) => _buildHashtagItem(hashtag)),
+        ..._hotHashtags.map((hashtag) => _buildHashtagItem(
+          hashtag,
+          hashtagId: null, // Hot hashtags don't have ID, will need to search
+        )),
       ],
     );
   }
@@ -126,12 +141,15 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen>
         return ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            // Option to create new hashtag (chỉ hiện khi canCreate = true)
-            if (canCreate) _buildCreateNewHashtagItem(currentQuery),
-            if (canCreate) const SizedBox(height: 8),
+            // Option to create new hashtag (chỉ hiện khi canCreate = true và ở select mode)
+            if (canCreate && widget.mode == AddHashtagMode.select) _buildCreateNewHashtagItem(currentQuery),
+            if (canCreate && widget.mode == AddHashtagMode.select) const SizedBox(height: 8),
 
             // Search results from API
-            ...hashtags.map((hashtag) => _buildHashtagItem(hashtag.name)),
+            ...hashtags.map((hashtag) => _buildHashtagItem(
+              hashtag.name,
+              hashtagId: hashtag.id,
+            )),
 
             // Show "no results" if nothing found
             if (hashtags.isEmpty && !canCreate)
@@ -271,12 +289,50 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen>
   }
 
   // Widget for hashtag item
-  Widget _buildHashtagItem(String hashtag) {
+  Widget _buildHashtagItem(String hashtag, {String? hashtagId}) {
     return InkWell(
-      onTap: () {
-        // Handle hashtag selection
-        print('Selected hashtag: $hashtag');
-        Navigator.pop(context, hashtag);
+      onTap: () async {
+        if (widget.mode == AddHashtagMode.browse) {
+          // Navigate to HashtagScreen
+          if (hashtagId != null && hashtagId.isNotEmpty) {
+            context.push('/hashtag/$hashtagId');
+          } else {
+            // If no ID (from hot hashtags list), search for hashtag to get ID
+            try {
+              final service = ref.read(socialFeedServiceProvider);
+              final searchResponse = await service.searchHashtags(hashtag.replaceFirst('#', ''));
+              
+              if (!searchResponse.error && 
+                  searchResponse.data != null && 
+                  searchResponse.data!.result.isNotEmpty) {
+                // Find matching hashtag by name
+                final matchingHashtag = searchResponse.data!.result.firstWhere(
+                  (h) => h.name.toLowerCase() == hashtag.replaceFirst('#', '').toLowerCase(),
+                  orElse: () => searchResponse.data!.result.first,
+                );
+                
+                if (matchingHashtag.id.isNotEmpty) {
+                  context.push('/hashtag/${matchingHashtag.id}');
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Could not find hashtag')),
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Hashtag not found')),
+                );
+              }
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error: ${e.toString()}')),
+              );
+            }
+          }
+        } else {
+          // Select mode: return hashtag to parent
+          Navigator.pop(context, hashtag);
+        }
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16.0),

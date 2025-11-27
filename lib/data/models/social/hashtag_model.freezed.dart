@@ -552,4 +552,282 @@ as bool,
 
 }
 
+
+/// @nodoc
+mixin _$HashtagDetailModel {
+
+ String get id; String get name; String? get thumbnail;@JsonKey(name: 'post_count') int get postCount;@JsonKey(name: 'view_count') int get viewCount;@JsonKey(name: 'is_following') bool get isFollowing;
+/// Create a copy of HashtagDetailModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$HashtagDetailModelCopyWith<HashtagDetailModel> get copyWith => _$HashtagDetailModelCopyWithImpl<HashtagDetailModel>(this as HashtagDetailModel, _$identity);
+
+  /// Serializes this HashtagDetailModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HashtagDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.postCount, postCount) || other.postCount == postCount)&&(identical(other.viewCount, viewCount) || other.viewCount == viewCount)&&(identical(other.isFollowing, isFollowing) || other.isFollowing == isFollowing));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,name,thumbnail,postCount,viewCount,isFollowing);
+
+@override
+String toString() {
+  return 'HashtagDetailModel(id: $id, name: $name, thumbnail: $thumbnail, postCount: $postCount, viewCount: $viewCount, isFollowing: $isFollowing)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $HashtagDetailModelCopyWith<$Res>  {
+  factory $HashtagDetailModelCopyWith(HashtagDetailModel value, $Res Function(HashtagDetailModel) _then) = _$HashtagDetailModelCopyWithImpl;
+@useResult
+$Res call({
+ String id, String name, String? thumbnail,@JsonKey(name: 'post_count') int postCount,@JsonKey(name: 'view_count') int viewCount,@JsonKey(name: 'is_following') bool isFollowing
+});
+
+
+
+
+}
+/// @nodoc
+class _$HashtagDetailModelCopyWithImpl<$Res>
+    implements $HashtagDetailModelCopyWith<$Res> {
+  _$HashtagDetailModelCopyWithImpl(this._self, this._then);
+
+  final HashtagDetailModel _self;
+  final $Res Function(HashtagDetailModel) _then;
+
+/// Create a copy of HashtagDetailModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? thumbnail = freezed,Object? postCount = null,Object? viewCount = null,Object? isFollowing = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,thumbnail: freezed == thumbnail ? _self.thumbnail : thumbnail // ignore: cast_nullable_to_non_nullable
+as String?,postCount: null == postCount ? _self.postCount : postCount // ignore: cast_nullable_to_non_nullable
+as int,viewCount: null == viewCount ? _self.viewCount : viewCount // ignore: cast_nullable_to_non_nullable
+as int,isFollowing: null == isFollowing ? _self.isFollowing : isFollowing // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [HashtagDetailModel].
+extension HashtagDetailModelPatterns on HashtagDetailModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _HashtagDetailModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _HashtagDetailModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _HashtagDetailModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _HashtagDetailModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _HashtagDetailModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _HashtagDetailModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String? thumbnail, @JsonKey(name: 'post_count')  int postCount, @JsonKey(name: 'view_count')  int viewCount, @JsonKey(name: 'is_following')  bool isFollowing)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _HashtagDetailModel() when $default != null:
+return $default(_that.id,_that.name,_that.thumbnail,_that.postCount,_that.viewCount,_that.isFollowing);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String? thumbnail, @JsonKey(name: 'post_count')  int postCount, @JsonKey(name: 'view_count')  int viewCount, @JsonKey(name: 'is_following')  bool isFollowing)  $default,) {final _that = this;
+switch (_that) {
+case _HashtagDetailModel():
+return $default(_that.id,_that.name,_that.thumbnail,_that.postCount,_that.viewCount,_that.isFollowing);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String? thumbnail, @JsonKey(name: 'post_count')  int postCount, @JsonKey(name: 'view_count')  int viewCount, @JsonKey(name: 'is_following')  bool isFollowing)?  $default,) {final _that = this;
+switch (_that) {
+case _HashtagDetailModel() when $default != null:
+return $default(_that.id,_that.name,_that.thumbnail,_that.postCount,_that.viewCount,_that.isFollowing);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _HashtagDetailModel implements HashtagDetailModel {
+  const _HashtagDetailModel({required this.id, required this.name, this.thumbnail, @JsonKey(name: 'post_count') this.postCount = 0, @JsonKey(name: 'view_count') this.viewCount = 0, @JsonKey(name: 'is_following') this.isFollowing = false});
+  factory _HashtagDetailModel.fromJson(Map<String, dynamic> json) => _$HashtagDetailModelFromJson(json);
+
+@override final  String id;
+@override final  String name;
+@override final  String? thumbnail;
+@override@JsonKey(name: 'post_count') final  int postCount;
+@override@JsonKey(name: 'view_count') final  int viewCount;
+@override@JsonKey(name: 'is_following') final  bool isFollowing;
+
+/// Create a copy of HashtagDetailModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$HashtagDetailModelCopyWith<_HashtagDetailModel> get copyWith => __$HashtagDetailModelCopyWithImpl<_HashtagDetailModel>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$HashtagDetailModelToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HashtagDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.postCount, postCount) || other.postCount == postCount)&&(identical(other.viewCount, viewCount) || other.viewCount == viewCount)&&(identical(other.isFollowing, isFollowing) || other.isFollowing == isFollowing));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,name,thumbnail,postCount,viewCount,isFollowing);
+
+@override
+String toString() {
+  return 'HashtagDetailModel(id: $id, name: $name, thumbnail: $thumbnail, postCount: $postCount, viewCount: $viewCount, isFollowing: $isFollowing)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$HashtagDetailModelCopyWith<$Res> implements $HashtagDetailModelCopyWith<$Res> {
+  factory _$HashtagDetailModelCopyWith(_HashtagDetailModel value, $Res Function(_HashtagDetailModel) _then) = __$HashtagDetailModelCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String name, String? thumbnail,@JsonKey(name: 'post_count') int postCount,@JsonKey(name: 'view_count') int viewCount,@JsonKey(name: 'is_following') bool isFollowing
+});
+
+
+
+
+}
+/// @nodoc
+class __$HashtagDetailModelCopyWithImpl<$Res>
+    implements _$HashtagDetailModelCopyWith<$Res> {
+  __$HashtagDetailModelCopyWithImpl(this._self, this._then);
+
+  final _HashtagDetailModel _self;
+  final $Res Function(_HashtagDetailModel) _then;
+
+/// Create a copy of HashtagDetailModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? thumbnail = freezed,Object? postCount = null,Object? viewCount = null,Object? isFollowing = null,}) {
+  return _then(_HashtagDetailModel(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,thumbnail: freezed == thumbnail ? _self.thumbnail : thumbnail // ignore: cast_nullable_to_non_nullable
+as String?,postCount: null == postCount ? _self.postCount : postCount // ignore: cast_nullable_to_non_nullable
+as int,viewCount: null == viewCount ? _self.viewCount : viewCount // ignore: cast_nullable_to_non_nullable
+as int,isFollowing: null == isFollowing ? _self.isFollowing : isFollowing // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
 // dart format on

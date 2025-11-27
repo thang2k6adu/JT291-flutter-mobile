@@ -5,6 +5,7 @@ import 'package:jt291_flutter_mobile/components/ui/circle_icon_widget.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/providers/providers.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
+import 'package:jt291_flutter_mobile/data/models/social/hot_topic_model.dart';
 
 class FeedAppBar extends StatelessWidget implements PreferredSizeWidget {
   const FeedAppBar({super.key, this.isCommunity = false, required this.controller});
@@ -88,7 +89,10 @@ class FeedAppBar extends StatelessWidget implements PreferredSizeWidget {
                 backgroundColor: Colors.white,
                 iconColor: Colors.black,
                 onTap: () {
-                  context.push(RouteConstants.addHastag);
+                  context.push(
+                    RouteConstants.addHastag,
+                    extra: {'mode': 'browse'}, // Pass mode as extra
+                  );
                 },
               ),
             ],
@@ -159,9 +163,8 @@ class HotTopicsSection extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final topic = topics[index];
                     return HotTopicCard(
-                      title: topic.hashtag,
+                      topic: topic,
                       postCount: _formatPostCount(topic.postCount),
-                      imageUrl: topic.thumbnailUrl ?? '',
                     );
                   },
                 ),
@@ -198,22 +201,21 @@ class HotTopicsSection extends ConsumerWidget {
 }
 
 class HotTopicCard extends StatelessWidget {
-  final String title;
+  final dynamic topic; // HotTopicModel
   final String postCount;
-  final String imageUrl;
 
   const HotTopicCard({
     super.key,
-    required this.title,
+    required this.topic,
     required this.postCount,
-    required this.imageUrl,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Handle topic tap
+        // Navigate to HashtagScreen
+        context.push('/hashtag/${topic.id}');
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(
@@ -227,9 +229,9 @@ class HotTopicCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: imageUrl.isNotEmpty
+              child: (topic.thumbnailUrl != null && topic.thumbnailUrl!.isNotEmpty)
                   ? Image.network(
-                      imageUrl,
+                      topic.thumbnailUrl!,
                       width: 50,
                       height: 50,
                       fit: BoxFit.cover,
@@ -256,7 +258,7 @@ class HotTopicCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    title,
+                    topic.hashtag,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,

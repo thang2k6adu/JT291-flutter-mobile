@@ -15,6 +15,49 @@ class SocialFeedService {
 
   SocialFeedService();
 
+  /// Sanitize post JSON to handle null values
+  Map<String, dynamic> _sanitizePostJson(Map<String, dynamic> json) {
+    final safeJson = Map<String, dynamic>.from(json);
+    
+    // Handle required fields - ensure they are not null
+    safeJson['id'] = safeJson['id'] as String? ?? 
+                     safeJson['id']?.toString() ?? 
+                     '';
+    safeJson['content'] = safeJson['content'] as String? ?? 
+                          safeJson['content']?.toString() ?? 
+                          '';
+    
+    // Handle created_at - ensure it's a valid string
+    if (safeJson['created_at'] == null) {
+      safeJson['created_at'] = DateTime.now().toIso8601String();
+    } else if (safeJson['created_at'] is! String) {
+      safeJson['created_at'] = safeJson['created_at'].toString();
+    }
+    
+    // Handle user object
+    if (safeJson['user'] is Map) {
+      final userMap = Map<String, dynamic>.from(safeJson['user'] as Map);
+      userMap['id'] = userMap['id'] as String? ?? 
+                      userMap['id']?.toString() ?? 
+                      '';
+      // Handle both 'nickname' and 'name' fields (API might use 'name')
+      userMap['nickname'] = userMap['nickname'] as String? ?? 
+                            userMap['name'] as String? ?? 
+                            userMap['nickname']?.toString() ??
+                            userMap['name']?.toString() ??
+                            '';
+      safeJson['user'] = userMap;
+    } else if (safeJson['user'] == null) {
+      // If user is null, create a minimal user object
+      safeJson['user'] = {
+        'id': '',
+        'nickname': '',
+      };
+    }
+    
+    return safeJson;
+  }
+
   /// GET /api/feed/friends
   /// Returns paginated feed from friends
   Future<ApiResponse<PaginatedData<PostModel>>> getFriendsFeed({
@@ -431,6 +474,78 @@ class SocialFeedService {
       );
     } catch (e) {
       print("SocialFeedService.createPost: error=${e.toString()}");
+      rethrow;
+    }
+  }
+
+  /// GET /hashtags/{hashtagId}
+  /// Get hashtag detail by ID
+  Future<ApiResponse<HashtagDetailModel>> getHashtagDetail(String hashtagId) async {
+    try {
+      final response = await _apiService.get('/hashtags/$hashtagId');
+      
+      return ApiResponse.fromJson(
+        response,
+        (data) => HashtagDetailModel.fromJson(data as Map<String, dynamic>),
+      );
+    } catch (e) {
+      print("SocialFeedService.getHashtagDetail: error=${e.toString()}");
+      rethrow;
+    }
+  }
+
+  /// GET /hashtags/{hashtagId}/posts
+  /// Get posts by hashtag ID with pagination
+  /// [sort] can be "popular" or "latest" (default: "latest")
+  Future<ApiResponse<PaginatedData<PostModel>>> getPostsByHashtag({
+    required String hashtagId,
+    required int page,
+    required int limit,
+    String sort = 'latest', // "popular" or "latest"
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{
+        'page': page,
+        'limit': limit,
+        'sort': sort,
+      };
+
+      final response = await _apiService.get(
+        '/hashtags/$hashtagId/posts',
+        queryParameters: queryParams,
+      );
+
+      return ApiResponse.fromJson(
+        response,
+        (data) => PaginatedData.fromJson(
+          data as Map<String, dynamic>,
+          (item) {
+            // Handle null values before parsing
+            final safeItem = _sanitizePostJson(item as Map<String, dynamic>);
+            return PostModel.fromJson(safeItem);
+          },
+          dataKey: 'items',
+          metaKey: 'meta',
+        ),
+      );
+    } catch (e) {
+      print("SocialFeedService.getPostsByHashtag: error=${e.toString()}");
+      rethrow;
+    }
+  }
+
+  /// POST /hashtags/{hashtagId}/follow
+  /// Follow or unfollow a hashtag
+  Future<ApiResponse<Map<String, dynamic>>> toggleFollowHashtag(String hashtagId) async {
+    try {
+      final response = await _apiService.post('/hashtags/$hashtagId/follow');
+      
+      return ApiResponse.fromJson(
+        response,
+        (data) => data as Map<String, dynamic>,
+      );
+    } catch (e) {
+      print("SocialFeedService.toggleFollowHashtag: error=${e.toString()}");
       rethrow;
     }
   }

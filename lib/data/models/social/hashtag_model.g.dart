@@ -29,3 +29,23 @@ Map<String, dynamic> _$HashtagSearchResponseModelToJson(
   'result': instance.result,
   'can_create': instance.canCreate,
 };
+
+_HashtagDetailModel _$HashtagDetailModelFromJson(Map<String, dynamic> json) =>
+    _HashtagDetailModel(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      thumbnail: json['thumbnail'] as String?,
+      postCount: (json['post_count'] as num?)?.toInt() ?? 0,
+      viewCount: (json['view_count'] as num?)?.toInt() ?? 0,
+      isFollowing: json['is_following'] as bool? ?? false,
+    );
+
+Map<String, dynamic> _$HashtagDetailModelToJson(_HashtagDetailModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'thumbnail': instance.thumbnail,
+      'post_count': instance.postCount,
+      'view_count': instance.viewCount,
+      'is_following': instance.isFollowing,
+    };

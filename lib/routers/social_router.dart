@@ -5,6 +5,7 @@ import '../../features/social_feed/screens/post_detail_screen.dart';
 import '../../features/social_feed/screens/comment_replies_screen.dart';
 import '../../features/social_feed/screens/post_likes_screen.dart';
 import '../../features/social_feed/screens/notification_screen.dart';
+import '../../features/social_feed/screens/hashtag_screen.dart';
 import '../core/core.dart';
 import '../../data/mocks/social_feed_mock.dart' as mock;
 import '../../data/models/social/comment_model.dart';
@@ -16,7 +17,15 @@ final socialRoutes = <GoRoute>[
   ),
   GoRoute(
     path: RouteConstants.addHastag,
-    builder: (context, state) => const AddHashtagScreen(),
+    builder: (context, state) {
+      // Get mode from extra, default to select mode
+      final extra = state.extra as Map<String, dynamic>?;
+      final modeString = extra?['mode'] as String?;
+      final mode = modeString == 'browse' 
+          ? AddHashtagMode.browse 
+          : AddHashtagMode.select;
+      return AddHashtagScreen(mode: mode);
+    },
   ),
   GoRoute(
     path: RouteConstants.postDetail,
@@ -65,5 +74,12 @@ final socialRoutes = <GoRoute>[
   GoRoute(
     path: RouteConstants.notifications,
     builder: (context, state) => const NotificationScreen(),
+  ),
+  GoRoute(
+    path: RouteConstants.hashtag,
+    builder: (context, state) {
+      final hashtagId = state.pathParameters['hashtagId']!;
+      return HashtagScreen(hashtagId: hashtagId);
+    },
   ),
 ];
