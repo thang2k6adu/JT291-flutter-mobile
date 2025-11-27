@@ -11,19 +11,16 @@ part of 'post_media_model.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
 mixin _$PostMediaModel {
 
- String get id; MediaType get type; String get url;@JsonKey(name: 'thumbnail_url') String? get thumbnailUrl; int? get width; int? get height; int? get duration;
+ String get id; MediaType get type; String get url; String? get thumbnailUrl; int? get width; int? get height; int? get duration;
 /// Create a copy of PostMediaModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $PostMediaModelCopyWith<PostMediaModel> get copyWith => _$PostMediaModelCopyWithImpl<PostMediaModel>(this as PostMediaModel, _$identity);
 
-  /// Serializes this PostMediaModel to a JSON map.
-  Map<String, dynamic> toJson();
 
 
 @override
@@ -31,7 +28,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is PostMediaModel&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.url, url) || other.url == url)&&(identical(other.thumbnailUrl, thumbnailUrl) || other.thumbnailUrl == thumbnailUrl)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.duration, duration) || other.duration == duration));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,id,type,url,thumbnailUrl,width,height,duration);
 
@@ -48,7 +45,7 @@ abstract mixin class $PostMediaModelCopyWith<$Res>  {
   factory $PostMediaModelCopyWith(PostMediaModel value, $Res Function(PostMediaModel) _then) = _$PostMediaModelCopyWithImpl;
 @useResult
 $Res call({
- String id, MediaType type, String url,@JsonKey(name: 'thumbnail_url') String? thumbnailUrl, int? width, int? height, int? duration
+ String id, MediaType type, String url, String? thumbnailUrl, int? width, int? height, int? duration
 });
 
 
@@ -159,7 +156,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  MediaType type,  String url, @JsonKey(name: 'thumbnail_url')  String? thumbnailUrl,  int? width,  int? height,  int? duration)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  MediaType type,  String url,  String? thumbnailUrl,  int? width,  int? height,  int? duration)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PostMediaModel() when $default != null:
 return $default(_that.id,_that.type,_that.url,_that.thumbnailUrl,_that.width,_that.height,_that.duration);case _:
@@ -180,7 +177,7 @@ return $default(_that.id,_that.type,_that.url,_that.thumbnailUrl,_that.width,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  MediaType type,  String url, @JsonKey(name: 'thumbnail_url')  String? thumbnailUrl,  int? width,  int? height,  int? duration)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  MediaType type,  String url,  String? thumbnailUrl,  int? width,  int? height,  int? duration)  $default,) {final _that = this;
 switch (_that) {
 case _PostMediaModel():
 return $default(_that.id,_that.type,_that.url,_that.thumbnailUrl,_that.width,_that.height,_that.duration);case _:
@@ -200,7 +197,7 @@ return $default(_that.id,_that.type,_that.url,_that.thumbnailUrl,_that.width,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  MediaType type,  String url, @JsonKey(name: 'thumbnail_url')  String? thumbnailUrl,  int? width,  int? height,  int? duration)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  MediaType type,  String url,  String? thumbnailUrl,  int? width,  int? height,  int? duration)?  $default,) {final _that = this;
 switch (_that) {
 case _PostMediaModel() when $default != null:
 return $default(_that.id,_that.type,_that.url,_that.thumbnailUrl,_that.width,_that.height,_that.duration);case _:
@@ -212,16 +209,16 @@ return $default(_that.id,_that.type,_that.url,_that.thumbnailUrl,_that.width,_th
 }
 
 /// @nodoc
-@JsonSerializable()
+
 
 class _PostMediaModel implements PostMediaModel {
-  const _PostMediaModel({required this.id, required this.type, required this.url, @JsonKey(name: 'thumbnail_url') this.thumbnailUrl, this.width, this.height, this.duration});
-  factory _PostMediaModel.fromJson(Map<String, dynamic> json) => _$PostMediaModelFromJson(json);
+  const _PostMediaModel({required this.id, required this.type, required this.url, this.thumbnailUrl, this.width, this.height, this.duration});
+  
 
 @override final  String id;
 @override final  MediaType type;
 @override final  String url;
-@override@JsonKey(name: 'thumbnail_url') final  String? thumbnailUrl;
+@override final  String? thumbnailUrl;
 @override final  int? width;
 @override final  int? height;
 @override final  int? duration;
@@ -232,17 +229,14 @@ class _PostMediaModel implements PostMediaModel {
 @pragma('vm:prefer-inline')
 _$PostMediaModelCopyWith<_PostMediaModel> get copyWith => __$PostMediaModelCopyWithImpl<_PostMediaModel>(this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$PostMediaModelToJson(this, );
-}
+
 
 @override
 bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostMediaModel&&(identical(other.id, id) || other.id == id)&&(identical(other.type, type) || other.type == type)&&(identical(other.url, url) || other.url == url)&&(identical(other.thumbnailUrl, thumbnailUrl) || other.thumbnailUrl == thumbnailUrl)&&(identical(other.width, width) || other.width == width)&&(identical(other.height, height) || other.height == height)&&(identical(other.duration, duration) || other.duration == duration));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,id,type,url,thumbnailUrl,width,height,duration);
 
@@ -259,7 +253,7 @@ abstract mixin class _$PostMediaModelCopyWith<$Res> implements $PostMediaModelCo
   factory _$PostMediaModelCopyWith(_PostMediaModel value, $Res Function(_PostMediaModel) _then) = __$PostMediaModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, MediaType type, String url,@JsonKey(name: 'thumbnail_url') String? thumbnailUrl, int? width, int? height, int? duration
+ String id, MediaType type, String url, String? thumbnailUrl, int? width, int? height, int? duration
 });
 
 

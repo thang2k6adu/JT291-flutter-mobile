@@ -14,11 +14,20 @@ import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/components/ui/svg-icon.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/providers/comment_provider.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/providers/post_detail_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/auth/auth_provider.dart';
+import 'package:jt291_flutter_mobile/data/services/comment_service.dart';
+import 'package:jt291_flutter_mobile/components/helper/image_helper.dart';
+import 'package:jt291_flutter_mobile/components/helper/video_helper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/audio_recorder_bottom_sheet.dart';
+import 'package:jt291_flutter_mobile/data/services/user_general_service.dart';
+import 'dart:io';
 
 class PostDetailScreen extends ConsumerStatefulWidget {
-  final PostModel post;
+  final String postId;
 
-  const PostDetailScreen({super.key, required this.post});
+  const PostDetailScreen({super.key, required this.postId});
 
   @override
   ConsumerState<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -26,21 +35,31 @@ class PostDetailScreen extends ConsumerStatefulWidget {
 
 class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController _replyController = TextEditingController();
+  final TextEditingController _commentController = TextEditingController();
+  final ImageHelper _imageHelper = ImageHelper();
+  final VideoHelper _videoHelper = VideoHelper();
+  
+  List<XFile> _selectedImages = [];
+  List<XFile> _selectedVideos = [];
+  List<Map<String, dynamic>> _selectedAudios = [];
+  bool _isPostingComment = false;
 
   @override
   void dispose() {
     _scrollController.dispose();
-    _replyController.dispose();
+    _commentController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final postAsync = ref.watch(postDetailProvider(widget.postId));
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarWithBack(title: ''),
-      body: Column(
+      body: postAsync.when(
+        data: (post) => Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
@@ -48,24 +67,42 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildPostHeader(),
-                  if (widget.post.content.isNotEmpty) _buildPostContent(),
-                  if (widget.post.media.isNotEmpty) _buildPostMedia(),
-                  _buildPostActions(),
+                    _buildPostHeader(post),
+                    if (post.content.isNotEmpty) _buildPostContent(post),
+                    if (post.media.isNotEmpty) _buildPostMedia(post),
+                    _buildPostActions(post),
                   _buildCommentsHeader(),
-                  _buildCommentsList(),
+                    _buildCommentsList(post.id),
                 ],
               ),
             ),
           ),
-          _buildReplyInput(),
+            _buildReplyInput(post),
         ],
+        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Failed to load post',
+                style: TextStyle(color: Colors.red[300]),
+              ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => ref.refresh(postDetailProvider(widget.postId)),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildPostHeader() {
-    final user = widget.post.user;
+  Widget _buildPostHeader(PostModel post) {
+    final user = post.user;
     final avatarImage = user.avatar != null && user.avatar!.isNotEmpty
         ? NetworkImage(user.avatar!)
         : AssetImage(AppImages.defaultAvatar) as ImageProvider;
@@ -92,7 +129,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      PostTimeFormatter.format(widget.post.createdAt),
+                      PostTimeFormatter.format(post.createdAt),
                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
                   ],
@@ -101,7 +138,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () => _showPostOptions(context),
+            onTap: () => _showPostOptions(context, post),
             child: Padding(
               padding: const EdgeInsets.all(4.0),
               child: Icon(Icons.more_horiz, color: Colors.grey[600], size: 24),
@@ -112,18 +149,18 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     );
   }
 
-  Widget _buildPostContent() {
+  Widget _buildPostContent(PostModel post) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Hashtags ở đầu
-          if (widget.post.hashtags.isNotEmpty) ...[
+          if (post.hashtags.isNotEmpty) ...[
             Wrap(
               spacing: 8,
               runSpacing: 4,
-              children: widget.post.hashtags.map((hashtag) {
+              children: post.hashtags.map((hashtag) {
                 return Text(
                   hashtag.startsWith('#') ? hashtag : '#$hashtag',
                   style: const TextStyle(
@@ -139,7 +176,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
           ],
           // Content text
           Text(
-            widget.post.content,
+            post.content,
             style: const TextStyle(
               fontSize: 14,
               color: Color(0xFF1A1A1A),
@@ -151,71 +188,30 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     );
   }
 
-  Widget _buildPostMedia() {
-    final images = widget.post.media
-        .where((m) => m.type == MediaType.image)
-        .toList();
-    final otherMedia = widget.post.media
-        .where((m) => m.type != MediaType.image)
-        .toList();
+  Widget _buildPostMedia(PostModel post) {
+    if (post.media.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Column(
-        children: [
-          if (images.isNotEmpty)
-            Row(
-              children: images.take(2).map((media) {
-                return Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      right: images.indexOf(media) < images.length - 1 ? 4 : 0,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Image.network(
-                          media.url,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey[300],
-                              child: const Center(
-                                child: Icon(Icons.broken_image, size: 30),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          if (otherMedia.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: PostMediaCarousel(mediaList: otherMedia),
-            ),
-        ],
-      ),
+      child: PostMediaCarousel(mediaList: post.media),
     );
   }
 
-  Widget _buildPostActions() {
+  Widget _buildPostActions(PostModel post) {
     return Padding(
       padding: const EdgeInsets.only(left: 0, right: 16, bottom: 12),
       child: Row(
         children: [
           const SizedBox(width: 16),
           _LikeButton(
-            isLiked: widget.post.isLiked,
-            likeCount: widget.post.likeCount,
+            isLiked: post.isLiked,
+            likeCount: post.likeCount,
             onTap: () {},
           ),
           const SizedBox(width: 12),
-          _CommentButton(commentCount: widget.post.commentCount, onTap: () {}),
+          _CommentButton(commentCount: post.commentCount, onTap: () {}),
           const SizedBox(width: 12),
           _ShareButton(onTap: () {}),
         ],
@@ -242,8 +238,8 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     );
   }
 
-  Widget _buildCommentsList() {
-    final commentsAsync = ref.watch(postCommentsProvider(widget.post.id));
+  Widget _buildCommentsList(String postId) {
+    final commentsAsync = ref.watch(postCommentsProvider(postId));
 
     return commentsAsync.when(
       data: (comments) {
@@ -266,8 +262,8 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
           itemBuilder: (context, index) {
             return _CommentItem(
               comment: comments[index],
-              postId: widget.post.id,
-              onTap: () => _navigateToReplies(comments[index]),
+              postId: postId,
+              onTap: () => _navigateToReplies(comments[index], postId),
             );
           },
         );
@@ -288,7 +284,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () =>
-                    ref.refresh(postCommentsProvider(widget.post.id)),
+                    ref.refresh(postCommentsProvider(postId)),
                 child: const Text('Retry'),
               ),
             ],
@@ -298,21 +294,26 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     );
   }
 
-  void _navigateToReplies(CommentModel comment) {
+  void _navigateToReplies(CommentModel comment, String postId) {
     if (comment.repliesCount > 0) {
       context.push(
-        '/post/${widget.post.id}/comment/${comment.id}/replies',
+        '/post/$postId/comment/${comment.id}/replies',
         extra: comment,
       );
     }
   }
 
-  Widget _buildReplyInput() {
-    final currentUser = widget.post.user; // In real app, get from auth
-    final avatarImage =
-        currentUser.avatar != null && currentUser.avatar!.isNotEmpty
+  Widget _buildReplyInput(PostModel post) {
+    final currentUserAsync = ref.watch(userAuthProvider);
+    final currentUser = currentUserAsync.value;
+    
+    final avatarImage = currentUser?.avatar != null && currentUser!.avatar!.isNotEmpty
         ? NetworkImage(currentUser.avatar!)
         : AssetImage(AppImages.defaultAvatar) as ImageProvider;
+
+    final hasMedia = _selectedImages.isNotEmpty || 
+                     _selectedVideos.isNotEmpty || 
+                     _selectedAudios.isNotEmpty;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -320,20 +321,178 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
         color: Colors.white,
         border: Border(top: BorderSide(color: Colors.grey[200]!, width: 1)),
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          AvatarWidget(image: avatarImage, size: 32),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(20),
+          // Media previews
+          if (hasMedia) ...[
+            _buildMediaPreviews(),
+            const SizedBox(height: 8),
+          ],
+          // Input row
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AvatarWidget(image: avatarImage, size: 32),
+              const SizedBox(width: 12),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    // Focus vào TextField khi tap vào placeholder
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: TextField(
+                      controller: _commentController,
+                      decoration: InputDecoration(
+                        hintText: 'Trả lời ${post.user.nickname}',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                        isDense: true,
+                      ),
+                      maxLines: null,
+                      minLines: 1,
+                      textInputAction: TextInputAction.newline,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ),
               ),
-              child: Text(
-                'Trả lời ${widget.post.user.nickname}',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              const SizedBox(width: 8),
+              // Action menu button
+              IconButton(
+                icon: const Icon(Icons.add_circle_outline, color: Colors.grey),
+                onPressed: () => _showMediaActionMenu(context),
+                tooltip: 'Thêm media',
+              ),
+              // Post button
+              IconButton(
+                icon: _isPostingComment
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.send, color: Colors.blue),
+                onPressed: _isPostingComment ? null : () => _postComment(post.id),
+                tooltip: 'Đăng',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showMediaActionMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.image, color: Colors.grey),
+              title: const Text('Chọn ảnh'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImages();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.videocam, color: Colors.grey),
+              title: const Text('Chọn video'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickVideo();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.mic, color: Colors.grey),
+              title: const Text('Ghi âm'),
+              onTap: () {
+                Navigator.pop(context);
+                _showAudioRecorder();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMediaPreviews() {
+    return Container(
+      height: 80,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          // Image previews
+          ..._selectedImages.asMap().entries.map((entry) {
+            final index = entry.key;
+            final image = entry.value;
+            return _buildImagePreview(image, index);
+          }),
+          // Video previews
+          ..._selectedVideos.asMap().entries.map((entry) {
+            final index = entry.key;
+            final video = entry.value;
+            return _buildVideoPreview(video, index);
+          }),
+          // Audio previews
+          ..._selectedAudios.asMap().entries.map((entry) {
+            final index = entry.key;
+            final audio = entry.value;
+            return _buildAudioPreview(audio, index);
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildImagePreview(XFile image, int index) {
+    return Container(
+      width: 80,
+      height: 80,
+      margin: const EdgeInsets.only(right: 8),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.file(
+              File(image.path),
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned(
+            top: 4,
+            right: 4,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedImages.removeAt(index);
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.close, color: Colors.white, size: 16),
               ),
             ),
           ),
@@ -342,15 +501,300 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     );
   }
 
-  void _showPostOptions(BuildContext context) {
+  Widget _buildVideoPreview(XFile video, int index) {
+    return Container(
+      width: 80,
+      height: 80,
+      margin: const EdgeInsets.only(right: 8),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              width: 80,
+              height: 80,
+              color: Colors.black,
+              child: const Icon(Icons.videocam, color: Colors.white, size: 30),
+            ),
+          ),
+          Positioned(
+            top: 4,
+            right: 4,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedVideos.removeAt(index);
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.close, color: Colors.white, size: 16),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAudioPreview(Map<String, dynamic> audio, int index) {
+    final duration = audio['duration'] as int? ?? 0;
+    final minutes = duration ~/ 60;
+    final seconds = duration % 60;
+    
+    return Container(
+      width: 80,
+      height: 80,
+      margin: const EdgeInsets.only(right: 8),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              width: 80,
+              height: 80,
+              color: Colors.grey[300],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.audiotrack, color: Colors.grey, size: 30),
+                  Text(
+                    '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                    style: const TextStyle(fontSize: 10, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: 4,
+            right: 4,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _selectedAudios.removeAt(index);
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.close, color: Colors.white, size: 16),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickImages() async {
+    try {
+      final images = await _imageHelper.pickImages(
+        source: ImageSource.gallery,
+        multiple: true,
+        limit: 10,
+        imageQuality: 100,
+      );
+      if (images.isNotEmpty) {
+        setState(() {
+          _selectedImages.addAll(images);
+        });
+      }
+    } catch (e) {
+      print('Error picking images: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Lỗi khi chọn ảnh: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _pickVideo() async {
+    try {
+      final video = await _videoHelper.pickVideo(
+        source: ImageSource.gallery,
+        maxDurationSeconds: 300,
+      );
+      if (video != null) {
+        setState(() {
+          _selectedVideos.add(video);
+        });
+      }
+    } catch (e) {
+      print('Error picking video: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Lỗi khi chọn video: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _showAudioRecorder() async {
+    final result = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const AudioRecorderBottomSheet(),
+    );
+
+    if (result != null && result is Map<String, dynamic>) {
+      setState(() {
+        _selectedAudios.add(result);
+      });
+    }
+  }
+
+  Future<void> _postComment(String postId) async {
+    if (_commentController.text.trim().isEmpty && 
+        _selectedImages.isEmpty && 
+        _selectedVideos.isEmpty && 
+        _selectedAudios.isEmpty) {
+      return;
+    }
+
+    setState(() {
+      _isPostingComment = true;
+    });
+
+    try {
+      final commentService = ref.read(commentServiceProvider);
+      final userService = ref.read(userGeneralServiceProvider);
+      
+      // Upload media if any
+      List<PostMediaModel> mediaList = [];
+      
+      // Upload images
+      for (var image in _selectedImages) {
+        try {
+          final uploadResult = await userService.uploadImage(File(image.path));
+          final imageUrl = uploadResult.url ?? uploadResult.fileUrl;
+          if (imageUrl != null && imageUrl.isNotEmpty) {
+            mediaList.add(PostMediaModel(
+              id: 'img_${DateTime.now().millisecondsSinceEpoch}_${_selectedImages.indexOf(image)}',
+              type: MediaType.image,
+              url: imageUrl,
+              thumbnailUrl: imageUrl,
+            ));
+          }
+        } catch (e) {
+          print('Error uploading image: $e');
+        }
+      }
+      
+      // Upload videos
+      for (var video in _selectedVideos) {
+        try {
+          final uploadResult = await userService.uploadVideo(File(video.path));
+          final videoUrl = uploadResult.url ?? uploadResult.fileUrl;
+          if (videoUrl != null && videoUrl.isNotEmpty) {
+            mediaList.add(PostMediaModel(
+              id: 'vid_${DateTime.now().millisecondsSinceEpoch}_${_selectedVideos.indexOf(video)}',
+              type: MediaType.video,
+              url: videoUrl,
+              thumbnailUrl: uploadResult.fileUrl,
+            ));
+          }
+        } catch (e) {
+          print('Error uploading video: $e');
+        }
+      }
+      
+      // Upload audios
+      for (var audio in _selectedAudios) {
+        try {
+          final filePath = audio['filePath'] as String?;
+          if (filePath != null) {
+            final uploadResult = await userService.uploadAudio(File(filePath));
+            final audioUrl = uploadResult.url ?? uploadResult.fileUrl;
+            if (audioUrl != null && audioUrl.isNotEmpty) {
+              mediaList.add(PostMediaModel(
+                id: 'aud_${DateTime.now().millisecondsSinceEpoch}_${_selectedAudios.indexOf(audio)}',
+                type: MediaType.audio,
+                url: audioUrl,
+              ));
+            }
+          }
+        } catch (e) {
+          print('Error uploading audio: $e');
+        }
+      }
+
+      // Create comment
+      // Note: API có thể cần media được gửi riêng, cần kiểm tra API spec
+      final response = await commentService.createComment(
+        postId: postId,
+        content: _commentController.text.trim(),
+      );
+      
+      if (response.error || response.data == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(response.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } else {
+        // Clear inputs
+        _commentController.clear();
+        setState(() {
+          _selectedImages.clear();
+          _selectedVideos.clear();
+          _selectedAudios.clear();
+        });
+        
+        // Refresh comments list
+        ref.invalidate(postCommentsProvider(postId));
+        // Refresh post to update comment count
+        ref.invalidate(postDetailProvider(postId));
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Đã đăng bình luận'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Lỗi: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isPostingComment = false;
+        });
+      }
+    }
+  }
+
+
+  void _showPostOptions(BuildContext context, PostModel post) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => PostOptionsBottomSheet(
-        postId: widget.post.id,
-        authorId: widget.post.user.id,
-        authorName: widget.post.user.nickname,
-        authorAvatar: widget.post.user.avatar,
+        postId: post.id,
+        authorId: post.user.id,
+        authorName: post.user.nickname,
+        authorAvatar: post.user.avatar,
       ),
     );
   }

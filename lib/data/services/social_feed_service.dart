@@ -103,6 +103,41 @@ class SocialFeedService {
     );
   }
 
+  /// GET /api/posts/{postId}
+  /// Returns a single post by ID
+  Future<ApiResponse<PostModel>> getPostById(String postId) async {
+    try {
+      final response = await _apiService.get('/posts/$postId');
+      print("SocialFeedService.getPostById response: $response");
+      
+      return ApiResponse.fromJson(
+        response,
+        (data) {
+          print("SocialFeedService.getPostById data type: ${data.runtimeType}");
+          print("SocialFeedService.getPostById data: $data");
+          
+          // Handle different response structures
+          // Structure 1: data is directly the post object
+          // Structure 2: data contains a 'post' field
+          if (data is Map<String, dynamic>) {
+            if (data.containsKey('post')) {
+              // Response structure: { "data": { "post": {...} } }
+              return PostModel.fromJson(data['post'] as Map<String, dynamic>);
+            } else {
+              // Response structure: { "data": {...} } - post object directly
+              return PostModel.fromJson(data);
+            }
+          }
+          
+          throw Exception('Invalid response data format: expected Map but got ${data.runtimeType}');
+        },
+      );
+    } catch (e) {
+      print("SocialFeedService.getPostById: error=${e.toString()}");
+      rethrow;
+    }
+  }
+
   /// POST /posts/{postId}/likes
   /// Like/React post
   Future<ApiResponse<Map<String, dynamic>>> toggleLike(

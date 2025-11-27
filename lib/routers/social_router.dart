@@ -20,12 +20,7 @@ final socialRoutes = <GoRoute>[
     path: RouteConstants.postDetail,
     builder: (context, state) {
       final postId = state.pathParameters['postId']!;
-      // Find post from mock data - in real app, this would come from provider/service
-      final post = mock.allMockPosts.firstWhere(
-        (p) => p.id == postId,
-        orElse: () => mock.allMockPosts.first,
-      );
-      return PostDetailScreen(post: post);
+      return PostDetailScreen(postId: postId);
     },
   ),
   GoRoute(

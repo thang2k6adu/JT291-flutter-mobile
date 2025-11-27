@@ -13,11 +13,9 @@ _CommentModel _$CommentModelFromJson(Map<String, dynamic> json) =>
       userId: json['user_id'] as String,
       user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
       content: json['content'] as String,
-      media:
-          (json['media'] as List<dynamic>?)
-              ?.map((e) => PostMediaModel.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
+      media: json['media'] == null
+          ? const []
+          : _mediaFromJson(json['media'] as List),
       likeCount: (json['like_count'] as num?)?.toInt() ?? 0,
       repliesCount: (json['replies_count'] as num?)?.toInt() ?? 0,
       isLiked: json['is_liked'] as bool? ?? false,
@@ -35,7 +33,7 @@ Map<String, dynamic> _$CommentModelToJson(_CommentModel instance) =>
       'user_id': instance.userId,
       'user': instance.user,
       'content': instance.content,
-      'media': instance.media,
+      'media': _mediaToJson(instance.media),
       'like_count': instance.likeCount,
       'replies_count': instance.repliesCount,
       'is_liked': instance.isLiked,

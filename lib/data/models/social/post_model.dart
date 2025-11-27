@@ -22,7 +22,7 @@ abstract class PostModel with _$PostModel {
     required String id,
     required UserModel user,
     required String content,
-    @Default([]) List<PostMediaModel> media,
+    @Default([]) @JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) List<PostMediaModel> media,
     @Default([]) List<String> hashtags,
     @JsonKey(name: 'like_count') @Default(0) int likeCount,
     @JsonKey(name: 'comment_count') @Default(0) int commentCount,
@@ -39,5 +39,16 @@ abstract class PostModel with _$PostModel {
 
   factory PostModel.fromJson(Map<String, dynamic> json) =>
       _$PostModelFromJson(json);
+}
+
+/// Helper functions for PostMediaModel serialization
+List<Map<String, dynamic>> _mediaToJson(List<PostMediaModel> media) {
+  return media.map((m) => m.toJson()).toList();
+}
+
+List<PostMediaModel> _mediaFromJson(List<dynamic> json) {
+  return json
+      .map((item) => PostMediaModel.fromJson(item as Map<String, dynamic>))
+      .toList();
 }
 

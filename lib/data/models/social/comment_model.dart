@@ -14,7 +14,7 @@ abstract class CommentModel with _$CommentModel {
     @JsonKey(name: 'user_id') required String userId,
     required UserModel user,
     required String content,
-    @Default([]) List<PostMediaModel> media,
+    @Default([]) @JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) List<PostMediaModel> media,
     @JsonKey(name: 'like_count') @Default(0) int likeCount,
     @JsonKey(name: 'replies_count') @Default(0) int repliesCount,
     @JsonKey(name: 'is_liked') @Default(false) bool isLiked,
@@ -25,5 +25,16 @@ abstract class CommentModel with _$CommentModel {
 
   factory CommentModel.fromJson(Map<String, dynamic> json) =>
       _$CommentModelFromJson(json);
+}
+
+/// Helper functions for PostMediaModel serialization
+List<Map<String, dynamic>> _mediaToJson(List<PostMediaModel> media) {
+  return media.map((m) => m.toJson()).toList();
+}
+
+List<PostMediaModel> _mediaFromJson(List<dynamic> json) {
+  return json
+      .map((item) => PostMediaModel.fromJson(item as Map<String, dynamic>))
+      .toList();
 }
 

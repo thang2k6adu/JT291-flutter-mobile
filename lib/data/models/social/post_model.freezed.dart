@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PostModel {
 
- String get id; UserModel get user; String get content; List<PostMediaModel> get media; List<String> get hashtags;@JsonKey(name: 'like_count') int get likeCount;@JsonKey(name: 'comment_count') int get commentCount;@JsonKey(name: 'share_count') int get shareCount;@JsonKey(name: 'is_liked') bool get isLiked;@JsonKey(name: 'is_bookmarked') bool get isBookmarked;@JsonKey(name: 'created_at') DateTime get createdAt; PostPrivacy get privacy;// Optional fields
+ String get id; UserModel get user; String get content;@JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) List<PostMediaModel> get media; List<String> get hashtags;@JsonKey(name: 'like_count') int get likeCount;@JsonKey(name: 'comment_count') int get commentCount;@JsonKey(name: 'share_count') int get shareCount;@JsonKey(name: 'is_liked') bool get isLiked;@JsonKey(name: 'is_bookmarked') bool get isBookmarked;@JsonKey(name: 'created_at') DateTime get createdAt; PostPrivacy get privacy;// Optional fields
  String? get location;@JsonKey(name: 'updated_at') DateTime? get updatedAt;
 /// Create a copy of PostModel
 /// with the given fields replaced by the non-null parameter values.
@@ -49,7 +49,7 @@ abstract mixin class $PostModelCopyWith<$Res>  {
   factory $PostModelCopyWith(PostModel value, $Res Function(PostModel) _then) = _$PostModelCopyWithImpl;
 @useResult
 $Res call({
- String id, UserModel user, String content, List<PostMediaModel> media, List<String> hashtags,@JsonKey(name: 'like_count') int likeCount,@JsonKey(name: 'comment_count') int commentCount,@JsonKey(name: 'share_count') int shareCount,@JsonKey(name: 'is_liked') bool isLiked,@JsonKey(name: 'is_bookmarked') bool isBookmarked,@JsonKey(name: 'created_at') DateTime createdAt, PostPrivacy privacy, String? location,@JsonKey(name: 'updated_at') DateTime? updatedAt
+ String id, UserModel user, String content,@JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) List<PostMediaModel> media, List<String> hashtags,@JsonKey(name: 'like_count') int likeCount,@JsonKey(name: 'comment_count') int commentCount,@JsonKey(name: 'share_count') int shareCount,@JsonKey(name: 'is_liked') bool isLiked,@JsonKey(name: 'is_bookmarked') bool isBookmarked,@JsonKey(name: 'created_at') DateTime createdAt, PostPrivacy privacy, String? location,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -176,7 +176,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  UserModel user,  String content,  List<PostMediaModel> media,  List<String> hashtags, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'comment_count')  int commentCount, @JsonKey(name: 'share_count')  int shareCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'is_bookmarked')  bool isBookmarked, @JsonKey(name: 'created_at')  DateTime createdAt,  PostPrivacy privacy,  String? location, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  UserModel user,  String content, @JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson)  List<PostMediaModel> media,  List<String> hashtags, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'comment_count')  int commentCount, @JsonKey(name: 'share_count')  int shareCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'is_bookmarked')  bool isBookmarked, @JsonKey(name: 'created_at')  DateTime createdAt,  PostPrivacy privacy,  String? location, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PostModel() when $default != null:
 return $default(_that.id,_that.user,_that.content,_that.media,_that.hashtags,_that.likeCount,_that.commentCount,_that.shareCount,_that.isLiked,_that.isBookmarked,_that.createdAt,_that.privacy,_that.location,_that.updatedAt);case _:
@@ -197,7 +197,7 @@ return $default(_that.id,_that.user,_that.content,_that.media,_that.hashtags,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  UserModel user,  String content,  List<PostMediaModel> media,  List<String> hashtags, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'comment_count')  int commentCount, @JsonKey(name: 'share_count')  int shareCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'is_bookmarked')  bool isBookmarked, @JsonKey(name: 'created_at')  DateTime createdAt,  PostPrivacy privacy,  String? location, @JsonKey(name: 'updated_at')  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  UserModel user,  String content, @JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson)  List<PostMediaModel> media,  List<String> hashtags, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'comment_count')  int commentCount, @JsonKey(name: 'share_count')  int shareCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'is_bookmarked')  bool isBookmarked, @JsonKey(name: 'created_at')  DateTime createdAt,  PostPrivacy privacy,  String? location, @JsonKey(name: 'updated_at')  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _PostModel():
 return $default(_that.id,_that.user,_that.content,_that.media,_that.hashtags,_that.likeCount,_that.commentCount,_that.shareCount,_that.isLiked,_that.isBookmarked,_that.createdAt,_that.privacy,_that.location,_that.updatedAt);case _:
@@ -217,7 +217,7 @@ return $default(_that.id,_that.user,_that.content,_that.media,_that.hashtags,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  UserModel user,  String content,  List<PostMediaModel> media,  List<String> hashtags, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'comment_count')  int commentCount, @JsonKey(name: 'share_count')  int shareCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'is_bookmarked')  bool isBookmarked, @JsonKey(name: 'created_at')  DateTime createdAt,  PostPrivacy privacy,  String? location, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  UserModel user,  String content, @JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson)  List<PostMediaModel> media,  List<String> hashtags, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'comment_count')  int commentCount, @JsonKey(name: 'share_count')  int shareCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'is_bookmarked')  bool isBookmarked, @JsonKey(name: 'created_at')  DateTime createdAt,  PostPrivacy privacy,  String? location, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _PostModel() when $default != null:
 return $default(_that.id,_that.user,_that.content,_that.media,_that.hashtags,_that.likeCount,_that.commentCount,_that.shareCount,_that.isLiked,_that.isBookmarked,_that.createdAt,_that.privacy,_that.location,_that.updatedAt);case _:
@@ -232,14 +232,14 @@ return $default(_that.id,_that.user,_that.content,_that.media,_that.hashtags,_th
 @JsonSerializable()
 
 class _PostModel implements PostModel {
-  const _PostModel({required this.id, required this.user, required this.content, final  List<PostMediaModel> media = const [], final  List<String> hashtags = const [], @JsonKey(name: 'like_count') this.likeCount = 0, @JsonKey(name: 'comment_count') this.commentCount = 0, @JsonKey(name: 'share_count') this.shareCount = 0, @JsonKey(name: 'is_liked') this.isLiked = false, @JsonKey(name: 'is_bookmarked') this.isBookmarked = false, @JsonKey(name: 'created_at') required this.createdAt, this.privacy = PostPrivacy.public, this.location, @JsonKey(name: 'updated_at') this.updatedAt}): _media = media,_hashtags = hashtags;
+  const _PostModel({required this.id, required this.user, required this.content, @JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) final  List<PostMediaModel> media = const [], final  List<String> hashtags = const [], @JsonKey(name: 'like_count') this.likeCount = 0, @JsonKey(name: 'comment_count') this.commentCount = 0, @JsonKey(name: 'share_count') this.shareCount = 0, @JsonKey(name: 'is_liked') this.isLiked = false, @JsonKey(name: 'is_bookmarked') this.isBookmarked = false, @JsonKey(name: 'created_at') required this.createdAt, this.privacy = PostPrivacy.public, this.location, @JsonKey(name: 'updated_at') this.updatedAt}): _media = media,_hashtags = hashtags;
   factory _PostModel.fromJson(Map<String, dynamic> json) => _$PostModelFromJson(json);
 
 @override final  String id;
 @override final  UserModel user;
 @override final  String content;
  final  List<PostMediaModel> _media;
-@override@JsonKey() List<PostMediaModel> get media {
+@override@JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) List<PostMediaModel> get media {
   if (_media is EqualUnmodifiableListView) return _media;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_media);
@@ -296,7 +296,7 @@ abstract mixin class _$PostModelCopyWith<$Res> implements $PostModelCopyWith<$Re
   factory _$PostModelCopyWith(_PostModel value, $Res Function(_PostModel) _then) = __$PostModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, UserModel user, String content, List<PostMediaModel> media, List<String> hashtags,@JsonKey(name: 'like_count') int likeCount,@JsonKey(name: 'comment_count') int commentCount,@JsonKey(name: 'share_count') int shareCount,@JsonKey(name: 'is_liked') bool isLiked,@JsonKey(name: 'is_bookmarked') bool isBookmarked,@JsonKey(name: 'created_at') DateTime createdAt, PostPrivacy privacy, String? location,@JsonKey(name: 'updated_at') DateTime? updatedAt
+ String id, UserModel user, String content,@JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) List<PostMediaModel> media, List<String> hashtags,@JsonKey(name: 'like_count') int likeCount,@JsonKey(name: 'comment_count') int commentCount,@JsonKey(name: 'share_count') int shareCount,@JsonKey(name: 'is_liked') bool isLiked,@JsonKey(name: 'is_bookmarked') bool isBookmarked,@JsonKey(name: 'created_at') DateTime createdAt, PostPrivacy privacy, String? location,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 

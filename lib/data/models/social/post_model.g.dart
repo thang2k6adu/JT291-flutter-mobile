@@ -10,11 +10,9 @@ _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
   id: json['id'] as String,
   user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
   content: json['content'] as String,
-  media:
-      (json['media'] as List<dynamic>?)
-          ?.map((e) => PostMediaModel.fromJson(e as Map<String, dynamic>))
-          .toList() ??
-      const [],
+  media: json['media'] == null
+      ? const []
+      : _mediaFromJson(json['media'] as List),
   hashtags:
       (json['hashtags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
@@ -38,7 +36,7 @@ Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
       'id': instance.id,
       'user': instance.user,
       'content': instance.content,
-      'media': instance.media,
+      'media': _mediaToJson(instance.media),
       'hashtags': instance.hashtags,
       'like_count': instance.likeCount,
       'comment_count': instance.commentCount,

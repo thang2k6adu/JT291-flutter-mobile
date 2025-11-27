@@ -42,11 +42,39 @@ class CommentService {
         queryParameters: queryParams,
       );
 
+      print("CommentService.getComments response: $response");
+
       return ApiResponse.fromJson(
         response,
-        (data) => List.from(data as List<dynamic>)
-            .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
-            .toList(),
+        (data) {
+          print("CommentService.getComments data type: ${data.runtimeType}");
+          print("CommentService.getComments data: $data");
+          
+          // Handle paginated response: { items: [...], meta: {...} }
+          if (data is Map<String, dynamic>) {
+            if (data.containsKey('items')) {
+              // Paginated response
+              final items = data['items'] as List<dynamic>? ?? [];
+              return items
+                  .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
+                  .toList();
+            } else {
+              // Direct list (fallback)
+              return List.from(data as List<dynamic>)
+                  .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
+                  .toList();
+            }
+          }
+          
+          // Handle direct list response
+          if (data is List<dynamic>) {
+            return data
+                .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
+                .toList();
+          }
+          
+          throw Exception('Invalid response data format: expected Map or List but got ${data.runtimeType}');
+        },
       );
     } catch (e) {
       print("CommentService.getComments: error=${e.toString()}");
@@ -119,11 +147,39 @@ class CommentService {
         queryParameters: queryParams,
       );
 
+      print("CommentService.getReplies response: $response");
+
       return ApiResponse.fromJson(
         response,
-        (data) => List.from(data as List<dynamic>)
-            .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
-            .toList(),
+        (data) {
+          print("CommentService.getReplies data type: ${data.runtimeType}");
+          print("CommentService.getReplies data: $data");
+          
+          // Handle paginated response: { items: [...], meta: {...} }
+          if (data is Map<String, dynamic>) {
+            if (data.containsKey('items')) {
+              // Paginated response
+              final items = data['items'] as List<dynamic>? ?? [];
+              return items
+                  .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
+                  .toList();
+            } else {
+              // Direct list (fallback)
+              return List.from(data as List<dynamic>)
+                  .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
+                  .toList();
+            }
+          }
+          
+          // Handle direct list response
+          if (data is List<dynamic>) {
+            return data
+                .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
+                .toList();
+          }
+          
+          throw Exception('Invalid response data format: expected Map or List but got ${data.runtimeType}');
+        },
       );
     } catch (e) {
       print("CommentService.getReplies: error=${e.toString()}");

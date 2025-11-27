@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CommentModel {
 
- String get id;@JsonKey(name: 'post_id') String get postId;@JsonKey(name: 'user_id') String get userId; UserModel get user; String get content; List<PostMediaModel> get media;@JsonKey(name: 'like_count') int get likeCount;@JsonKey(name: 'replies_count') int get repliesCount;@JsonKey(name: 'is_liked') bool get isLiked;@JsonKey(name: 'parent_id') String? get parentId;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime? get updatedAt;
+ String get id;@JsonKey(name: 'post_id') String get postId;@JsonKey(name: 'user_id') String get userId; UserModel get user; String get content;@JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) List<PostMediaModel> get media;@JsonKey(name: 'like_count') int get likeCount;@JsonKey(name: 'replies_count') int get repliesCount;@JsonKey(name: 'is_liked') bool get isLiked;@JsonKey(name: 'parent_id') String? get parentId;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime? get updatedAt;
 /// Create a copy of CommentModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $CommentModelCopyWith<$Res>  {
   factory $CommentModelCopyWith(CommentModel value, $Res Function(CommentModel) _then) = _$CommentModelCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'post_id') String postId,@JsonKey(name: 'user_id') String userId, UserModel user, String content, List<PostMediaModel> media,@JsonKey(name: 'like_count') int likeCount,@JsonKey(name: 'replies_count') int repliesCount,@JsonKey(name: 'is_liked') bool isLiked,@JsonKey(name: 'parent_id') String? parentId,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
+ String id,@JsonKey(name: 'post_id') String postId,@JsonKey(name: 'user_id') String userId, UserModel user, String content,@JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) List<PostMediaModel> media,@JsonKey(name: 'like_count') int likeCount,@JsonKey(name: 'replies_count') int repliesCount,@JsonKey(name: 'is_liked') bool isLiked,@JsonKey(name: 'parent_id') String? parentId,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
@@ -173,7 +173,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'post_id')  String postId, @JsonKey(name: 'user_id')  String userId,  UserModel user,  String content,  List<PostMediaModel> media, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'replies_count')  int repliesCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'parent_id')  String? parentId, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'post_id')  String postId, @JsonKey(name: 'user_id')  String userId,  UserModel user,  String content, @JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson)  List<PostMediaModel> media, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'replies_count')  int repliesCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'parent_id')  String? parentId, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CommentModel() when $default != null:
 return $default(_that.id,_that.postId,_that.userId,_that.user,_that.content,_that.media,_that.likeCount,_that.repliesCount,_that.isLiked,_that.parentId,_that.createdAt,_that.updatedAt);case _:
@@ -194,7 +194,7 @@ return $default(_that.id,_that.postId,_that.userId,_that.user,_that.content,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'post_id')  String postId, @JsonKey(name: 'user_id')  String userId,  UserModel user,  String content,  List<PostMediaModel> media, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'replies_count')  int repliesCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'parent_id')  String? parentId, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'post_id')  String postId, @JsonKey(name: 'user_id')  String userId,  UserModel user,  String content, @JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson)  List<PostMediaModel> media, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'replies_count')  int repliesCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'parent_id')  String? parentId, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _CommentModel():
 return $default(_that.id,_that.postId,_that.userId,_that.user,_that.content,_that.media,_that.likeCount,_that.repliesCount,_that.isLiked,_that.parentId,_that.createdAt,_that.updatedAt);case _:
@@ -214,7 +214,7 @@ return $default(_that.id,_that.postId,_that.userId,_that.user,_that.content,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'post_id')  String postId, @JsonKey(name: 'user_id')  String userId,  UserModel user,  String content,  List<PostMediaModel> media, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'replies_count')  int repliesCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'parent_id')  String? parentId, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'post_id')  String postId, @JsonKey(name: 'user_id')  String userId,  UserModel user,  String content, @JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson)  List<PostMediaModel> media, @JsonKey(name: 'like_count')  int likeCount, @JsonKey(name: 'replies_count')  int repliesCount, @JsonKey(name: 'is_liked')  bool isLiked, @JsonKey(name: 'parent_id')  String? parentId, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _CommentModel() when $default != null:
 return $default(_that.id,_that.postId,_that.userId,_that.user,_that.content,_that.media,_that.likeCount,_that.repliesCount,_that.isLiked,_that.parentId,_that.createdAt,_that.updatedAt);case _:
@@ -229,7 +229,7 @@ return $default(_that.id,_that.postId,_that.userId,_that.user,_that.content,_tha
 @JsonSerializable()
 
 class _CommentModel implements CommentModel {
-  const _CommentModel({required this.id, @JsonKey(name: 'post_id') required this.postId, @JsonKey(name: 'user_id') required this.userId, required this.user, required this.content, final  List<PostMediaModel> media = const [], @JsonKey(name: 'like_count') this.likeCount = 0, @JsonKey(name: 'replies_count') this.repliesCount = 0, @JsonKey(name: 'is_liked') this.isLiked = false, @JsonKey(name: 'parent_id') this.parentId, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') this.updatedAt}): _media = media;
+  const _CommentModel({required this.id, @JsonKey(name: 'post_id') required this.postId, @JsonKey(name: 'user_id') required this.userId, required this.user, required this.content, @JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) final  List<PostMediaModel> media = const [], @JsonKey(name: 'like_count') this.likeCount = 0, @JsonKey(name: 'replies_count') this.repliesCount = 0, @JsonKey(name: 'is_liked') this.isLiked = false, @JsonKey(name: 'parent_id') this.parentId, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') this.updatedAt}): _media = media;
   factory _CommentModel.fromJson(Map<String, dynamic> json) => _$CommentModelFromJson(json);
 
 @override final  String id;
@@ -238,7 +238,7 @@ class _CommentModel implements CommentModel {
 @override final  UserModel user;
 @override final  String content;
  final  List<PostMediaModel> _media;
-@override@JsonKey() List<PostMediaModel> get media {
+@override@JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) List<PostMediaModel> get media {
   if (_media is EqualUnmodifiableListView) return _media;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_media);
@@ -284,7 +284,7 @@ abstract mixin class _$CommentModelCopyWith<$Res> implements $CommentModelCopyWi
   factory _$CommentModelCopyWith(_CommentModel value, $Res Function(_CommentModel) _then) = __$CommentModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'post_id') String postId,@JsonKey(name: 'user_id') String userId, UserModel user, String content, List<PostMediaModel> media,@JsonKey(name: 'like_count') int likeCount,@JsonKey(name: 'replies_count') int repliesCount,@JsonKey(name: 'is_liked') bool isLiked,@JsonKey(name: 'parent_id') String? parentId,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
+ String id,@JsonKey(name: 'post_id') String postId,@JsonKey(name: 'user_id') String userId, UserModel user, String content,@JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) List<PostMediaModel> media,@JsonKey(name: 'like_count') int likeCount,@JsonKey(name: 'replies_count') int repliesCount,@JsonKey(name: 'is_liked') bool isLiked,@JsonKey(name: 'parent_id') String? parentId,@JsonKey(name: 'created_at') DateTime createdAt,@JsonKey(name: 'updated_at') DateTime? updatedAt
 });
 
 
