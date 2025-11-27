@@ -94,7 +94,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                 onPressed: () => ref.refresh(postDetailProvider(widget.postId)),
                 child: const Text('Retry'),
               ),
-            ],
+        ],
           ),
         ),
       ),
@@ -235,8 +235,8 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
               context.push('/post/${widget.postId}/likes');
             },
             child: Text(
-              'View activity >',
-              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            'View activity >',
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
           ),
         ],
@@ -338,21 +338,21 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
           // Input row
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              AvatarWidget(image: avatarImage, size: 32),
-              const SizedBox(width: 12),
-              Expanded(
+        children: [
+          AvatarWidget(image: avatarImage, size: 32),
+          const SizedBox(width: 12),
+          Expanded(
                 child: GestureDetector(
                   onTap: () {
                     // Focus vào TextField khi tap vào placeholder
                     FocusScope.of(context).requestFocus(FocusNode());
                   },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(20),
+              ),
                     child: TextField(
                       controller: _commentController,
                       decoration: InputDecoration(

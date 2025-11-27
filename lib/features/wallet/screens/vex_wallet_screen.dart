@@ -101,6 +101,17 @@ class _VexWalletScreenState extends ConsumerState<VexWalletScreen> {
     );
   }
 
+  bool _isInsufficientFundsError(String errorMessage) {
+    final lowerMessage = errorMessage.toLowerCase();
+    return lowerMessage.contains('không đủ') ||
+        lowerMessage.contains('insufficient') ||
+        lowerMessage.contains('thiếu') ||
+        lowerMessage.contains('số dư') ||
+        lowerMessage.contains('balance') ||
+        lowerMessage.contains('cần:') ||
+        lowerMessage.contains('hiện có:');
+  }
+
   Future<void> _handleVexCheckout(VexPackageModel package) async {
     try {
       final service = WalletService();
@@ -132,9 +143,14 @@ class _VexWalletScreenState extends ConsumerState<VexWalletScreen> {
           errorMessage = errorMessage.substring('Exception: '.length);
         }
         
+        // Check if it's an insufficient funds error
+        final displayMessage = _isInsufficientFundsError(errorMessage)
+            ? 'Thanh toán thất bại'
+            : errorMessage;
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(errorMessage),
+            content: Text(displayMessage),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 5),
             action: SnackBarAction(

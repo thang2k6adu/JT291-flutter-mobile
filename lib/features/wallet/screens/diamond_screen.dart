@@ -23,10 +23,13 @@ class DiamondScreen extends ConsumerStatefulWidget {
   ConsumerState<DiamondScreen> createState() => _DiamondScreenState();
 }
 
-class _DiamondScreenState extends ConsumerState<DiamondScreen> {
+class _DiamondScreenState extends ConsumerState<DiamondScreen> with WidgetsBindingObserver {
+  bool _hasCheckedPayment = false;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     Future.microtask(() {
       ref.read(walletSummaryProvider.notifier).refresh();
     });
@@ -37,80 +40,163 @@ class _DiamondScreenState extends ConsumerState<DiamondScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    // When app comes back from background (after payment), check for success
+    if (state == AppLifecycleState.resumed && !_hasCheckedPayment) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkPaymentSuccess();
+      });
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Check for payment success from deep link when dependencies change
+    // This ensures we catch deep link redirects even if screen was already initialized
+    if (!_hasCheckedPayment) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkPaymentSuccess();
+      });
+    }
+  }
+
   Future<void> _checkPaymentSuccess() async {
+    if (_hasCheckedPayment) return;
+    
     final router = GoRouter.of(context);
     final location = router.routerDelegate.currentConfiguration.uri.toString();
+    final uri = Uri.parse(location);
     
     // Check if we came from deep link with success parameter
-    if (location.contains('success=true')) {
-      // Extract transactionId from URL if available
-      final uri = Uri.parse(location);
-      final transactionId = uri.queryParameters['transactionId'];
+    if (uri.queryParameters.containsKey('success') && uri.queryParameters['success'] == 'true') {
+      _hasCheckedPayment = true;
       
-      // If transactionId exists, verify transaction status
+      // Extract all parameters from URL
+      final transactionId = uri.queryParameters['transactionId'];
+      final token = uri.queryParameters['token'];
+      final payerId = uri.queryParameters['payerId'];
+      
+      print('Payment success callback: transactionId=$transactionId, token=$token, payerId=$payerId');
+      
+      // Get current balance before refresh
+      final currentBalance = ref.read(walletSummaryProvider).value?.totalDiamondBalance ?? 0;
+      print('Current diamond balance before refresh: $currentBalance');
+      
+      // Wait a bit for backend to process the payment
+      await Future.delayed(const Duration(milliseconds: 1000));
+      
+      // Refresh wallet summary to update diamond balance
+      print('Refreshing wallet summary...');
+      await ref.read(walletSummaryProvider.notifier).refresh();
+      
+      // Get new balance after refresh
+      final newBalance = ref.read(walletSummaryProvider).value?.totalDiamondBalance ?? 0;
+      print('New diamond balance after refresh: $newBalance');
+      
+      // Double check - refresh again after a short delay to ensure we get the latest balance
+      await Future.delayed(const Duration(milliseconds: 500));
+      await ref.read(walletSummaryProvider.notifier).refresh();
+      final finalBalance = ref.read(walletSummaryProvider).value?.totalDiamondBalance ?? 0;
+      print('Final diamond balance after second refresh: $finalBalance');
+      
+      // Show success message after refresh
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Thanh toán thành công'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+      
+      // Optionally verify transaction if transactionId exists (but don't fail if it doesn't)
       if (transactionId != null && transactionId.isNotEmpty) {
         try {
           final service = WalletService();
           final transaction = await service.verifyTransaction(transactionId);
           print('Transaction verified: $transaction');
           
-          // Check transaction status
+          // Check transaction status (optional, just for logging)
           final status = transaction['status'] as String?;
-          if (status == 'success' || status == 'completed') {
-            // Show success snackbar
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Thanh toán thành công'),
-                  backgroundColor: Colors.green,
-                  duration: Duration(seconds: 3),
-                ),
-              );
-            }
-          } else {
-            // Show pending or error message
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Trạng thái giao dịch: $status'),
-                  backgroundColor: Colors.orange,
-                  duration: const Duration(seconds: 3),
-                ),
-              );
-            }
-          }
+          print('Transaction status: $status');
         } catch (e) {
-          print('Error verifying transaction: $e');
-          // Still show success message even if verification fails
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Thanh toán thành công'),
-                backgroundColor: Colors.green,
-                duration: Duration(seconds: 3),
-              ),
-            );
-          }
-        }
-      } else {
-        // No transactionId, just show success message
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Thanh toán thành công'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 3),
-            ),
-          );
+          // Silently handle verification errors (404, etc.) - balance refresh is the real indicator
+          print('Transaction verification failed (non-critical): $e');
+          // Don't show error to user, balance refresh will confirm success
         }
       }
       
-      // Refresh wallet summary to update diamond balance
-      ref.read(walletSummaryProvider.notifier).refresh();
+      // Remove query parameters from URL after a short delay to ensure UI updates
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (mounted) {
+        final cleanPath = location.split('?').first;
+        router.go(cleanPath);
+      }
+    } 
+    // Check if payment was cancelled
+    else if (uri.queryParameters.containsKey('cancelled') && uri.queryParameters['cancelled'] == 'true') {
+      _hasCheckedPayment = true;
+      
+      final transactionId = uri.queryParameters['transactionId'];
+      print('Payment cancelled: transactionId=$transactionId');
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Thanh toán đã bị hủy'),
+            backgroundColor: Colors.orange,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
       
       // Remove query parameters from URL
-      final cleanPath = location.split('?').first;
-      router.go(cleanPath);
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (mounted) {
+        final cleanPath = location.split('?').first;
+        router.go(cleanPath);
+      }
+    }
+    // Check if payment failed
+    else if (uri.queryParameters.containsKey('failed') && uri.queryParameters['failed'] == 'true') {
+      _hasCheckedPayment = true;
+      
+      final transactionId = uri.queryParameters['transactionId'];
+      print('Payment failed: transactionId=$transactionId');
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Thanh toán thất bại'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: 'Đóng',
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ),
+        );
+      }
+      
+      // Remove query parameters from URL
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (mounted) {
+        final cleanPath = location.split('?').first;
+        router.go(cleanPath);
+      }
     }
   }
 

@@ -71,9 +71,9 @@ class _MonthlyCardSectionState extends ConsumerState<MonthlyCardSection> {
             spacing: 20,
             child: monthlyCardsAsync.maybeWhen(
               data: (cards) => SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
+              width: double.infinity,
+              height: 56,
+              child: ElevatedButton(
                   onPressed: () {
                     // Show payment bottom sheet with selected monthly card
                     showModalBottomSheet(
@@ -85,22 +85,22 @@ class _MonthlyCardSectionState extends ConsumerState<MonthlyCardSection> {
                       ),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE65983),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(28),
-                    ),
-                    elevation: 0,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE65983),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(28),
                   ),
-                  child: Text(
-                    '${CurrencyFormatter.format(cards[selectedIndex].price)} / per month',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
+                  elevation: 0,
+                ),
+                child: Text(
+                        '${CurrencyFormatter.format(cards[selectedIndex].price)} / per month',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
+              ),
               ),
               orElse: () => const SizedBox.shrink(),
             ),

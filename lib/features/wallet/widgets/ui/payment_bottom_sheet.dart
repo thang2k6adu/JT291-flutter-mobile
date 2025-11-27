@@ -322,6 +322,18 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
     return 0;
   }
 
+  /// Check if error is related to insufficient funds
+  bool _isInsufficientFundsError(String errorMessage) {
+    final lowerMessage = errorMessage.toLowerCase();
+    return lowerMessage.contains('không đủ') ||
+        lowerMessage.contains('insufficient') ||
+        lowerMessage.contains('thiếu') ||
+        lowerMessage.contains('số dư') ||
+        lowerMessage.contains('balance') ||
+        lowerMessage.contains('cần:') ||
+        lowerMessage.contains('hiện có:');
+  }
+
   Future<void> _handleCheckout() async {
     // For monthly card, payment method selection is not required
     // For package, require payment method selection
@@ -395,9 +407,21 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
           errorMessage = errorMessage.substring('Exception: '.length);
         }
         
+        print('Extracted error message: $errorMessage');
+        
+        // Check if it's an insufficient funds error
+        final isInsufficientFunds = _isInsufficientFundsError(errorMessage);
+        print('Is insufficient funds error: $isInsufficientFunds');
+        
+        final displayMessage = isInsufficientFunds
+            ? 'Thanh toán thất bại'
+            : errorMessage;
+        
+        print('Display message: $displayMessage');
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(errorMessage),
+            content: Text(displayMessage),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 5), // Longer duration for error messages
             action: SnackBarAction(
@@ -524,9 +548,21 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
           errorMessage = errorMessage.substring('Exception: '.length);
         }
         
+        print('Extracted error message: $errorMessage');
+        
+        // Check if it's an insufficient funds error
+        final isInsufficientFunds = _isInsufficientFundsError(errorMessage);
+        print('Is insufficient funds error: $isInsufficientFunds');
+        
+        final displayMessage = isInsufficientFunds
+            ? 'Thanh toán thất bại'
+            : errorMessage;
+        
+        print('Display message: $displayMessage');
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(errorMessage),
+            content: Text(displayMessage),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 5), // Longer duration for error messages
             action: SnackBarAction(
