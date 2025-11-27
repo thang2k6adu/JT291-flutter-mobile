@@ -63,6 +63,7 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
   int _page = 1;
   bool _hasNext = true;
   bool _isLoadingMore = false;
+  bool _isBackgroundFetching = false; // Flag để track background fetch
   String? _search;
 
   static const int limit = 10;
@@ -165,6 +166,10 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
     bool reset = false,
     String? search,
   }) async {
+    // Prevent duplicate background fetches
+    if (_isBackgroundFetching) return;
+    _isBackgroundFetching = true;
+
     final initialState = state;
     
     try {
@@ -191,12 +196,15 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
       );
     } catch (_) {
       // Silent fail for background updates
+    } finally {
+      _isBackgroundFetching = false;
     }
   }
 
   /// Load thêm page kế tiếp
   Future<void> loadMore() async {
-    if (!_hasNext || _isLoadingMore) return;
+    // Check cả isLoadingMore và isBackgroundFetching để tránh duplicate calls
+    if (!_hasNext || _isLoadingMore || _isBackgroundFetching) return;
     await fetchData();
   }
 
@@ -220,7 +228,12 @@ abstract class BasePaginatedNotifier<T> extends AsyncNotifier<List<T>> {
   }
 
   // --- Getters ---
-  bool get isLoadingMore => _isLoadingMore;
+  /// Check xem có đang loading (bao gồm cả background fetch)
+  bool get isLoadingMore => _isLoadingMore || _isBackgroundFetching;
+  
+  /// Check xem đang fetch ở background không
+  bool get isBackgroundFetching => _isBackgroundFetching;
+  
   bool get hasNext => _hasNext;
   int get currentPage => _page;
   String? get searchQuery => _search;

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 /// Mixin để handle scroll pagination cho các StatefulWidget
@@ -20,6 +21,8 @@ import 'package:flutter/material.dart';
 mixin ScrollPaginationMixin<T extends StatefulWidget> on State<T> {
   ScrollController? _scrollController;
   bool _isCheckingFullScreen = false;
+  Timer? _debounceTimer;
+  DateTime? _lastLoadMoreTime;
   
   /// Callback để load more data khi scroll gần cuối
   Future<void> Function() get onLoadMore;
@@ -36,6 +39,10 @@ mixin ScrollPaginationMixin<T extends StatefulWidget> on State<T> {
   /// Default: 200
   double get scrollThreshold => 200;
   
+  /// Minimum interval giữa các lần gọi loadMore (debounce)
+  /// Default: 300ms
+  Duration get loadMoreDebounce => const Duration(milliseconds: 300);
+  
   /// ScrollController được quản lý bởi mixin
   ScrollController get scrollController {
     _scrollController ??= ScrollController();
@@ -50,6 +57,7 @@ mixin ScrollPaginationMixin<T extends StatefulWidget> on State<T> {
   
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     _scrollController?.removeListener(_onScroll);
     _scrollController?.dispose();
     super.dispose();
@@ -60,16 +68,42 @@ mixin ScrollPaginationMixin<T extends StatefulWidget> on State<T> {
     scrollController.addListener(_onScroll);
   }
   
-  /// Handle scroll event - trigger loadMore khi gần cuối
+  /// Handle scroll event - trigger loadMore khi gần cuối (có debounce)
   void _onScroll() {
     if (!scrollController.hasClients) return;
     
     final position = scrollController.position;
     if (position.pixels >= position.maxScrollExtent - scrollThreshold) {
-      if (hasNext() && !isLoadingMore()) {
-        onLoadMore();
+      _triggerLoadMoreWithDebounce();
+    }
+  }
+  
+  /// Trigger loadMore với debounce để tránh duplicate calls
+  void _triggerLoadMoreWithDebounce() {
+    // Skip if loading or no more data
+    if (!hasNext() || isLoadingMore()) return;
+    
+    // Rate limit check
+    if (_lastLoadMoreTime != null) {
+      final elapsed = DateTime.now().difference(_lastLoadMoreTime!);
+      if (elapsed < loadMoreDebounce) {
+        return; // Too soon, skip
       }
     }
+    
+    // Cancel pending timer
+    _debounceTimer?.cancel();
+    
+    // Set debounce timer
+    _debounceTimer = Timer(loadMoreDebounce, () {
+      if (!mounted) return;
+      
+      // Double check before calling
+      if (hasNext() && !isLoadingMore()) {
+        _lastLoadMoreTime = DateTime.now();
+        onLoadMore();
+      }
+    });
   }
   
   /// Check và load more nếu list chưa đầy màn hình
@@ -83,17 +117,30 @@ mixin ScrollPaginationMixin<T extends StatefulWidget> on State<T> {
     
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _isCheckingFullScreen = false;
-      if (!scrollController.hasClients) return;
+      if (!mounted || !scrollController.hasClients) return;
       
       final position = scrollController.position;
       if (position.maxScrollExtent <= position.viewportDimension) {
-        // List chưa đầy màn hình
-        if (hasNext() && !isLoadingMore()) {
-          onLoadMore().then((_) {
-            // Recursive check sau khi load xong
-            checkLoadMoreIfListNotFull();
-          });
+        // List chưa đầy màn hình - check debounce
+        if (!hasNext() || isLoadingMore()) return;
+        
+        // Rate limit check
+        if (_lastLoadMoreTime != null) {
+          final elapsed = DateTime.now().difference(_lastLoadMoreTime!);
+          if (elapsed < loadMoreDebounce) {
+            // Schedule retry after debounce period
+            Future.delayed(loadMoreDebounce - elapsed, () {
+              if (mounted) checkLoadMoreIfListNotFull();
+            });
+            return;
+          }
         }
+        
+        _lastLoadMoreTime = DateTime.now();
+        onLoadMore().then((_) {
+          // Recursive check sau khi load xong
+          if (mounted) checkLoadMoreIfListNotFull();
+        });
       }
     });
   }
