@@ -214,28 +214,28 @@ class _VexWalletScreenState extends ConsumerState<VexWalletScreen> {
                         ),
                       )
                     else
-                      Text(
+                    Text(
                         formatNumberWithCommas(vexBalance),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 28,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: -0.5,
-                        ),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.5,
                       ),
+                    ),
                     SizedBox(width: 8),
                     if (!isLoading)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: Text(
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: Text(
                           '\$${(vexBalance * 0.01657).toStringAsFixed(0)}USD', // Approximate USD value
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
+                    ),
                   ],
                 ),
                 SizedBox(height: 32),

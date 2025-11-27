@@ -15,8 +15,7 @@ import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 /// ```dart
 /// UserRelationAppBar(title: 'Darlene Bears')
 /// ```
-class AppBarWithBack extends StatelessWidget
-    implements PreferredSizeWidget {
+class AppBarWithBack extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final PreferredSizeWidget? bottom;
   final VoidCallback? onBack;
@@ -26,7 +25,7 @@ class AppBarWithBack extends StatelessWidget
   final bool centerTitle;
   final bool bottomBorder;
   final List<Widget>? actions;
-  
+
   const AppBarWithBack({
     super.key,
     required this.title,
@@ -51,7 +50,8 @@ class AppBarWithBack extends StatelessWidget
       elevation: elevation,
       leading: IconButton(
         icon: Icon(Icons.arrow_back_ios, color: textColor, size: 20),
-        onPressed: onBack ?? () => goBack(context),
+        onPressed: () =>
+            Navigator.canPop(context) && onBack != null ? goBack(context) : goHome(context),
       ),
       title: Text(
         title,
@@ -62,13 +62,14 @@ class AppBarWithBack extends StatelessWidget
         ),
       ),
       centerTitle: centerTitle,
-      bottom: bottom ?? (bottomBorder ? PreferredSize(
-        preferredSize: Size.fromHeight(1),
-        child: Container(
-          height: 1,
-          color: Colors.grey[300],
-        ),
-      ) : null),
+      bottom:
+          bottom ??
+          (bottomBorder
+              ? PreferredSize(
+                  preferredSize: Size.fromHeight(1),
+                  child: Container(height: 1, color: Colors.grey[300]),
+                )
+              : null),
       actions: actions,
     );
   }
