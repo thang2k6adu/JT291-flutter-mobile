@@ -43,6 +43,7 @@ class DiamondPackagesGrid extends StatelessWidget {
             price: package.price.toString(),
             icon: diamondIcons[index],
             currencyIcon: currencyIcon,
+            bonusDiamonds: null, // No bonus for diamond packages
             onTap: onPackageTap != null
                 ? () => onPackageTap!(package)
                 : null,

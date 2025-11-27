@@ -2,6 +2,7 @@ import 'package:jt291_flutter_mobile/data/models/wallet/wallet_summary_model.dar
 import 'package:jt291_flutter_mobile/data/models/wallet/recharge_package_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/monthly_card_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/payment_method_model.dart';
+import 'package:jt291_flutter_mobile/data/models/wallet/vex_package_model.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/transaction_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -109,6 +110,43 @@ class WalletService {
   Future<Map<String, dynamic>> verifyTransaction(String transactionId) async {
     print('verifyTransaction: $transactionId');
     final response = await _apiService.get('/wallet/transactions/$transactionId');
+    return response['data'] as Map<String, dynamic>;
+  }
+
+  // POST /wallet/recharge/monthly-cards - Purchase Monthly Card
+  Future<Map<String, dynamic>> purchaseMonthlyCard({
+    required int cardId,
+  }) async {
+    print('purchaseMonthlyCard: cardId=$cardId');
+    final response = await _apiService.post(
+      '/wallet/recharge/monthly-cards',
+      data: {
+        'cardId': cardId,
+      },
+    );
+    return response['data'] as Map<String, dynamic>;
+  }
+
+  // GET /wallet/vex/packages - Get VEX packages
+  Future<List<VexPackageModel>> getVexPackages() async {
+    print('getVexPackages');
+    final response = await _apiService.get('/wallet/vex/packages');
+    return (response['data'] as List<dynamic>)
+        .map((e) => VexPackageModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  // POST /wallet/vex/checkout - Purchase Diamond with VEX
+  Future<Map<String, dynamic>> checkoutVex({
+    required int vexAmount,
+  }) async {
+    print('checkoutVex: vexAmount=$vexAmount');
+    final response = await _apiService.post(
+      '/wallet/vex/checkout',
+      data: {
+        'vexAmount': vexAmount,
+      },
+    );
     return response['data'] as Map<String, dynamic>;
   }
 }

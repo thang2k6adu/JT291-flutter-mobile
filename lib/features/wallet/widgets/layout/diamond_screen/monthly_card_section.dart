@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/providers/wallet/monthly_card_provider.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/monthly_card_model.dart';
 import 'package:jt291_flutter_mobile/core/utils/currency_formatter.dart';
+import 'package:jt291_flutter_mobile/features/wallet/widgets/ui/payment_bottom_sheet.dart';
 
 class MonthlyCardSection extends ConsumerStatefulWidget {
   const MonthlyCardSection({super.key});
@@ -68,31 +69,40 @@ class _MonthlyCardSectionState extends ConsumerState<MonthlyCardSection> {
           // Purchase button
           VerticalSection(
             spacing: 20,
-            child: SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: () => print('Purchase button pressed'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFE65983),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28),
+            child: monthlyCardsAsync.maybeWhen(
+              data: (cards) => SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Show payment bottom sheet with selected monthly card
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => PaymentBottomSheet(
+                        monthlyCard: cards[selectedIndex],
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFE65983),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    elevation: 0,
                   ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  monthlyCardsAsync.maybeWhen(
-                    data: (cards) =>
-                        '${CurrencyFormatter.format(cards[selectedIndex].price)} / per month',
-                    orElse: () => '--',
-                  ),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                  child: Text(
+                    '${CurrencyFormatter.format(cards[selectedIndex].price)} / per month',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
+              orElse: () => const SizedBox.shrink(),
             ),
           ),
         ],

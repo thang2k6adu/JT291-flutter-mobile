@@ -2,15 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/payment_method_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/recharge_package_model.dart';
+import 'package:jt291_flutter_mobile/data/models/wallet/monthly_card_model.dart';
 import 'package:jt291_flutter_mobile/data/providers/wallet/payment_methods_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/wallet/wallet_summary_provider.dart';
 import 'package:jt291_flutter_mobile/data/services/wallet_service.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PaymentBottomSheet extends ConsumerStatefulWidget {
-  final RechargePackageModel package;
+  final RechargePackageModel? package;
+  final MonthlyCardModel? monthlyCard;
 
-  const PaymentBottomSheet({super.key, required this.package});
+  const PaymentBottomSheet({
+    super.key,
+    this.package,
+    this.monthlyCard,
+  }) : assert(
+          (package != null && monthlyCard == null) ||
+              (package == null && monthlyCard != null),
+          'Either package or monthlyCard must be provided, but not both',
+        );
 
   @override
   ConsumerState<PaymentBottomSheet> createState() => _PaymentBottomSheetState();
@@ -105,10 +116,11 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Payment Method Selection Card
-          _buildPaymentMethodCard(visaMethod),
-
-          const SizedBox(height: 16),
+          // Payment Method Selection Card (only for packages, not monthly cards)
+          if (widget.package != null) ...[
+            _buildPaymentMethodCard(visaMethod),
+            const SizedBox(height: 16),
+          ],
 
           // Subscription Details Card
           _buildSubscriptionCard(),
@@ -231,7 +243,7 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
           ),
           Divider(color: Colors.grey[200], thickness: 1),
           Text(
-            '\$${widget.package.price}',
+            '\$${_getPrice()}',
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             textAlign: TextAlign.start,
           ),
@@ -301,8 +313,19 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
     );
   }
 
+  int _getPrice() {
+    if (widget.package != null) {
+      return widget.package!.price;
+    } else if (widget.monthlyCard != null) {
+      return widget.monthlyCard!.price;
+    }
+    return 0;
+  }
+
   Future<void> _handleCheckout() async {
-    if (_selectedPaymentMethod == null) return;
+    // For monthly card, payment method selection is not required
+    // For package, require payment method selection
+    if (widget.package != null && _selectedPaymentMethod == null) return;
 
     setState(() {
       _isProcessing = true;
@@ -310,8 +333,90 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
 
     try {
       final service = WalletService();
+      
+      // Monthly card is purchased directly with diamond balance (no payment gateway)
+      if (widget.monthlyCard != null) {
+        await _handleMonthlyCardPurchase(service);
+        return;
+      }
+      
+      // Package requires payment gateway
+      if (widget.package != null) {
+        await _handlePackageCheckout(service);
+        return;
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Checkout failed: ${e.toString()}')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _handleMonthlyCardPurchase(WalletService service) async {
+    try {
+      final result = await service.purchaseMonthlyCard(
+        cardId: widget.monthlyCard!.cardId,
+      );
+      
+      print('Monthly card purchase result: $result');
+      
+      // Close bottom sheet
+      if (mounted) {
+        Navigator.pop(context);
+        
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mua thẻ tháng thành công!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
+        
+        // Refresh wallet summary to update diamond balance
+        ref.read(walletSummaryProvider.notifier).refresh();
+      }
+    } catch (e) {
+      print('Monthly card purchase error: $e');
+      if (mounted) {
+        Navigator.pop(context);
+        
+        // Extract error message (remove "Exception: " prefix if present)
+        String errorMessage = e.toString();
+        if (errorMessage.startsWith('Exception: ')) {
+          errorMessage = errorMessage.substring('Exception: '.length);
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5), // Longer duration for error messages
+            action: SnackBarAction(
+              label: 'Đóng',
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handlePackageCheckout(WalletService service) async {
+    try {
       final result = await service.checkout(
-        packageId: widget.package.packageId,
+        packageId: widget.package!.packageId,
         currency: 'diamond',
       );
 
@@ -399,22 +504,40 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
         }
       } else {
         if (mounted) {
+          Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Payment URL not available')),
+            const SnackBar(
+              content: Text('Payment URL not available'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       }
     } catch (e) {
+      print('Package checkout error: $e');
       if (mounted) {
+        Navigator.pop(context);
+        
+        // Extract error message (remove "Exception: " prefix if present)
+        String errorMessage = e.toString();
+        if (errorMessage.startsWith('Exception: ')) {
+          errorMessage = errorMessage.substring('Exception: '.length);
+        }
+        
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Checkout failed: ${e.toString()}')),
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5), // Longer duration for error messages
+            action: SnackBarAction(
+              label: 'Đóng',
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ),
         );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isProcessing = false;
-        });
       }
     }
   }

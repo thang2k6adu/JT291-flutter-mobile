@@ -4,26 +4,46 @@ import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_images.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/components/ui/vertical_section.dart';
-import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/diamond_screen/diamon_package_grid.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jt291_flutter_mobile/data/providers/wallet/recharge_packages_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/wallet/vex_packages_provider.dart';
+import 'package:jt291_flutter_mobile/data/providers/wallet/wallet_summary_provider.dart';
+import 'package:jt291_flutter_mobile/data/models/wallet/vex_package_model.dart';
+import 'package:jt291_flutter_mobile/data/models/wallet/wallet_summary_model.dart';
+import 'package:jt291_flutter_mobile/data/services/wallet_service.dart';
+import 'package:jt291_flutter_mobile/core/utils/number_utils.dart';
 import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
+import 'package:jt291_flutter_mobile/features/wallet/widgets/ui/diamon_package_card.dart';
 
-class VexWalletScreen extends ConsumerWidget {
+class VexWalletScreen extends ConsumerStatefulWidget {
   const VexWalletScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final rechargePackagesAsync = ref.watch(rechargePackagesProvider);
+  ConsumerState<VexWalletScreen> createState() => _VexWalletScreenState();
+}
+
+class _VexWalletScreenState extends ConsumerState<VexWalletScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(walletSummaryProvider.notifier).refresh();
+      ref.read(vexPackagesProvider.notifier).refresh();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final walletSummaryAsync = ref.watch(walletSummaryProvider);
+    final vexPackagesAsync = ref.watch(vexPackagesProvider);
 
     return Scaffold(
       appBar: AppBarWithBack(title: 'Vex Wallet'),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildBalanceCard(context),
-            SizedBox(height: 16),
+            _buildBalanceCard(context, walletSummaryAsync),
+            const SizedBox(height: 16),
             VerticalSection(
               spacing: 8,
               child: Text(
@@ -35,11 +55,8 @@ class VexWalletScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            rechargePackagesAsync.when(
-              data: (packages) => DiamondPackagesGrid(
-                packages: packages,
-                currencyIcon: AppIcons.vexPng,
-              ),
+            vexPackagesAsync.when(
+              data: (packages) => _buildVexPackagesGrid(packages),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stackTrace) =>
                   Center(child: Text(error.toString())),
@@ -50,7 +67,94 @@ class VexWalletScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBalanceCard(BuildContext context) {
+  Widget _buildVexPackagesGrid(List<VexPackageModel> packages) {
+    final diamondIcons = [
+      Image.asset(AppIcons.diamondPng, width: 24, height: 24),
+      Image.asset(AppIcons.twoDiamondsPng, width: 30, height: 24),
+      Image.asset(AppIcons.threeDiamondsPng, width: 36, height: 24),
+      Image.asset(AppIcons.fourDiamondsPng, width: 36, height: 25.8),
+      Image.asset(AppIcons.fiveDiamondsPng, width: 44, height: 24),
+      Image.asset(AppIcons.bunchDiamondsPng, width: 48, height: 24),
+    ];
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 16,
+        childAspectRatio: 0.85,
+      ),
+      itemCount: packages.length,
+      itemBuilder: (context, index) {
+        final package = packages[index];
+        return DiamondPackageCard(
+          diamondsCount: package.totalDiamonds.toString(),
+          price: package.vexAmount.toString(),
+          icon: diamondIcons[index % diamondIcons.length],
+          currencyIcon: AppIcons.vexPng,
+          bonusDiamonds: package.bonusDiamonds, // Show bonus for VEX packages
+          onTap: () => _handleVexCheckout(package),
+        );
+      },
+    );
+  }
+
+  Future<void> _handleVexCheckout(VexPackageModel package) async {
+    try {
+      final service = WalletService();
+      final result = await service.checkoutVex(vexAmount: package.vexAmount);
+      
+      print('VEX checkout result: $result');
+      
+      // Show success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Đổi thành công! Nhận được ${result['totalDiamondsReceived']} diamonds (${result['bonusDiamonds']} bonus)',
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+      
+      // Refresh wallet summary to update balances
+      ref.read(walletSummaryProvider.notifier).refresh();
+    } catch (e) {
+      print('VEX checkout error: $e');
+      if (mounted) {
+        // Extract error message
+        String errorMessage = e.toString();
+        if (errorMessage.startsWith('Exception: ')) {
+          errorMessage = errorMessage.substring('Exception: '.length);
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
+            action: SnackBarAction(
+              label: 'Đóng',
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  Widget _buildBalanceCard(BuildContext context, AsyncValue<WalletSummaryModel> walletSummaryAsync) {
+    // Always show the card, use data or default values
+    final vexBalance = walletSummaryAsync.value?.vexBalance ?? 0;
+    final isLoading = walletSummaryAsync.isLoading;
+    
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -82,27 +186,40 @@ class VexWalletScreen extends ConsumerWidget {
                     // VEX Icon
                     Image.asset(AppIcons.vexPng, width: 24, height: 24),
                     SizedBox(width: 12),
-                    Text(
-                      '54,292.79',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Text(
-                        '\$900USD',
+                    if (isLoading)
+                      SizedBox(
+                        width: 100,
+                        height: 28,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      )
+                    else
+                      Text(
+                        formatNumberWithCommas(vexBalance),
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: -0.5,
                         ),
                       ),
-                    ),
+                    SizedBox(width: 8),
+                    if (!isLoading)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Text(
+                          '\$${(vexBalance * 0.01657).toStringAsFixed(0)}USD', // Approximate USD value
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
                 SizedBox(height: 32),

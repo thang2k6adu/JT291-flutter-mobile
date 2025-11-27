@@ -91,7 +91,8 @@ class DiamondPackageCard extends StatelessWidget {
             ),
           ),
 
-          bonusDiamonds != null
+          // Only show bonus badge if bonusDiamonds is provided and > 0
+          (bonusDiamonds != null && bonusDiamonds! > 0)
               ? Positioned(
                   top: 0,
                   left: 0,
@@ -101,7 +102,7 @@ class DiamondPackageCard extends StatelessWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: bonusDiamonds != null && bonusDiamonds! < 30000 ? Color(0xFFFECDD3) : Color(0xFF6599FF),
+                      color: bonusDiamonds! < 30000 ? Color(0xFFFECDD3) : Color(0xFF6599FF),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(8),
                         bottomRight: Radius.circular(8),
@@ -110,9 +111,9 @@ class DiamondPackageCard extends StatelessWidget {
                     child: Row(
                       children: [
                         Text(
-                          '+${bonusDiamonds ?? 0}',
+                          '+$bonusDiamonds',
                           style: TextStyle(
-                            color: bonusDiamonds != null && bonusDiamonds! < 30000 ? Color(0xFFE65983) : Colors.white,
+                            color: bonusDiamonds! < 30000 ? Color(0xFFE65983) : Colors.white,
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
                           ),
