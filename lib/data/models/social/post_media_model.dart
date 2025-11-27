@@ -13,6 +13,20 @@ enum MediaType {
   audio,
 }
 
+/// Extension to get string value from MediaType enum
+extension MediaTypeExtension on MediaType {
+  String get value {
+    switch (this) {
+      case MediaType.image:
+        return 'image';
+      case MediaType.video:
+        return 'video';
+      case MediaType.audio:
+        return 'audio';
+    }
+  }
+}
+
 /// Post media model
 @freezed
 abstract class PostMediaModel with _$PostMediaModel {

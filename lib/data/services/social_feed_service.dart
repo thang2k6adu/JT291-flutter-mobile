@@ -167,19 +167,64 @@ class SocialFeedService {
     required List<PostMediaModel> media,
   }) async {
     try {
-      final requestBody = {
+      // Convert media to request format
+      final mediaList = media.map((m) {
+        // Get media type string value - ensure it's never null or empty
+        String mediaTypeValue;
+        switch (m.type) {
+          case MediaType.image:
+            mediaTypeValue = 'image';
+            break;
+          case MediaType.video:
+            mediaTypeValue = 'video';
+            break;
+          case MediaType.audio:
+            mediaTypeValue = 'audio';
+            break;
+        }
+        
+        // Validate media type value
+        if (mediaTypeValue.isEmpty) {
+          throw Exception('Invalid media type: ${m.type}');
+        }
+        
+        // Validate URL
+        if (m.url.isEmpty) {
+          throw Exception('Media URL cannot be empty');
+        }
+        
+        final mediaMap = <String, dynamic>{
+          'media_type': mediaTypeValue,
+          'media_url': m.url,
+        };
+        
+        if (m.thumbnailUrl != null && m.thumbnailUrl!.isNotEmpty) {
+          mediaMap['thumbnail_url'] = m.thumbnailUrl;
+        }
+        if (m.width != null) {
+          mediaMap['width'] = m.width;
+        }
+        if (m.height != null) {
+          mediaMap['height'] = m.height;
+        }
+        
+        print('Media item: media_type=$mediaTypeValue, url=${m.url}');
+        return mediaMap;
+      }).toList();
+      
+      // Build request body - only include media if not empty
+      final requestBody = <String, dynamic>{
         'content': content,
         'privacy': privacy.name,
         'hashtags': hashtags,
-        'media': media.map((m) => {
-          'media_type': m.type.name,
-          'media_url': m.url,
-          if (m.thumbnailUrl != null) 'thumbnail_url': m.thumbnailUrl,
-          if (m.width != null) 'width': m.width,
-          if (m.height != null) 'height': m.height,
-        }).toList(),
       };
-
+      
+      if (mediaList.isNotEmpty) {
+        requestBody['media'] = mediaList;
+      }
+      
+      print('SocialFeedService.createPost requestBody: $requestBody');
+      print('SocialFeedService.createPost mediaList length: ${mediaList.length}');
       final response = await _apiService.post('/posts', data: requestBody);
 
       return ApiResponse.fromJson(
