@@ -13,9 +13,9 @@ _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
   media: json['media'] == null
       ? const []
       : _mediaFromJson(json['media'] as List),
-  hashtags:
-      (json['hashtags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const [],
+  hashtags: json['hashtags'] == null
+      ? const []
+      : _hashtagsFromJson(json['hashtags'] as List),
   likeCount: (json['like_count'] as num?)?.toInt() ?? 0,
   commentCount: (json['comment_count'] as num?)?.toInt() ?? 0,
   shareCount: (json['share_count'] as num?)?.toInt() ?? 0,
@@ -37,7 +37,7 @@ Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
       'user': instance.user,
       'content': instance.content,
       'media': _mediaToJson(instance.media),
-      'hashtags': instance.hashtags,
+      'hashtags': _hashtagsToJson(instance.hashtags),
       'like_count': instance.likeCount,
       'comment_count': instance.commentCount,
       'share_count': instance.shareCount,

@@ -91,7 +91,7 @@ class PostHeader extends StatelessWidget {
             runSpacing: 4,
             children: post.hashtags.map((hashtag) {
               return Text(
-                hashtag,
+                hashtag.name,
                 style: const TextStyle(
                   fontSize: 14,
                   color: Color(0xFF1DA1F2), // Màu xanh cho hashtag

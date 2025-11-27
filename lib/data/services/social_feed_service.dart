@@ -361,7 +361,7 @@ class SocialFeedService {
   Future<ApiResponse<PostModel>> createPost({
     required String content,
     required PostPrivacy privacy,
-    required List<String> hashtags,
+    required List<String> hashtags, // API vẫn nhận List<String>
     required List<PostMediaModel> media,
   }) async {
     try {

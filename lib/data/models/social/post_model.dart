@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:jt291_flutter_mobile/data/models/users/user_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_media_model.dart';
+import 'package:jt291_flutter_mobile/data/models/social/hashtag_model.dart';
 
 part 'post_model.freezed.dart';
 part 'post_model.g.dart';
@@ -23,7 +24,7 @@ abstract class PostModel with _$PostModel {
     required UserModel user,
     required String content,
     @Default([]) @JsonKey(toJson: _mediaToJson, fromJson: _mediaFromJson) List<PostMediaModel> media,
-    @Default([]) List<String> hashtags,
+    @Default([]) @JsonKey(toJson: _hashtagsToJson, fromJson: _hashtagsFromJson) List<HashtagModel> hashtags,
     @JsonKey(name: 'like_count') @Default(0) int likeCount,
     @JsonKey(name: 'comment_count') @Default(0) int commentCount,
     @JsonKey(name: 'share_count') @Default(0) int shareCount,
@@ -50,5 +51,24 @@ List<PostMediaModel> _mediaFromJson(List<dynamic> json) {
   return json
       .map((item) => PostMediaModel.fromJson(item as Map<String, dynamic>))
       .toList();
+}
+
+/// Helper functions for HashtagModel serialization
+List<String> _hashtagsToJson(List<HashtagModel> hashtags) {
+  return hashtags.map((h) => h.name).toList();
+}
+
+List<HashtagModel> _hashtagsFromJson(List<dynamic> json) {
+  return json.map((item) {
+    // API có thể trả về String hoặc Map
+    if (item is String) {
+      // Nếu là String, tạo HashtagModel với id rỗng và name là string đó
+      return HashtagModel(id: '', name: item);
+    } else if (item is Map<String, dynamic>) {
+      // Nếu là Map, parse như HashtagModel
+      return HashtagModel.fromJson(item);
+    }
+    throw Exception('Invalid hashtag format: $item');
+  }).toList();
 }
 
