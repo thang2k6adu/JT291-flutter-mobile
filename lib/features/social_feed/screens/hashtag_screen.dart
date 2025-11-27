@@ -2,62 +2,57 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
 import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
-import 'package:jt291_flutter_mobile/core/mixins/scroll_pagination_mixin.dart';
 import 'package:jt291_flutter_mobile/data/models/social/hashtag_model.dart';
 import 'package:jt291_flutter_mobile/data/services/social_feed_service.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/controllers/social_feed_controller.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/providers/hashtag_provider.dart';
-import 'package:jt291_flutter_mobile/features/social_feed/widgets/ui/post_card/post_card.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/feed_content_list.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/feed_error_state.dart';
+import 'package:jt291_flutter_mobile/features/social_feed/widgets/layout/feed_screen/feed_loading_state.dart';
 
 class HashtagScreen extends ConsumerStatefulWidget {
   final String hashtagId;
 
-  const HashtagScreen({
-    super.key,
-    required this.hashtagId,
-  });
+  const HashtagScreen({super.key, required this.hashtagId});
 
   @override
   ConsumerState<HashtagScreen> createState() => _HashtagScreenState();
 }
 
 class _HashtagScreenState extends ConsumerState<HashtagScreen>
-    with SingleTickerProviderStateMixin, ScrollPaginationMixin {
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  String _currentSort = 'latest'; // 'popular' or 'latest'
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_onTabChanged);
-    
+
+    // Load initial data for both tabs
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(hashtagPostsProvider(HashtagPostsParams(
-        hashtagId: widget.hashtagId,
-        sort: _currentSort,
-      )).notifier).refresh().then((_) {
-        checkLoadMoreIfListNotFull();
-      });
+      // Load popular tab
+      ref
+          .read(
+            hashtagPostsProvider(
+              HashtagPostsParams(hashtagId: widget.hashtagId, sort: 'popular'),
+            ).notifier,
+          )
+          .refresh();
+
+      // Load latest tab
+      ref
+          .read(
+            hashtagPostsProvider(
+              HashtagPostsParams(hashtagId: widget.hashtagId, sort: 'latest'),
+            ).notifier,
+          )
+          .refresh();
     });
   }
 
   void _onTabChanged() {
-    final newSort = _tabController.index == 0 ? 'popular' : 'latest';
-    if (newSort != _currentSort) {
-      setState(() {
-        _currentSort = newSort;
-      });
-      // Provider family will automatically create new instance with new params
-      // Just need to refresh and check load more
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(hashtagPostsProvider(HashtagPostsParams(
-          hashtagId: widget.hashtagId,
-          sort: _currentSort,
-        )).notifier).refresh().then((_) {
-          checkLoadMoreIfListNotFull();
-        });
-      });
-    }
+    // Tab changed - data will be loaded automatically by provider family
   }
 
   @override
@@ -67,35 +62,7 @@ class _HashtagScreenState extends ConsumerState<HashtagScreen>
     super.dispose();
   }
 
-  @override
-  ScrollController get scrollController => super.scrollController;
-
-  @override
-  Future<void> Function() get onLoadMore => () async {
-    await ref.read(hashtagPostsProvider(HashtagPostsParams(
-      hashtagId: widget.hashtagId,
-      sort: _currentSort,
-    )).notifier).loadMore();
-  };
-
-  @override
-  bool Function() get hasNext => () => ref.read(hashtagPostsProvider(
-    HashtagPostsParams(
-      hashtagId: widget.hashtagId,
-      sort: _currentSort,
-    ),
-  ).notifier).hasNext;
-
-  @override
-  bool Function() get isLoadingMore => () => ref.read(hashtagPostsProvider(
-    HashtagPostsParams(
-      hashtagId: widget.hashtagId,
-      sort: _currentSort,
-    ),
-  ).notifier).isLoadingMore;
-
   Future<void> _handleFollowToggle() async {
-    // TODO: Implement follow/unfollow hashtag
     final service = ref.read(socialFeedServiceProvider);
     try {
       await service.toggleFollowHashtag(widget.hashtagId);
@@ -103,21 +70,77 @@ class _HashtagScreenState extends ConsumerState<HashtagScreen>
       ref.invalidate(hashtagDetailProvider(widget.hashtagId));
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
       }
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final hashtagDetailAsync = ref.watch(hashtagDetailProvider(widget.hashtagId));
+  Widget _buildTabContent(String sort) {
     final postsParams = HashtagPostsParams(
       hashtagId: widget.hashtagId,
-      sort: _currentSort,
+      sort: sort,
     );
     final postsAsync = ref.watch(hashtagPostsProvider(postsParams));
+    final controller = ref.read(socialFeedControllerProvider.notifier);
+
+    return postsAsync.when(
+      data: (posts) {
+        if (posts.isEmpty) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              await ref
+                  .read(hashtagPostsProvider(postsParams).notifier)
+                  .refresh();
+            },
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: const [
+                SizedBox(height: 100),
+                NoMatchingResults(message: 'No posts yet.'),
+              ],
+            ),
+          );
+        }
+
+        return FeedContentList(
+          posts: posts,
+          onRefresh: () async {
+            await ref
+                .read(hashtagPostsProvider(postsParams).notifier)
+                .refresh();
+          },
+          onLoadMore: () async {
+            await ref
+                .read(hashtagPostsProvider(postsParams).notifier)
+                .loadMore();
+          },
+          hasNext: () =>
+              ref.read(hashtagPostsProvider(postsParams).notifier).hasNext,
+          isLoadingMore: () => ref
+              .read(hashtagPostsProvider(postsParams).notifier)
+              .isLoadingMore,
+          onLikeTap: (postId, context) {
+            controller.toggleLike(postId, context);
+          },
+        );
+      },
+      loading: () => const FeedLoadingState(),
+      error: (error, stack) => FeedErrorState(
+        error: error,
+        onRetry: () {
+          ref.read(hashtagPostsProvider(postsParams).notifier).refresh();
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hashtagDetailAsync = ref.watch(
+      hashtagDetailProvider(widget.hashtagId),
+    );
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -155,97 +178,53 @@ class _HashtagScreenState extends ConsumerState<HashtagScreen>
       ),
       body: Column(
         children: [
-          // Tabs
+          // Tabs with rounded top corners
           Container(
-            color: Colors.white,
-            child: TabBar(
-              controller: _tabController,
-              labelColor: Colors.red,
-              unselectedLabelColor: Colors.grey,
-              indicatorColor: Colors.red,
-              indicatorSize: TabBarIndicatorSize.tab,
-              labelStyle: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
               ),
-              unselectedLabelStyle: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
+            ),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
               ),
-              tabs: const [
-                Tab(text: 'Popular'),
-                Tab(text: 'Latest'),
-              ],
+              child: TabBar(
+                controller: _tabController,
+                labelColor: Colors.red,
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: Colors.red,
+                indicatorSize: TabBarIndicatorSize.tab,
+                labelStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+                unselectedLabelStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+                tabs: const [
+                  Tab(text: 'Popular'),
+                  Tab(text: 'Latest'),
+                ],
+              ),
             ),
           ),
-          // Posts feed
+          // Posts feed with TabBarView
           Expanded(
-            child: postsAsync.when(
-              data: (posts) {
-                if (posts.isEmpty) {
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      await ref.read(hashtagPostsProvider(postsParams).notifier).refresh();
-                      checkLoadMoreIfListNotFull();
-                    },
-                    child: ListView(
-                      controller: scrollController,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      children: [
-                        const SizedBox(height: 100),
-                        const NoMatchingResults(
-                          message: 'No posts yet.',
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    await ref.read(hashtagPostsProvider(postsParams).notifier).refresh();
-                    checkLoadMoreIfListNotFull();
-                  },
-                  child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: posts.length + (isLoadingMore() ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index < posts.length) {
-                        final post = posts[index];
-                        return PostCard(post: post);
-                      } else {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Center(
-                            child: SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                    const SizedBox(height: 16),
-                    Text('Error: ${error.toString()}'),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        ref.read(hashtagPostsProvider(postsParams).notifier).refresh();
-                      },
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
+            child: Container(
+              decoration: const BoxDecoration(color: Colors.white),
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // Popular tab
+                  _buildTabContent('popular'),
+                  // Latest tab
+                  _buildTabContent('latest'),
+                ],
               ),
             ),
           ),
@@ -321,7 +300,9 @@ class _HashtagDetailSection extends StatelessWidget
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  hashtag.name.startsWith('#') ? hashtag.name : '#${hashtag.name}',
+                  hashtag.name.startsWith('#')
+                      ? hashtag.name
+                      : '#${hashtag.name}',
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -331,10 +312,7 @@ class _HashtagDetailSection extends StatelessWidget
                 const SizedBox(height: 4),
                 Text(
                   '${_formatNumber(hashtag.postCount)} Status Line, ${_formatNumber(hashtag.viewCount)} Views',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                 ),
               ],
             ),
@@ -354,10 +332,7 @@ class _HashtagDetailSection extends StatelessWidget
             ),
             child: Text(
               hashtag.isFollowing ? 'Following' : 'Follow',
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -365,4 +340,3 @@ class _HashtagDetailSection extends StatelessWidget
     );
   }
 }
-
