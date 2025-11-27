@@ -81,14 +81,13 @@ class ApiService {
     try {
       final refreshToken = await _storage.read(
         key: StorageConstants.refreshTokenKey,
-      );
-
-      // create new Dio other than particularly to avoid infinite loops
+      );      // create new Dio other than particularly to avoid infinite loops
       final refreshDio = Dio(BaseOptions(baseUrl: ApiConstants.baseUrl));
+
 
       final response = await refreshDio.post(
         '/auth/refresh',
-        data: {'refreshToken': refreshToken},
+        data: {'refresh_token': refreshToken},
       );
 
       final tokens = TokenModel.fromJson(response.data['data']);

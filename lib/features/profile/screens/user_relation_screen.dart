@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/ui/app_search_field.dart';
 import 'package:jt291_flutter_mobile/core/mixins/multi_scroll_pagination_helper.dart';
+import 'package:jt291_flutter_mobile/core/mixins/search_with_debounce_mixin.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_relation_appbar.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_list_section.dart';
 import 'package:jt291_flutter_mobile/features/profile/widget/layout/user_relation_screen/user_relation_tabbar.dart';
@@ -30,7 +31,8 @@ class UserRelationScreen extends ConsumerStatefulWidget {
   ConsumerState<UserRelationScreen> createState() => _UserRelationScreenState();
 }
 
-class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
+class _UserRelationScreenState extends ConsumerState<UserRelationScreen>
+    with SearchWithDebounceMixin {
   final TextEditingController searchController = TextEditingController();
   final ScrollController followingScrollController = ScrollController();
   final ScrollController followerScrollController = ScrollController();
@@ -97,6 +99,21 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
         _paginationHelper.checkLoadMoreIfListNotFull('friends');
       });
     });
+  }
+
+  @override
+  void onSearchDebounced(String query) {
+    // Update search query provider
+    ref.read(searchQueryProvider.notifier).state = query;
+    
+    // Fetch data cho 3 tabs với debounced query
+    final followingNotifier = ref.read(followingListProvider.notifier);
+    final followerNotifier = ref.read(followerListProvider.notifier);
+    final friendNotifier = ref.read(friendListProvider.notifier);
+    
+    followingNotifier.fetchData(reset: true, search: query);
+    followerNotifier.fetchData(reset: true, search: query);
+    friendNotifier.fetchData(reset: true, search: query);
   }
 
   @override
@@ -204,13 +221,7 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen> {
             AppSearchField(
               controller: searchController,
               hintText: 'Search users',
-              onChanged: (value) {
-                // TODO: add debounce
-                ref.read(searchQueryProvider.notifier).state = value;
-                followingNotifier.fetchData(reset: true, search: value);
-                followerNotifier.fetchData(reset: true, search: value);
-                friendNotifier.fetchData(reset: true, search: value);
-              },
+              onChanged: handleSearchChanged,
             ),
             Expanded(
               child: TabBarView(

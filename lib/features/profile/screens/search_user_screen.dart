@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
@@ -7,6 +6,7 @@ import 'package:jt291_flutter_mobile/components/ui/app_search_field.dart';
 import 'package:jt291_flutter_mobile/components/ui/no_results_widget.dart';
 import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 import 'package:jt291_flutter_mobile/core/mixins/scroll_pagination_mixin.dart';
+import 'package:jt291_flutter_mobile/core/mixins/search_with_debounce_mixin.dart';
 import 'package:jt291_flutter_mobile/data/providers/search/search_user_provider.dart';
 import 'package:jt291_flutter_mobile/data/providers/relationship/social_connection_manager_provider.dart';
 import 'package:jt291_flutter_mobile/features/profile/controllers/search_user_controller.dart';
@@ -22,10 +22,8 @@ class SearchUserScreen extends ConsumerStatefulWidget {
 }
 
 class _SearchUserScreenState extends ConsumerState<SearchUserScreen>
-    with ScrollPaginationMixin {
+    with ScrollPaginationMixin, SearchWithDebounceMixin {
   final TextEditingController _searchController = TextEditingController();
-  Timer? _debounce;
-  String _currentQuery = '';
 
   @override
   Future<void> Function() get onLoadMore => () async {
@@ -48,22 +46,14 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen>
     });
   }
 
-  void _onSearchChanged(String query) {
-    // Cancel timer trước đó nếu có
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
+  @override
+  void onSearchDebounced(String query) async {
+    print('Search query: $query');
+    await ref
+        .read(searchUserProvider.notifier)
+        .fetchData(reset: true, search: query);
 
-    // Tạo timer mới để debounce
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
-      if (query != _currentQuery) {
-        _currentQuery = query;
-        print('Search query: $query');
-        await ref
-            .read(searchUserProvider.notifier)
-            .fetchData(reset: true, search: query);
-
-        checkLoadMoreIfListNotFull();
-      }
-    });
+    checkLoadMoreIfListNotFull();
   }
 
   void _handleUserButtonPressed(UserRelationItem user, UserButtonType type) {
@@ -94,7 +84,6 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen>
   @override
   void dispose() {
     _searchController.dispose();
-    _debounce?.cancel();
     super.dispose();
   }
 
@@ -114,7 +103,7 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen>
           AppSearchField(
             controller: _searchController,
             hintText: 'Search users',
-            onChanged: _onSearchChanged,
+            onChanged: handleSearchChanged,
           ),
           Expanded(
             child: searchState.when(
@@ -124,7 +113,7 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen>
                 final users = connectionManager.getUsers(userIds);
                 
                 // Nếu chưa search gì (query rỗng) và list rỗng
-                if (_currentQuery.isEmpty && users.isEmpty) {
+                if (currentQuery.isEmpty && users.isEmpty) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -144,7 +133,7 @@ class _SearchUserScreenState extends ConsumerState<SearchUserScreen>
                 }
 
                 // Nếu đã search nhưng không có kết quả
-                if (_currentQuery.isNotEmpty && users.isEmpty) {
+                if (currentQuery.isNotEmpty && users.isEmpty) {
                   return const NoMatchingResults();
                 }
 

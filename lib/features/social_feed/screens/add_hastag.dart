@@ -1,8 +1,8 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/components/layout/CustomAppBar.dart';
 import 'package:jt291_flutter_mobile/components/ui/app_search_field.dart';
+import 'package:jt291_flutter_mobile/core/mixins/search_with_debounce_mixin.dart';
 import 'package:jt291_flutter_mobile/data/services/social_feed_service.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/providers/hashtag_search_provider.dart';
 
@@ -13,11 +13,10 @@ class AddHashtagScreen extends ConsumerStatefulWidget {
   ConsumerState<AddHashtagScreen> createState() => _AddHashtagScreenState();
 }
 
-class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen> {
+class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen>
+    with SearchWithDebounceMixin {
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
   bool _isCreatingHashtag = false;
-  Timer? _debounce;
 
   // Danh sách hot hashtags (có thể giữ lại hoặc load từ API)
   final List<String> _hotHashtags = [
@@ -37,31 +36,14 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen> {
 
   @override
   void dispose() {
-    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
 
-  void _onSearchChanged(String value) {
-    // Update search query ngay lập tức để hiển thị text trong TextField
-    setState(() {
-      _searchQuery = value;
-    });
-
-    // Cancel timer trước đó nếu có
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-
-    // Nếu query rỗng, reset debounced query ngay lập tức
-    if (value.trim().isEmpty) {
-      ref.read(hashtagSearchQueryProvider.notifier).state = '';
-      return;
-    }
-
-    // Tạo timer mới để debounce - chỉ update debounced query sau 500ms
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      // Update debounced query provider - điều này sẽ trigger hashtagSearchProvider
-      ref.read(hashtagSearchQueryProvider.notifier).state = value.trim();
-    });
+  @override
+  void onSearchDebounced(String query) {
+    // Update debounced query provider - điều này sẽ trigger hashtagSearchProvider
+    ref.read(hashtagSearchQueryProvider.notifier).state = query;
   }
 
   @override
@@ -81,12 +63,12 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen> {
               AppSearchField(
                 controller: _searchController,
                 hintText: 'Search for trending hashtags',
-                onChanged: _onSearchChanged,
+                onChanged: handleSearchChanged,
               ),
 
               // Content based on search state
               Expanded(
-                child: _searchQuery.isEmpty
+                child: currentQuery.isEmpty
                     ? _buildHotHashtagsList()
                     : _buildSearchResults(),
               ),
@@ -118,7 +100,7 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen> {
 
   // Màn hình 2: Search results
   Widget _buildSearchResults() {
-    if (_searchQuery.trim().isEmpty) {
+    if (currentQuery.trim().isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -127,7 +109,7 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen> {
     final debouncedQuery = ref.watch(hashtagSearchQueryProvider);
 
     // Nếu query hiện tại khác với debounced query, hiển thị loading
-    if (_searchQuery.trim() != debouncedQuery) {
+    if (currentQuery.trim() != debouncedQuery) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(32.0),
@@ -145,7 +127,7 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
             // Option to create new hashtag (chỉ hiện khi canCreate = true)
-            if (canCreate) _buildCreateNewHashtagItem(_searchQuery),
+            if (canCreate) _buildCreateNewHashtagItem(currentQuery),
             if (canCreate) const SizedBox(height: 8),
 
             // Search results from API
