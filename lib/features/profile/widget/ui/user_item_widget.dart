@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jt291_flutter_mobile/components/ui/action_button.dart';
 import 'package:jt291_flutter_mobile/features/profile/models/user_relation_model.dart';
 import 'package:jt291_flutter_mobile/features/profile/screens/user_relation_screen.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 class UserItemWidget extends StatelessWidget {
   final UserRelationItem user;
   final UserButtonType buttonType;
@@ -9,6 +10,7 @@ class UserItemWidget extends StatelessWidget {
       onUserButtonPressed;
   final VoidCallback? onTap;
   final bool isPending;
+  final bool showHeartIcon;
 
   const UserItemWidget({
     super.key,
@@ -17,6 +19,7 @@ class UserItemWidget extends StatelessWidget {
     this.onUserButtonPressed,
     this.onTap,
     this.isPending = false,
+    this.showHeartIcon = false,
   });
 
   @override
@@ -59,9 +62,41 @@ class UserItemWidget extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         child: Row(
           children: [
-            CircleAvatar(
-              radius: 28,
-              backgroundImage: NetworkImage(user.avatarUrl),
+            // Avatar with heart icon overlay
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                CircleAvatar(
+                  radius: 28,
+                  backgroundImage: NetworkImage(user.avatarUrl),
+                ),
+                if (showHeartIcon)
+                  Positioned(
+                    right: -4,
+                    bottom: -4,
+                    child: Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 1),
+                      ),
+                      child: Image.asset(
+                        AppIcons.heartCirclePng,
+                        width: 18,
+                        height: 18,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(
+                            Icons.favorite,
+                            size: 14,
+                            color: Colors.red,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(width: 12),
 

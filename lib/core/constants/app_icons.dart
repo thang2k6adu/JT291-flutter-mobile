@@ -83,4 +83,6 @@ class AppIcons {
 
    static const String blockUserPng = 'lib/assets/icons/block_user.png';
    static const String reportPng = 'lib/assets/icons/report.png';
+
+   static const String heartCirclePng = 'lib/assets/icons/heart_circle.png';
 }

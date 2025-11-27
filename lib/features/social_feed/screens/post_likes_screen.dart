@@ -56,6 +56,7 @@ class PostLikesScreen extends ConsumerWidget {
               return UserItemWidget(
                 user: user,
                 buttonType: buttonType,
+                showHeartIcon: true, // Hiển thị heart icon ở favourite screen
                 onUserButtonPressed: (user, type) {
                   // TODO: Implement follow/unfollow action when API is ready
                   ScaffoldMessenger.of(context).showSnackBar(
