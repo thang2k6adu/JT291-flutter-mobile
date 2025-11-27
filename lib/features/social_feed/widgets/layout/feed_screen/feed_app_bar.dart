@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jt291_flutter_mobile/components/ui/circle_icon_widget.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:jt291_flutter_mobile/features/social_feed/providers/providers.dart';
+import 'package:jt291_flutter_mobile/core/constants/route_constants.dart';
 
 class FeedAppBar extends StatelessWidget implements PreferredSizeWidget {
   const FeedAppBar({super.key, this.isCommunity = false, required this.controller});
@@ -82,6 +84,9 @@ class FeedAppBar extends StatelessWidget implements PreferredSizeWidget {
                 iconSize: 20,
                 backgroundColor: Colors.white,
                 iconColor: Colors.black,
+                onTap: () {
+                  context.push(RouteConstants.addHastag);
+                },
               ),
             ],
           ),

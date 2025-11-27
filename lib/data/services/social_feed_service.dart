@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jt291_flutter_mobile/data/models/base/api_response.dart';
+import 'package:jt291_flutter_mobile/data/models/social/hashtag_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/hot_topic_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_like_model.dart';
 import 'package:jt291_flutter_mobile/data/models/social/post_media_model.dart';
@@ -258,6 +259,41 @@ class SocialFeedService {
       );
     } catch (e) {
       print("SocialFeedService.getReportReasons: error=${e.toString()}");
+      rethrow;
+    }
+  }
+
+  /// POST /hashtags
+  /// Create a new hashtag
+  Future<ApiResponse<Map<String, dynamic>>> createHashtag(String name) async {
+    try {
+      final requestBody = {'name': name};
+      final response = await _apiService.post('/hashtags', data: requestBody);
+      
+      return ApiResponse.fromJson(
+        response,
+        (data) => data as Map<String, dynamic>,
+      );
+    } catch (e) {
+      print("SocialFeedService.createHashtag: error=${e.toString()}");
+      rethrow;
+    }
+  }
+
+  /// GET /hashtags/search
+  /// Search for hashtags
+  Future<ApiResponse<HashtagSearchResponseModel>> searchHashtags(String query) async {
+    try {
+      final response = await _apiService.get(
+        '/hashtags/search',
+        queryParameters: {'query': query},
+      );
+      return ApiResponse.fromJson(
+        response,
+        (data) => HashtagSearchResponseModel.fromJson(data as Map<String, dynamic>),
+      );
+    } catch (e) {
+      print("SocialFeedService.searchHashtags: error=${e.toString()}");
       rethrow;
     }
   }
