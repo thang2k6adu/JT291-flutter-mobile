@@ -44,7 +44,7 @@ class AnimatedCustomTopBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Back button (always visible, no animation)
-                _buildBackButton(context),
+                _buildBackButton(context, shouldShowContent),
                 const SizedBox(width: 12),
                 // User Info (avatar, nickname, uid)
                 if (shouldShowContent)
@@ -57,7 +57,7 @@ class AnimatedCustomTopBar extends StatelessWidget {
                   const Spacer(),
                 const Spacer(),
                 // Menu button (always visible)
-                isMe ? _buildMenuButton(context) : const SizedBox.shrink(),
+                isMe ? _buildMenuButton(context, shouldShowContent) : const SizedBox.shrink(),
               ],
             ),
           ),
@@ -141,22 +141,22 @@ class AnimatedCustomTopBar extends StatelessWidget {
     );
   }
 
-  Widget _buildBackButton(BuildContext context) {
+  Widget _buildBackButton(BuildContext context, bool shouldShowContent) {
     return GestureDetector(
       onTap: onBackPressed ?? () => GoRouter.of(context).pop(),
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.transparent,
-          border: Border.all(color: Colors.black87, width: 2),
+          border: Border.all(color: shouldShowContent ? Colors.black87 : Colors.white, width: 2),
         ),
         padding: const EdgeInsets.all(8),
-        child: Icon(Icons.arrow_back, size: 20, color: Colors.black87),
+        child: Icon(Icons.arrow_back_ios, size: 20, color: shouldShowContent ? Colors.black87 : Colors.white),
       ),
     );
   }
 
-  Widget _buildMenuButton(BuildContext context) {
+  Widget _buildMenuButton(BuildContext context, bool shouldShowContent) {
     return MenuAnchor(
       builder: (contextAnchor, controller, child) {
         return GestureDetector(
@@ -167,10 +167,13 @@ class AnimatedCustomTopBar extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.transparent,
-              border: Border.all(color: Colors.black87, width: 2),
+              border: Border.all(color: shouldShowContent ? Colors.black87 : Colors.white, width: 2),
             ),
             padding: const EdgeInsets.all(8),
-            child: Icon(Icons.more_horiz, size: 20, color: Colors.black87),
+            child: Align(
+              alignment: Alignment.center,
+              child: Icon(Icons.more_horiz, size: 20, color: shouldShowContent ? Colors.black87 : Colors.white),
+            ),
           ),
         );
       },

@@ -77,10 +77,10 @@ class _GiftScreenState extends ConsumerState<GiftScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(giftWallControllerProvider.notifier).refresh().then((_) {
         _paginationHelper.checkLoadMoreIfListNotFull('giftWall');
-      });
+    });
       ref.read(recentGiftsControllerProvider.notifier).refresh().then((_) {
         _paginationHelper.checkLoadMoreIfListNotFull('recentGifts');
-      });
+          });
     });
   }
 

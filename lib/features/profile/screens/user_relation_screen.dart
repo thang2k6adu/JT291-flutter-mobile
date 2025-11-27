@@ -89,6 +89,8 @@ class _UserRelationScreenState extends ConsumerState<UserRelationScreen>
     _paginationHelper.setupController('friends', friendScrollController);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // fetch lại stats
+      ref.read(userStatsProvider.notifier).getUserStats("1");
       ref.read(followingListProvider.notifier).fetchData(reset: true).then((_) {
         _paginationHelper.checkLoadMoreIfListNotFull('following');
       });

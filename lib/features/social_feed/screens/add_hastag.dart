@@ -138,9 +138,9 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen>
         final hashtags = searchResponse.result;
         final canCreate = searchResponse.canCreate;
 
-        return ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          children: [
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      children: [
             // Option to create new hashtag (chỉ hiện khi canCreate = true và ở select mode)
             if (canCreate && widget.mode == AddHashtagMode.select) _buildCreateNewHashtagItem(currentQuery),
             if (canCreate && widget.mode == AddHashtagMode.select) const SizedBox(height: 8),
@@ -151,18 +151,18 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen>
               hashtagId: hashtag.id,
             )),
 
-            // Show "no results" if nothing found
+        // Show "no results" if nothing found
             if (hashtags.isEmpty && !canCreate)
-              const Padding(
-                padding: EdgeInsets.all(32.0),
-                child: Center(
-                  child: Text(
-                    'Không tìm thấy hashtag',
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
-                  ),
-                ),
+          const Padding(
+            padding: EdgeInsets.all(32.0),
+            child: Center(
+              child: Text(
+                'Không tìm thấy hashtag',
+                style: TextStyle(color: Colors.grey, fontSize: 16),
               ),
-          ],
+            ),
+          ),
+      ],
         );
       },
       loading: () => const Center(
@@ -205,21 +205,21 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen>
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    query,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    '+ Gắn thẻ chủ đề mới',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              query,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              '+ Gắn thẻ chủ đề mới',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                 ],
               ),
@@ -229,7 +229,7 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen>
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(strokeWidth: 2),
-              ),
+            ),
           ],
         ),
       ),
@@ -331,7 +331,7 @@ class _AddHashtagScreenState extends ConsumerState<AddHashtagScreen>
           }
         } else {
           // Select mode: return hashtag to parent
-          Navigator.pop(context, hashtag);
+        Navigator.pop(context, hashtag);
         }
       },
       child: Container(

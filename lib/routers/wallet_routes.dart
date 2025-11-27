@@ -8,7 +8,10 @@ import '../core/core.dart';
 final walletRoutes = <GoRoute>[
   GoRoute(
     path: RouteConstants.diamonds,
-    builder: (context, state) => DiamondScreen(),
+    builder: (context, state) {
+      // Pass query parameters to screen if needed
+      return const DiamondScreen();
+    },
   ),
   GoRoute(
     path: RouteConstants.history,

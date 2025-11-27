@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:jt291_flutter_mobile/components/layout/appbar_with_back.dart';
 import 'package:jt291_flutter_mobile/components/helper/router_helper.dart';
 import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
@@ -12,6 +13,7 @@ import 'package:jt291_flutter_mobile/components/ui/vertical_section.dart';
 import 'package:jt291_flutter_mobile/data/providers/wallet/wallet_summary_provider.dart';
 import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/diamond_screen/monthly_card_section.dart';
 import 'package:jt291_flutter_mobile/data/providers/wallet/recharge_packages_provider.dart';
+import 'package:jt291_flutter_mobile/features/wallet/widgets/ui/payment_bottom_sheet.dart';
 
 class DiamondScreen extends ConsumerStatefulWidget {
   const DiamondScreen({super.key});
@@ -27,6 +29,35 @@ class _DiamondScreenState extends ConsumerState<DiamondScreen> {
     Future.microtask(() {
       ref.read(walletSummaryProvider.notifier).refresh();
     });
+    
+    // Check for payment success from deep link
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkPaymentSuccess();
+    });
+  }
+
+  void _checkPaymentSuccess() {
+    final router = GoRouter.of(context);
+    final location = router.routerDelegate.currentConfiguration.uri.toString();
+    
+    // Check if we came from deep link with success parameter
+    if (location.contains('success=true')) {
+      // Show success snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Thanh toán thành công'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 3),
+        ),
+      );
+      
+      // Refresh wallet summary to update diamond balance
+      ref.read(walletSummaryProvider.notifier).refresh();
+      
+      // Remove query parameter from URL
+      final cleanPath = location.split('?').first;
+      router.go(cleanPath);
+    }
   }
 
   @override
@@ -97,7 +128,17 @@ class _DiamondScreenState extends ConsumerState<DiamondScreen> {
               ),
             ),
             rechargePackagesAsync.when(
-              data: (packages) => DiamondPackagesGrid(packages: packages),
+              data: (packages) => DiamondPackagesGrid(
+                packages: packages,
+                onPackageTap: (package) {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => PaymentBottomSheet(package: package),
+                  );
+                },
+              ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stackTrace) =>
                   Center(child: Text(error.toString())),

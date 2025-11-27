@@ -41,5 +41,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
     ],
+    redirect: (context, state) {
+      // Handle deep link: jt291://payment/success
+      final uri = state.uri;
+      if (uri.scheme == 'jt291' && uri.host == 'payment') {
+        if (uri.pathSegments.isNotEmpty && uri.pathSegments[0] == 'success') {
+          // Navigate to diamond screen with success flag
+          return '${RouteConstants.diamonds}?success=true';
+        }
+      }
+      return null;
+    },
   );
 });

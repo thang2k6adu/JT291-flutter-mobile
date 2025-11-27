@@ -69,7 +69,7 @@ class CommentService {
           // Handle direct list response
           if (data is List<dynamic>) {
             return data
-                .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
+            .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
                 .toList();
           }
           
@@ -174,7 +174,7 @@ class CommentService {
           // Handle direct list response
           if (data is List<dynamic>) {
             return data
-                .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
+            .map((item) => CommentModel.fromJson(item as Map<String, dynamic>))
                 .toList();
           }
           

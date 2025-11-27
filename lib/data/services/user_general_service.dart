@@ -142,15 +142,43 @@ class UserGeneralService {
       print('uploadAttachments formData: $formData');
 
       final response = await _apiService.post(
-        '/upload/images',
+        '/uploads/images',
         data: formData,
         headers: {'Content-Type': 'multipart/form-data'},
       );
       
       print('uploadAttachments response: $response');
 
-      final List<dynamic> urls = response['data']['urls'];
-      return urls.map((e) => e as String).toList();
+      // API returns: { data: { items: [{ url: "...", ... }], count: 2 } }
+      final data = response['data'];
+      if (data == null) {
+        throw Exception('Upload response missing data field');
+      }
+      
+      // Check if data is a list (old format) or object with items (new format)
+      List<dynamic> items;
+      if (data is List) {
+        // Old format: data is directly a list
+        items = data;
+      } else if (data is Map && data['items'] != null) {
+        // New format: data.items is the list
+        items = data['items'] as List<dynamic>;
+      } else {
+        throw Exception('Unexpected upload response format');
+      }
+      
+      // Extract URLs from items
+      return items.map((item) {
+        if (item is String) {
+          // Old format: item is directly a URL string
+          return item;
+        } else if (item is Map && item['url'] != null) {
+          // New format: item is an object with url field
+          return item['url'] as String;
+        } else {
+          throw Exception('Unexpected item format in upload response');
+        }
+      }).toList();
     } catch (e) {
       print("uploadAttachments failed: $e");
       throw Exception('Upload attachments failed: $e');

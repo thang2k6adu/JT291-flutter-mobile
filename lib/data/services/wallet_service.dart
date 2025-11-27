@@ -1,6 +1,7 @@
 import 'package:jt291_flutter_mobile/data/models/wallet/wallet_summary_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/recharge_package_model.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/monthly_card_model.dart';
+import 'package:jt291_flutter_mobile/data/models/wallet/payment_method_model.dart';
 import 'package:jt291_flutter_mobile/data/services/api_service.dart';
 import 'package:jt291_flutter_mobile/data/models/wallet/transaction_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,6 +78,31 @@ class WalletService {
         dataKey: 'data', // API uses "data" instead of "items"
       ),
     );
+  }
+
+  // GET /wallet/payment-methods
+  Future<List<PaymentMethodModel>> getPaymentMethods() async {
+    print('getPaymentMethods');
+    final response = await _apiService.get('/wallet/payment-methods');
+    return (response['data'] as List<dynamic>)
+        .map((e) => PaymentMethodModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  // POST /wallet/recharge/checkout
+  Future<Map<String, dynamic>> checkout({
+    required int packageId,
+    required String currency, // "diamond" or "vex"
+  }) async {
+    print('checkout: packageId=$packageId, currency=$currency');
+    final response = await _apiService.post(
+      '/wallet/recharge/checkout',
+      data: {
+        'packageId': packageId,
+        'currency': currency,
+      },
+    );
+    return response['data'] as Map<String, dynamic>;
   }
 }
 
