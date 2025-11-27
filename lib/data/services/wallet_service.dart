@@ -104,6 +104,13 @@ class WalletService {
     );
     return response['data'] as Map<String, dynamic>;
   }
+
+  // GET /wallet/transactions/{transactionId} - Verify transaction status
+  Future<Map<String, dynamic>> verifyTransaction(String transactionId) async {
+    print('verifyTransaction: $transactionId');
+    final response = await _apiService.get('/wallet/transactions/$transactionId');
+    return response['data'] as Map<String, dynamic>;
+  }
 }
 
 final walletServiceProvider = Provider<WalletService>((ref) {

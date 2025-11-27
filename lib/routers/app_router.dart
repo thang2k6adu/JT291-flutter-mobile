@@ -42,11 +42,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
     redirect: (context, state) {
-      // Handle deep link: jt291://payment/success
+      // Handle deep link: jt291://payment/success?transactionId=...
       final uri = state.uri;
       if (uri.scheme == 'jt291' && uri.host == 'payment') {
         if (uri.pathSegments.isNotEmpty && uri.pathSegments[0] == 'success') {
-          // Navigate to diamond screen with success flag
+          // Extract transactionId from query params if available
+          final transactionId = uri.queryParameters['transactionId'];
+          if (transactionId != null) {
+            return '${RouteConstants.diamonds}?success=true&transactionId=$transactionId';
+          }
           return '${RouteConstants.diamonds}?success=true';
         }
       }

@@ -16,7 +16,7 @@ class AppIcons {
   static const String flower = 'lib/assets/icons/flower.png';
   static const String malePng = 'lib/assets/icons/male.png';
   static const String femalePng = 'lib/assets/icons/female.png';
-  static const String scanner = 'lib/assets/icons/scanner.svg';
+  static const String scanner = 'lib/assets/icons/scanner.svg'; 
   static const String setting = 'lib/assets/icons/setting.svg';
   static const String eye = 'lib/assets/icons/eye.svg';
   static const String eyePng = 'lib/assets/icons/eye.png';
@@ -85,4 +85,6 @@ class AppIcons {
    static const String reportPng = 'lib/assets/icons/report.png';
 
    static const String heartCirclePng = 'lib/assets/icons/heart_circle.png';
+
+     static const String appLogoPng = 'lib/assets/icons/app_logo.png';
 }

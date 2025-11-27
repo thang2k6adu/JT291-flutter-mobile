@@ -4,15 +4,13 @@ import 'package:jt291_flutter_mobile/data/models/wallet/payment_method_model.dar
 import 'package:jt291_flutter_mobile/data/models/wallet/recharge_package_model.dart';
 import 'package:jt291_flutter_mobile/data/providers/wallet/payment_methods_provider.dart';
 import 'package:jt291_flutter_mobile/data/services/wallet_service.dart';
+import 'package:jt291_flutter_mobile/core/constants/app_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PaymentBottomSheet extends ConsumerStatefulWidget {
   final RechargePackageModel package;
 
-  const PaymentBottomSheet({
-    super.key,
-    required this.package,
-  });
+  const PaymentBottomSheet({super.key, required this.package});
 
   @override
   ConsumerState<PaymentBottomSheet> createState() => _PaymentBottomSheetState();
@@ -29,7 +27,7 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFF2F2F7),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -48,14 +46,11 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
             child: Row(
               children: [
                 // Apple logo (using Material icon as placeholder)
-                const Icon(Icons.apple, size: 20),
+                const Icon(Icons.apple, size: 22),
                 const SizedBox(width: 8),
                 const Text(
                   'Pay',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
                 ),
                 const Spacer(),
                 IconButton(
@@ -70,9 +65,8 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
             child: paymentMethodsAsync.when(
               data: (methods) => _buildContent(methods),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(
-                child: Text('Error: ${error.toString()}'),
-              ),
+              error: (error, stack) =>
+                  Center(child: Text('Error: ${error.toString()}')),
             ),
           ),
         ],
@@ -121,16 +115,6 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
 
           const SizedBox(height: 24),
 
-          // Terms and Conditions
-          _buildTermsAndConditions(),
-
-          const SizedBox(height: 24),
-
-          // Account Info
-          _buildAccountInfo(),
-
-          const SizedBox(height: 40),
-
           // Action Button
           _buildActionButton(activeMethods),
         ],
@@ -150,9 +134,7 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
           });
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Payment method not supported yet'),
-            ),
+            const SnackBar(content: Text('Payment method not supported yet')),
           );
         }
       },
@@ -161,12 +143,6 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: _selectedPaymentMethod?.id == method.id
-                ? Colors.blue
-                : const Color(0xFFE5E5E5),
-            width: _selectedPaymentMethod?.id == method.id ? 2 : 1,
-          ),
         ),
         child: Row(
           children: [
@@ -178,7 +154,11 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
                 color: const Color(0xFF1A1F71), // Visa blue
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.credit_card, color: Colors.white, size: 24),
+              child: const Icon(
+                Icons.credit_card,
+                color: Colors.white,
+                size: 24,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -196,10 +176,7 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
                     const SizedBox(height: 4),
                     Text(
                       method.maskedInfo!,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],
                 ],
@@ -218,60 +195,50 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE5E5E5)),
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Purple icon (Dolfie logo placeholder)
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: const Color(0xFF8B5CF6), // Purple
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: const Icon(Icons.diamond, color: Colors.white, size: 28),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Purple icon (Dolfie logo placeholder)
+              Image.asset(AppIcons.appLogoPng, width: 54, height: 54),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Dolfie',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const Text(
+                      'Premium avocado mash app',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    const Text(
+                      'Subscription',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Dolfie',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  'Premium avocado mash app',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                const Text(
-                  'Subscription',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '\$${widget.package.price}',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+          Divider(color: Colors.grey[200], thickness: 1),
+          Text(
+            '\$${widget.package.price}',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            textAlign: TextAlign.start,
           ),
+          Divider(color: Colors.grey[200], thickness: 1),
+          _buildTermsAndConditions(),
+          Divider(color: Colors.grey[200], thickness: 1),
+          _buildAccountInfo(),
         ],
       ),
     );
@@ -280,11 +247,7 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
   Widget _buildTermsAndConditions() {
     return const Text(
       'Cancel at any time in Settings > Apple Account at least a day before each renewal date. Plan automatically renews until cancelled.',
-      style: TextStyle(
-        fontSize: 12,
-        color: Colors.grey,
-        height: 1.4,
-      ),
+      style: TextStyle(fontSize: 12, color: Colors.black, height: 1.4),
       textAlign: TextAlign.start,
     );
   }
@@ -292,16 +255,14 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
   Widget _buildAccountInfo() {
     return const Text(
       'Account: use@icloud.com',
-      style: TextStyle(
-        fontSize: 14,
-        color: Colors.grey,
-      ),
+      style: TextStyle(fontSize: 14, color: Colors.grey),
       textAlign: TextAlign.start,
     );
   }
 
   Widget _buildActionButton(List<PaymentMethodModel> methods) {
-    final isVisaSelected = _selectedPaymentMethod?.id == 'visa' ||
+    final isVisaSelected =
+        _selectedPaymentMethod?.id == 'visa' ||
         _selectedPaymentMethod?.type == 'card';
 
     return Column(
@@ -332,10 +293,7 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
                   )
                 : const Text(
                     'Subscribe',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
           ),
         ),
@@ -359,18 +317,18 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
 
       final paymentUrl = result['paymentUrl'] as String?;
       print('Payment URL received: $paymentUrl');
-      
+
       if (paymentUrl != null && paymentUrl.isNotEmpty) {
         // Open payment URL in browser first, then close bottom sheet
         final uri = Uri.parse(paymentUrl);
         print('Parsed URI: $uri');
-        
+
         try {
           // Note: canLaunchUrl sometimes returns false for valid URLs,
           // so we'll try to launch directly without checking first
           print('Attempting to launch URL directly...');
           var launched = false;
-          
+
           // Try external application first (opens in external browser)
           try {
             print('Trying externalApplication mode...');
@@ -382,40 +340,34 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
           } catch (e) {
             print('Error with externalApplication: $e');
           }
-          
+
           // If failed, try platformDefault
           if (!launched) {
             try {
               print('Trying platformDefault mode...');
-              launched = await launchUrl(
-                uri,
-                mode: LaunchMode.platformDefault,
-              );
+              launched = await launchUrl(uri, mode: LaunchMode.platformDefault);
               print('Launch result (platformDefault): $launched');
             } catch (e) {
               print('Error with platformDefault: $e');
             }
           }
-          
+
           // If still failed, try inAppWebView
           if (!launched) {
             try {
               print('Trying inAppWebView mode...');
-              launched = await launchUrl(
-                uri,
-                mode: LaunchMode.inAppWebView,
-              );
+              launched = await launchUrl(uri, mode: LaunchMode.inAppWebView);
               print('Launch result (inAppWebView): $launched');
             } catch (e) {
               print('Error with inAppWebView: $e');
             }
           }
-          
+
           // Close bottom sheet regardless of launch result
           if (mounted) {
             Navigator.pop(context);
           }
-          
+
           if (!launched) {
             print('All launch modes failed');
             if (mounted) {
@@ -467,4 +419,3 @@ class _PaymentBottomSheetState extends ConsumerState<PaymentBottomSheet> {
     }
   }
 }
-

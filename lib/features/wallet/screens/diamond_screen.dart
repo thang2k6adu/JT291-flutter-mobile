@@ -14,6 +14,7 @@ import 'package:jt291_flutter_mobile/data/providers/wallet/wallet_summary_provid
 import 'package:jt291_flutter_mobile/features/wallet/widgets/layout/diamond_screen/monthly_card_section.dart';
 import 'package:jt291_flutter_mobile/data/providers/wallet/recharge_packages_provider.dart';
 import 'package:jt291_flutter_mobile/features/wallet/widgets/ui/payment_bottom_sheet.dart';
+import 'package:jt291_flutter_mobile/data/services/wallet_service.dart';
 
 class DiamondScreen extends ConsumerStatefulWidget {
   const DiamondScreen({super.key});
@@ -36,25 +37,78 @@ class _DiamondScreenState extends ConsumerState<DiamondScreen> {
     });
   }
 
-  void _checkPaymentSuccess() {
+  Future<void> _checkPaymentSuccess() async {
     final router = GoRouter.of(context);
     final location = router.routerDelegate.currentConfiguration.uri.toString();
     
     // Check if we came from deep link with success parameter
     if (location.contains('success=true')) {
-      // Show success snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Thanh toán thành công'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 3),
-        ),
-      );
+      // Extract transactionId from URL if available
+      final uri = Uri.parse(location);
+      final transactionId = uri.queryParameters['transactionId'];
+      
+      // If transactionId exists, verify transaction status
+      if (transactionId != null && transactionId.isNotEmpty) {
+        try {
+          final service = WalletService();
+          final transaction = await service.verifyTransaction(transactionId);
+          print('Transaction verified: $transaction');
+          
+          // Check transaction status
+          final status = transaction['status'] as String?;
+          if (status == 'success' || status == 'completed') {
+            // Show success snackbar
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Thanh toán thành công'),
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            }
+          } else {
+            // Show pending or error message
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Trạng thái giao dịch: $status'),
+                  backgroundColor: Colors.orange,
+                  duration: const Duration(seconds: 3),
+                ),
+              );
+            }
+          }
+        } catch (e) {
+          print('Error verifying transaction: $e');
+          // Still show success message even if verification fails
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Thanh toán thành công'),
+                backgroundColor: Colors.green,
+                duration: Duration(seconds: 3),
+              ),
+            );
+          }
+        }
+      } else {
+        // No transactionId, just show success message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Thanh toán thành công'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      }
       
       // Refresh wallet summary to update diamond balance
       ref.read(walletSummaryProvider.notifier).refresh();
       
-      // Remove query parameter from URL
+      // Remove query parameters from URL
       final cleanPath = location.split('?').first;
       router.go(cleanPath);
     }
